@@ -3,16 +3,9 @@ using System.Collections.Generic;
 
 namespace GA.Core.Selections
 {
-    public abstract class Selection
+    public abstract class Selection : GAOperation
     {
-        protected Random rand;
-        
-        protected Selection(Random rand)
-        {
-            this.rand = rand;
-        }
-
-        public abstract IEnumerable<(TIndividual, TIndividual)> GetParentPairs<TIndividual>
+        public abstract IList<(TIndividual, TIndividual)> GetParentPairs<TIndividual>
            (IList<TIndividual> population, Func<TIndividual, double> fitnessGetter);
     }
 }

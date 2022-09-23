@@ -7,11 +7,7 @@ namespace GA.Core.Selections
 {
     public class RouletteWheelSelection : Selection
     {
-        public RouletteWheelSelection(Random rand) : base(rand)
-        {
-        }
-
-        public override IEnumerable<(TIndividual, TIndividual)> GetParentPairs<TIndividual>
+        public override IList<(TIndividual, TIndividual)> GetParentPairs<TIndividual>
             (IList<TIndividual> population, Func<TIndividual, double> fitnessGetter)
         {
             ///Example:
@@ -55,7 +51,7 @@ namespace GA.Core.Selections
                 var probabilityValues = probabilities.Keys.ToList();
                 
                 //choose first parent
-                var firstWheelTurning = rand.NextDouble() * fitnessSum;
+                var firstWheelTurning = Random.NextDouble() * fitnessSum;
 
                 probabilityValues.Add(firstWheelTurning);
                 probabilityValues.Sort();
@@ -76,7 +72,7 @@ namespace GA.Core.Selections
                 fitnessSum -= fitnesses[firstParent];
 
                 //choose second parent
-                var secondWheelTurning = rand.NextDouble() * fitnessSum - firstParentProbabilityValue;
+                var secondWheelTurning = Random.NextDouble() * fitnessSum - firstParentProbabilityValue;
 
                 correctedProbabilityValues.Add(secondWheelTurning);
                 correctedProbabilityValues.Sort();
