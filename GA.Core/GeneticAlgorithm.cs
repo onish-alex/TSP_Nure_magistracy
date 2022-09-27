@@ -23,7 +23,6 @@ namespace GA.Core
         /// </summary>
         /// <param name="genotype"></param>
         public GeneticAlgorithm(
-            IList<TGene> genotype,
             Selection selection,
             Crossover crossover,
             Mutation mutation)
@@ -38,10 +37,27 @@ namespace GA.Core
             mutation.Random = rand;
         }
 
-        public IList<IList<TGene>> ProcessGeneration(IList<IList<TGene>> population, Func<IList<TGene>, double> fitnessGetter)
+        public IList<IList<TGene>> GetNextGeneration(IList<IList<TGene>> population, Func<IList<TGene>, double> fitnessGetter, double mutationProbability)
         {
             var parentPairs = selection.GetParentPairs(population, fitnessGetter);
-            return crossover.GetNextGeneration(parentPairs);
+            var children = crossover.GetNextGeneration(parentPairs);
+            mutation.ProcessMutation(children, mutationProbability);
+            
+            return children;
+        }
+
+        public IList<IList<TGene>> GetNextGenerationWithParents(IList<IList<TGene>> population, Func<IList<TGene>, double> fitnessGetter, double mutationProbability)
+        {
+            var populationCount = population.Count;
+
+            var parentPairs = selection.GetParentPairs(population, fitnessGetter);
+            var children = crossover.GetNextGeneration(parentPairs);
+            mutation.ProcessMutation(children, mutationProbability);
+
+            var nextGeneration = population.Concat(children).OrderByDescending(fitnessGetter).Take(populationCount).ToList(); 
+
+            return nextGeneration;
+        }
         }
     }
 }

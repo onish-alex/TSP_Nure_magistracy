@@ -14,18 +14,15 @@ namespace GA.Core.Crossovers
         {
             var children = new List<IList<TGene>>(parents.Count);
 
+            int point = PointValue;
+
             foreach (var pair in parents)
             {
-                int point;
-
                 if (IsRandomPoint)
-                    point = Random.Next(1, pair.Item1.Count);
-                else
-                    point = PointValue;
+                    point = Random.Next(1, pair.Item1.Count);                    
 
                 children.Add(pair.Item1.Take(point).Concat(pair.Item2.TakeLast(pair.Item2.Count - point)).ToList());
                 children.Add(pair.Item2.Take(point).Concat(pair.Item1.TakeLast(pair.Item1.Count - point)).ToList());
-
             }
 
             return children;
