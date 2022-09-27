@@ -58,6 +58,22 @@ namespace GA.Core
 
             return nextGeneration;
         }
+
+        public IList<IList<TGene>> GetNextGenerationWithParents(
+            IList<IList<TGene>> population, 
+            Func<IList<TGene>, double> fitnessGetter, 
+            double mutationProbability,
+            double eliteCoefficient)
+        {
+            var populationCount = population.Count;
+
+            var parentPairs = selection.GetParentPairs(population, fitnessGetter, eliteCoefficient);
+            var children = crossover.GetNextGeneration(parentPairs);
+            mutation.ProcessMutation(children, mutationProbability);
+
+            var nextGeneration = population.Concat(children).OrderByDescending(fitnessGetter).Take(populationCount).ToList();
+
+            return nextGeneration;
         }
     }
 }

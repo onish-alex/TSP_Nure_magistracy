@@ -86,5 +86,74 @@ namespace GA.Core.Selections
 
             return pairs;
         }
+
+        public override IList<(TIndividual, TIndividual)> GetParentPairs<TIndividual>(IList<TIndividual> population, Func<TIndividual, double> fitnessGetter, double eliteCoefficient)
+        {
+            if (eliteCoefficient <= 0D || eliteCoefficient > 100D)
+                throw new ArgumentException("eliteCoefficient can contain value in range (0, 100]");
+            
+            var fitnesses = new Dictionary<TIndividual, double>();          //all fitness values
+            var probabilities = new Dictionary<double, TIndividual>();      //probability right border values for individuals
+
+            foreach (var individual in population)
+                fitnesses.Add(individual, fitnessGetter(individual));
+
+            fitnesses = fitnesses.OrderByDescending(x => x.Value)
+                                 .Take((int)Math.Ceiling(fitnesses.Count * eliteCoefficient / 100))
+                                 .ToDictionary(x => x.Key, x => x.Value);
+
+            var fitnessSum = fitnesses.Values.Sum();
+
+            var rightValue = 0D;
+
+            foreach (var fitness in fitnesses)
+            {
+                rightValue += fitness.Value;
+                probabilities.Add(rightValue, fitness.Key);
+            }
+
+            var pairsCount = fitnesses.Count / 2;
+            var pairs = new List<(TIndividual, TIndividual)>(pairsCount);
+
+            for (var i = 0; i < pairsCount; i++)
+            {
+                var probabilityValues = probabilities.Keys.ToList();
+
+                //choose first parent
+                var firstWheelTurning = Random.NextDouble() * fitnessSum;
+
+                probabilityValues.Add(firstWheelTurning);
+                probabilityValues.Sort();
+
+                var firstParentIndex = SearchHelper.BinarySearch(probabilityValues, firstWheelTurning);
+                var firstParentProbabilityValue = probabilityValues[firstParentIndex + 1];
+                var firstParent = probabilities[firstParentProbabilityValue];
+
+                //remove first parent index so we can't choose it also as second parent
+                probabilityValues.RemoveAt(firstParentIndex + 1);
+                probabilityValues.RemoveAt(firstParentIndex);
+
+                //exclude fitness of chosen first parent
+                var correctedProbabilityValues = probabilityValues
+                                                .Select(x => x - firstParentProbabilityValue)
+                                                .ToList();
+
+                fitnessSum -= fitnesses[firstParent];
+
+                //choose second parent
+                var secondWheelTurning = Random.NextDouble() * fitnessSum - firstParentProbabilityValue;
+
+                correctedProbabilityValues.Add(secondWheelTurning);
+                correctedProbabilityValues.Sort();
+
+                var secondParentIndex = SearchHelper.BinarySearch(correctedProbabilityValues, secondWheelTurning);
+                var secondParent = probabilities[probabilityValues[secondParentIndex]];
+
+                pairs.Add((firstParent, secondParent));
+                fitnessSum += fitnesses[firstParent];
+            }
+
+            return pairs;
+        }
     }
 }

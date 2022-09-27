@@ -7,5 +7,8 @@ namespace GA.Core.Selections
     {
         public abstract IList<(TIndividual, TIndividual)> GetParentPairs<TIndividual>
            (IList<TIndividual> population, Func<TIndividual, double> fitnessGetter);
+
+        public abstract IList<(TIndividual, TIndividual)> GetParentPairs<TIndividual>
+           (IList<TIndividual> population, Func<TIndividual, double> fitnessGetter, double eliteCoefficient);
     }
 }
