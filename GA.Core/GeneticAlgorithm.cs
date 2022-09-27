@@ -13,7 +13,6 @@ namespace GA.Core
     {
         private readonly static Random rand = new Random();
 
-        private IList<TGene> genotype;
         private Selection selection;
         private Crossover crossover;
         private Mutation mutation;
@@ -39,7 +38,13 @@ namespace GA.Core
 
         public IList<IList<TGene>> GetNextGeneration(IList<IList<TGene>> population, Func<IList<TGene>, double> fitnessGetter, double mutationProbability)
         {
-            var parentPairs = selection.GetParentPairs(population, fitnessGetter);
+            var fitnesses = new Dictionary<IList<TGene>, double>();
+
+            foreach (var individual in population)
+                fitnesses.Add(individual, fitnessGetter(individual));
+
+            var parentPairs = selection.GetParentPairs(fitnesses);
+
             var children = crossover.GetNextGeneration(parentPairs);
             mutation.ProcessMutation(children, mutationProbability);
             
@@ -50,11 +55,22 @@ namespace GA.Core
         {
             var populationCount = population.Count;
 
-            var parentPairs = selection.GetParentPairs(population, fitnessGetter);
+            var fitnesses = new Dictionary<IList<TGene>, double>();
+
+            foreach (var individual in population)
+                fitnesses.Add(individual, fitnessGetter(individual));
+
+            var parentPairs = selection.GetParentPairs(fitnesses);
             var children = crossover.GetNextGeneration(parentPairs);
             mutation.ProcessMutation(children, mutationProbability);
 
-            var nextGeneration = population.Concat(children).OrderByDescending(fitnessGetter).Take(populationCount).ToList(); 
+            var childrenFitnesses = children.ToDictionary(x => x, x => fitnessGetter(x));
+
+            var nextGeneration = fitnesses.Concat(childrenFitnesses)
+                                          .OrderByDescending(x => x.Value)
+                                          .Take(populationCount)
+                                          .Select(x => x.Key)
+                                          .ToList();
 
             return nextGeneration;
         }
@@ -67,11 +83,22 @@ namespace GA.Core
         {
             var populationCount = population.Count;
 
-            var parentPairs = selection.GetParentPairs(population, fitnessGetter, eliteCoefficient);
+            var fitnesses = new Dictionary<IList<TGene>, double>();
+
+            foreach (var individual in population)
+                fitnesses.Add(individual, fitnessGetter(individual));
+
+            var parentPairs = selection.GetParentPairs(fitnesses, eliteCoefficient);
             var children = crossover.GetNextGeneration(parentPairs);
             mutation.ProcessMutation(children, mutationProbability);
 
-            var nextGeneration = population.Concat(children).OrderByDescending(fitnessGetter).Take(populationCount).ToList();
+            var childrenFitnesses = children.ToDictionary(x => x, x => fitnessGetter(x));
+
+            var nextGeneration = fitnesses.Concat(childrenFitnesses)
+                                          .OrderByDescending(x => x.Value)
+                                          .Take(populationCount)
+                                          .Select(x => x.Key)
+                                          .ToList();
 
             return nextGeneration;
         }

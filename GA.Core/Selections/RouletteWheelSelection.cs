@@ -8,7 +8,7 @@ namespace GA.Core.Selections
     public class RouletteWheelSelection : Selection
     {
         public override IList<(TIndividual, TIndividual)> GetParentPairs<TIndividual>
-            (IList<TIndividual> population, Func<TIndividual, double> fitnessGetter)
+            (IDictionary<TIndividual, double> populationFitnesses)
         {
             ///Example:
             ///4 individuals with fitnesses: 10, 20, 30, 40
@@ -24,26 +24,19 @@ namespace GA.Core.Selections
             ///                       |....|........|............|................|
             /// right border values:  0    10       30           60               100
 
-            var fitnesses = new Dictionary<TIndividual, double>();          //all fitness values
             var probabilities = new Dictionary<double, TIndividual>();      //probability right border values for individuals
 
-            var fitnessSum = 0D;
-
-            foreach (var individual in population)
-            {
-                fitnesses.Add(individual, fitnessGetter(individual));
-                fitnessSum += fitnesses[individual];
-            }
+            var fitnessSum = populationFitnesses.Values.Sum();
 
             var rightValue = 0D;
 
-            foreach (var fitness in fitnesses)
+            foreach (var fitness in populationFitnesses)
             {
                 rightValue += fitness.Value;
                 probabilities.Add(rightValue, fitness.Key);
             }
 
-            var pairsCount = population.Count / 2;
+            var pairsCount = populationFitnesses.Count / 2;
             var pairs = new List<(TIndividual, TIndividual)>(pairsCount);
             
             for (var i = 0; i < pairsCount; i++)
@@ -69,7 +62,7 @@ namespace GA.Core.Selections
                                                 .Select(x => x - firstParentProbabilityValue)
                                                 .ToList();
                 
-                fitnessSum -= fitnesses[firstParent];
+                fitnessSum -= populationFitnesses[firstParent];
 
                 //choose second parent
                 var secondWheelTurning = Random.NextDouble() * fitnessSum - firstParentProbabilityValue;
@@ -81,25 +74,22 @@ namespace GA.Core.Selections
                 var secondParent = probabilities[probabilityValues[secondParentIndex]];
 
                 pairs.Add((firstParent, secondParent));
-                fitnessSum += fitnesses[firstParent];
+                fitnessSum += populationFitnesses[firstParent];
             }
 
             return pairs;
         }
 
-        public override IList<(TIndividual, TIndividual)> GetParentPairs<TIndividual>(IList<TIndividual> population, Func<TIndividual, double> fitnessGetter, double eliteCoefficient)
+        public override IList<(TIndividual, TIndividual)> GetParentPairs<TIndividual>(IDictionary<TIndividual, double> populationFitnesses, double eliteCoefficient)
         {
             if (eliteCoefficient <= 0D || eliteCoefficient > 100D)
                 throw new ArgumentException("eliteCoefficient can contain value in range (0, 100]");
             
-            var fitnesses = new Dictionary<TIndividual, double>();          //all fitness values
             var probabilities = new Dictionary<double, TIndividual>();      //probability right border values for individuals
 
-            foreach (var individual in population)
-                fitnesses.Add(individual, fitnessGetter(individual));
-
-            fitnesses = fitnesses.OrderByDescending(x => x.Value)
-                                 .Take((int)Math.Ceiling(fitnesses.Count * eliteCoefficient / 100))
+            var fitnesses = populationFitnesses
+                                 .OrderByDescending(x => x.Value)
+                                 .Take((int)Math.Ceiling(populationFitnesses.Count * eliteCoefficient / 100))
                                  .ToDictionary(x => x.Key, x => x.Value);
 
             var fitnessSum = fitnesses.Values.Sum();
