@@ -8,14 +8,20 @@ using System.Threading.Tasks;
 
 namespace GA.Core.Models
 {
-	public class Individual<TGene> : List<TGene>
+	public class Individual<TGene> : IList<TGene>
 	{
-		private IList<TGene> genotype;
+		private readonly List<TGene> genotype;
 
 		public Individual(IEnumerable<TGene> genes) 
 		{
 			genotype = genes.ToList();
 		}
+
+		public TGene this[int index] { get => genotype[index]; set => genotype[index] = value; }
+
+		public int Count => genotype.Count;
+
+		public bool IsReadOnly => ((ICollection<TGene>)genotype).IsReadOnly;
 
 		/// <summary>
 		/// return instance of Individual (or inherited class), using the constructor with IList<TGene> parameter
@@ -28,55 +34,65 @@ namespace GA.Core.Models
 			return Activator.CreateInstance(typeof(T), new object[] { genes }) as T;
 		}
 
-		public virtual TGene this[int index] { get => genotype[index]; set => genotype[index] = value; }
+		public void RemoveRange(int index, int count)
+		{
+			genotype.RemoveRange(index, count);
+		}
 
-		public virtual int Count => genotype.Count;
+		public List<TGene> GetRange(int index, int count)
+		{
+			var range = genotype.GetRange(index, count);
+			return range;
+		}
 
-		public virtual bool IsReadOnly => genotype.IsReadOnly;
-
-		public virtual void Add(TGene item)
+		public void Add(TGene item)
 		{
 			genotype.Add(item);
 		}
 
-		public virtual void Clear()
+		public void Clear()
 		{
 			genotype.Clear();
 		}
 
-		public virtual bool Contains(TGene item)
+		public bool Contains(TGene item)
 		{
 			return genotype.Contains(item);
 		}
 
-		public virtual void CopyTo(TGene[] array, int arrayIndex)
+		public void CopyTo(TGene[] array, int arrayIndex)
 		{
 			genotype.CopyTo(array, arrayIndex);
 		}
 
-		public virtual IEnumerator<TGene> GetEnumerator()
+		public IEnumerator<TGene> GetEnumerator()
 		{
 			return genotype.GetEnumerator();
 		}
 
-		public virtual int IndexOf(TGene item)
+		public int IndexOf(TGene item)
 		{
 			return genotype.IndexOf(item);
 		}
 
-		public virtual void Insert(int index, TGene item)
+		public void Insert(int index, TGene item)
 		{
 			genotype.Insert(index, item);
 		}
 
-		public virtual bool Remove(TGene item)
+		public bool Remove(TGene item)
 		{
 			return genotype.Remove(item);
 		}
 
-		public virtual void RemoveAt(int index)
+		public void RemoveAt(int index)
 		{
 			genotype.RemoveAt(index);
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return ((IEnumerable)genotype).GetEnumerator();
 		}
 	}
 }

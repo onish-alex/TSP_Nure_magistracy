@@ -38,12 +38,27 @@ namespace GA.Core
 			mutation.Random = rand;
 		}
 
-		public IList<TIndividual> GetNextGeneration<TIndividual>(IList<TIndividual> population, Func<TIndividual, double> fitnessGetter, double mutationProbability, double? eliteCoefficient = null) where TIndividual : Individual<TGene>
+		public IList<TIndividual> GetNextGeneration<TIndividual>(IList<TIndividual> population, Func<TIndividual, double> fitnessGetter, double mutationProbability, double? elitePercent = null) where TIndividual : Individual<TGene>
 		{
 			var fitnesses = new Dictionary<TIndividual, double>();
 
 			foreach (var individual in population)
 				fitnesses.Add(individual, fitnessGetter(individual));
+
+			if (elitePercent.HasValue)
+			{
+				if (elitePercent < 0D && elitePercent > 100D)
+					throw new ArgumentOutOfRangeException(
+						nameof(elitePercent),
+						elitePercent.Value,
+						"elite percent must be between 0 and 100");
+
+				var populationEliteCount = (int)Math.Ceiling(population.Count * (elitePercent.Value / 100));
+				fitnesses = fitnesses
+					.OrderByDescending(x => x.Value)
+					.Take(populationEliteCount)
+					.ToDictionary(x => x.Key, x => x.Value);
+			}
 
 			var parentPairs = selection.GetParentPairs(fitnesses);
 			var children = crossover.GetNextGeneration<TIndividual, TGene>(parentPairs);
@@ -52,14 +67,27 @@ namespace GA.Core
 			return children;
 		}
 
-		public IList<TIndividual> GetNextGenerationWithParents<TIndividual>(IList<TIndividual> population, Func<TIndividual, double> fitnessGetter, double mutationProbability, double? eliteCoefficient = null) where TIndividual : Individual<TGene>
+		public IList<TIndividual> GetNextGenerationWithParents<TIndividual>(IList<TIndividual> population, Func<TIndividual, double> fitnessGetter, double mutationProbability, double? elitePercent = null) where TIndividual : Individual<TGene>
 		{
-			var populationCount = population.Count;
-
 			var fitnesses = new Dictionary<TIndividual, double>();
 
 			foreach (var individual in population)
 				fitnesses.Add(individual, fitnessGetter(individual));
+
+			if (elitePercent.HasValue)
+			{
+				if (elitePercent < 0D && elitePercent > 100D)
+					throw new ArgumentOutOfRangeException(
+						nameof(elitePercent), 
+						elitePercent.Value, 
+						"elite percent must be between 0 and 100");
+
+				var populationEliteCount = (int)Math.Ceiling(population.Count * (elitePercent.Value / 100));
+				fitnesses = fitnesses
+					.OrderByDescending(x => x.Value)
+					.Take(populationEliteCount)
+					.ToDictionary(x => x.Key, x => x.Value);
+			}
 
 			var parentPairs = selection.GetParentPairs(fitnesses);
 			var children = crossover.GetNextGeneration<TIndividual, TGene>(parentPairs);
@@ -69,7 +97,7 @@ namespace GA.Core
 
 			var nextGeneration = fitnesses.Concat(childrenFitnesses)
 										  .OrderByDescending(x => x.Value)
-										  .Take(populationCount)
+										  .Take(population.Count)
 										  .Select(x => x.Key)
 										  .ToList();
 

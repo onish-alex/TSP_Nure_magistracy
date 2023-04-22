@@ -17,45 +17,14 @@ namespace GA.ConsoleTest
 {
     class Program
     {
-        
-
-        //public static double GetDegenerationCoefficient<T>(IList<IList<T>> population)
-        //{
-        //    var equalIndividuals = new List<IList<T>>();
-
-        //    bool isSolutionContains;
-
-        //    foreach (var individual in population)
-        //    {
-        //        isSolutionContains = false;
-
-        //        foreach (var eqInd in equalIndividuals)
-        //        {
-        //            if (eqInd.SequenceEqual(individual))
-        //            {
-        //                isSolutionContains = true;
-        //                break;
-        //            }
-        //        }
-
-        //        if (!isSolutionContains)
-        //            equalIndividuals.Add(individual);
-        //    }
-
-        //    var coef = -1 * (double)(equalIndividuals.Count - 1) / (population.Count - 1) + 1;
-
-        //    return coef;
-        //}
-
         static void Main(string[] args)
         {
             CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
             CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
 
-
-            var modelName = "gr96.tsp";
+            var modelName = "eil51.tsp";
             var populationSize = 7500;
-            var generationsAmount = 500;
+            var generationsAmount = 310;
             var mutationProbability = 5D;
             var eliteCoefficient = 100D;
             var mutationSwapSectionLength = 2;
