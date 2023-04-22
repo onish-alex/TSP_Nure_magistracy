@@ -11,8 +11,6 @@ namespace GA.Core.Helpers
         public static int BinarySearch<T>(IList<T> collection, T searchedItem) where T : IComparable<T>
         {
             return BinarySearch(collection, searchedItem, 0, collection.Count);
-            
-           
         }
 
         private static int BinarySearch<T>(IList<T> collection, T searchedItem, int leftIndex, int rightIndex) where T : IComparable<T>

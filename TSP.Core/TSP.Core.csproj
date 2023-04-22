@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+	<Nullable>disable</Nullable>
+	<ImplicitUsings>disable</ImplicitUsings>
+    <Authors>onish-alex</Authors>
+    <Company />
+    <Product />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Examples\" />
+    <Folder Include="Solutions\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GA.Core\GA.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Examples\*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Solutions\*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

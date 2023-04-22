@@ -3,3 +3,11 @@ GA.ConsoleTest/bin/
 GA.ConsoleTest/obj/
 GA.Core/bin/
 GA.Core/obj/
+/GA.Analytics/obj
+/GA.Analytics/bin
+/GA.Operations/bin
+/GA.Operations/obj
+/TSP.Console/bin
+/TSP.Console/obj
+/TSP.Core/bin
+/TSP.Core/obj

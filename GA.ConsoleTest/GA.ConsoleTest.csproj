@@ -2,15 +2,16 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
+	<Nullable>disable</Nullable>
+	<ImplicitUsings>disable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TSP.Core" Version="1.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\GA.Analytics\GA.Analytics.csproj" />
     <ProjectReference Include="..\GA.Core\GA.Core.csproj" />
+    <ProjectReference Include="..\GA.Operations\GA.Operations.csproj" />
+    <ProjectReference Include="..\TSP.Core\TSP.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
