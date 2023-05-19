@@ -19,6 +19,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GA.Operations", "GA.Operati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GA.Analytics", "GA.Analytics\GA.Analytics.csproj", "{8B8A07D1-B76C-4CF9-80D8-F918C3FE987C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AntColony", "AntColony", "{B033BE35-F1AA-4B85-ADF0-7F3345904EEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntColony.Core", "AntColony.Core\AntColony.Core.csproj", "{4E5573CC-3EBC-447A-BE71-23B3E65885D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +53,10 @@ Global
 		{8B8A07D1-B76C-4CF9-80D8-F918C3FE987C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B8A07D1-B76C-4CF9-80D8-F918C3FE987C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B8A07D1-B76C-4CF9-80D8-F918C3FE987C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E5573CC-3EBC-447A-BE71-23B3E65885D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E5573CC-3EBC-447A-BE71-23B3E65885D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E5573CC-3EBC-447A-BE71-23B3E65885D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E5573CC-3EBC-447A-BE71-23B3E65885D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +68,7 @@ Global
 		{CE269CE0-DAE6-4914-9DC9-C2B359D773CE} = {5538A471-C9CD-4CBF-BF83-DC03E23B47DC}
 		{46516E08-C664-4AAF-934C-665BB3BCBD0F} = {3907C8F3-A91C-4309-955D-5FF5BF45BE38}
 		{8B8A07D1-B76C-4CF9-80D8-F918C3FE987C} = {3907C8F3-A91C-4309-955D-5FF5BF45BE38}
+		{4E5573CC-3EBC-447A-BE71-23B3E65885D7} = {B033BE35-F1AA-4B85-ADF0-7F3345904EEC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1CCAAE3D-A406-4338-98F4-1037D354A963}

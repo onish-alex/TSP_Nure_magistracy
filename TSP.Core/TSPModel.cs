@@ -32,7 +32,7 @@ namespace TSP.Core
             }
         }
 
-        private double GetSectionDistance(TSPNode first, TSPNode second) => 
+        public double GetSectionDistance(TSPNode first, TSPNode second) => 
             Math.Sqrt(Math.Pow(first.X - second.X, 2) 
                     + Math.Pow(first.Y - second.Y, 2));
 
