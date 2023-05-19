@@ -11,3 +11,6 @@ GA.Core/obj/
 /TSP.Console/obj
 /TSP.Core/bin
 /TSP.Core/obj
+/Algorithms/obj
+/AntColony.Core/obj
+/AntColony.Core/bin/Debug/net6.0

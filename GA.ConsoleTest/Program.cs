@@ -12,6 +12,7 @@ using GA.Operations.Crossovers;
 using GA.Operations.Mutations;
 using GA.Core.Models;
 using GA.Analytics;
+using GA.Core.Utility;
 
 namespace GA.ConsoleTest
 {
@@ -23,10 +24,10 @@ namespace GA.ConsoleTest
             CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
 
             var modelName = "eil51.tsp";
-            var populationSize = 7500;
-            var generationsAmount = 310;
+            var populationSize = 2000;
+            var generationsAmount = 5000;
             var mutationProbability = 5D;
-            var eliteCoefficient = 100D;
+            double? eliteCoefficient = null;
             var mutationSwapSectionLength = 2;
 
             var model = TSPModelLoader.GetModelFromFile(modelName);
@@ -34,14 +35,14 @@ namespace GA.ConsoleTest
 
             var mutation = new SwapMutation() { SwapSectionLength = mutationSwapSectionLength };
 
-            var algo = new GeneticAlgorithm<TSPNode>(
-                new RouletteWheelSelection(),
-                new SinglePointCrossover(),
-                mutation);
+            
 
             IList<Individual<TSPNode>> population = new List<Individual<TSPNode>>(populationSize);
 
-            for (int i = 0; i < populationSize; i++)
+            var i = 0;
+
+
+            for (i = 0; i < populationSize; i++)
             {
                 var nodes = rand.GetUniqueRandomSet(model.Nodes, model.Nodes.Count);
                 population.Add(new Individual<TSPNode>(nodes));
@@ -49,16 +50,28 @@ namespace GA.ConsoleTest
 
             var timer = Stopwatch.StartNew();
 
-            for (var i = 0; i < generationsAmount; i++)
-                population = algo.GetNextGenerationWithParents(
-                    population,
-                    (x) => 1 / model.GetDistance(x),
-                    mutationProbability);
+            var settings = new GASettings()
+            {
+                ElitePercent = eliteCoefficient,
+                MutationProbability = mutationProbability,
+                OnlyChildrenInNewGeneration = false
+            };
+
+            var algo = new GeneticAlgorithm<TSPNode>(
+                new RouletteWheelSelection(),
+                new SinglePointCrossover(),
+                new SwapMutation() { SwapSectionLength = mutationSwapSectionLength },
+                population,
+                (x) => 1 / model.GetDistance(x));
+
+
+            for (i = 0; i < generationsAmount; i++)
+                population = algo.GetNextGeneration(settings);
 
             timer.Stop();
 
             Console.WriteLine($"{"Time elapsed"} | {"Minimum"} | {"Maximum"} | {"Average"} | {"Degeneration coef."}");
-            Console.WriteLine($"{timer.Elapsed} | {Math.Round(population.Min(x => model.GetDistance(x)), 2)} | {Math.Round(population.Max(x => model.GetDistance(x)), 2)} | {Math.Round(population.Average(x => model.GetDistance(x)), 2)} | {Math.Round(population.GetDegenerationCoefficient() * 100, 2)}%"); 
+            Console.WriteLine($"{timer.Elapsed} | {Math.Round(population.Min(x => model.GetDistance(x)), 2)} | {Math.Round(population.Max(x => model.GetDistance(x)), 2)} | {Math.Round(population.Average(x => model.GetDistance(x)), 2)} | {Math.Round(population.GetDegenerationCoefficient() * 100, 2)}%");
             Console.ReadKey();
         }
     }

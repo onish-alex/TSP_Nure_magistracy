@@ -15,9 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSP.Core", "TSP.Core\TSP.Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSP.ConsoleApp", "TSP.Console\TSP.ConsoleApp.csproj", "{CE269CE0-DAE6-4914-9DC9-C2B359D773CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GA.Operations", "GA.Operations\GA.Operations.csproj", "{46516E08-C664-4AAF-934C-665BB3BCBD0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GA.Operations", "GA.Operations\GA.Operations.csproj", "{46516E08-C664-4AAF-934C-665BB3BCBD0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GA.Analytics", "GA.Analytics\GA.Analytics.csproj", "{8B8A07D1-B76C-4CF9-80D8-F918C3FE987C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GA.Analytics", "GA.Analytics\GA.Analytics.csproj", "{8B8A07D1-B76C-4CF9-80D8-F918C3FE987C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
