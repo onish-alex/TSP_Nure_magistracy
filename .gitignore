@@ -14,3 +14,8 @@ GA.Core/obj/
 /Algorithms/obj
 /AntColony.Core/obj
 /AntColony.Core/bin/Debug/net6.0
+/Algorithms.Utility/bin
+/Algorithms.Utility/obj
+/AntColony.ConsoleApp/bin
+/AntColony.ConsoleApp/obj
+/AntColony.Core/bin/Release/net6.0

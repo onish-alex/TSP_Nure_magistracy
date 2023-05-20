@@ -7,12 +7,14 @@ namespace AntColony.Core
     public abstract class BaseAlgorithm<TNode> where TNode : class
     {
         protected IList<TNode> nodes;
-        protected Func<TNode, double> edgeDistanceGetter;
+        protected Func<TNode, TNode, double> edgeDistanceGetter;
         protected Dictionary<TNode, Dictionary<TNode, double>> pheromoneMap;
         protected AntColonySettings settings;
-        protected Dictionary<(TNode, TNode), double> probabilities;
+        protected Dictionary<TNode, Dictionary<TNode, double>> probabilities;
 
-        protected BaseAlgorithm(IList<TNode> nodes, Func<TNode, double> edgeDistanceGetter, AntColonySettings settings)
+        protected static Random random = new Random();
+
+        protected BaseAlgorithm(IList<TNode> nodes, Func<TNode, TNode, double> edgeDistanceGetter, AntColonySettings settings)
         {
             this.nodes = nodes;
             this.edgeDistanceGetter = edgeDistanceGetter;
@@ -33,26 +35,31 @@ namespace AntColony.Core
                 }
             }
 
+            //if α and β weigths are common for each ant
             if (settings.UseCommonWeights)
             {
-                probabilities = new Dictionary<(TNode, TNode), double>();
+                probabilities = new Dictionary<TNode, Dictionary<TNode, double>>();
 
                 for (var i = 0; i < nodes.Count; i++)
                 {
-                    var j = settings.UseSymmetricDistances
-                        ? i + 1
-                        : 1;
+                    probabilities[nodes[i]] = new Dictionary<TNode, double>();
 
-                    for (j; j < nodes.Count; j++)
+                    //if ij.length = ji.length, going only through edges above main diagonal
+                    //var jj = settings.UseSymmetricDistances
+                    //    ? i + 1
+                    //    : 1;
+                    var jj = 0;
+
+                    for (var j = jj; j < nodes.Count; j++)
                     {
                         if (i == j)
                             continue;
 
                         var travelProbabilityPart = GetTravelProbability(nodes[i], nodes[j]);
-                        probabilities.Add((nodes[i], nodes[j]), travelProbabilityPart);
+                        probabilities[nodes[i]].Add(nodes[j], travelProbabilityPart);
 
-                        if (settings.UseSymmetricDistances)
-                            probabilities.Add((nodes[j], nodes[i]), travelProbabilityPart);
+                        //if (settings.UseSymmetricDistances)
+                          //  probabilities[nodes[j]].Add(nodes[i], travelProbabilityPart);
                     }
                 }
             }
@@ -63,5 +70,7 @@ namespace AntColony.Core
         private protected abstract void TravelPath(Ant<TNode> ant);
 
         protected abstract double GetTravelProbability(TNode currentNode, TNode unvisitedNode);
+
+        protected abstract void EvaporatePheromones();
     }
 }

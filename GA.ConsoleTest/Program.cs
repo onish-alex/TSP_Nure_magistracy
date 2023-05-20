@@ -1,6 +1,6 @@
 ﻿using GA.Core;
 using GA.Core.Extensions;
-using GA.Core.Helpers;
+using Algorithms.Utility;
 using GA.Operations.Selections;
 using System;
 using System.Globalization;

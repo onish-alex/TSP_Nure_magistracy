@@ -1,4 +1,4 @@
-﻿using GA.Core.Helpers;
+﻿using Algorithms.Utility;
 using GA.Core.Operations.Selections;
 using System;
 using System.Collections.Generic;

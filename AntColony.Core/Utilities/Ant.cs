@@ -9,6 +9,7 @@ namespace AntColony.Core.Utilities
     internal class Ant<TNode>
     {
         public IList<TNode> TravelledPathMemory;
+        public double PersonalPheromoneAmount;
         
         public Ant() 
         {
