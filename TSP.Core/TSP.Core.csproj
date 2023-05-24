@@ -10,22 +10,4 @@
     <Product />
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Examples\" />
-    <Folder Include="Solutions\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\GA.Core\GA.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Examples\*">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Solutions\*">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

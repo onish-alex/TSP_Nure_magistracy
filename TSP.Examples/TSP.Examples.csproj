@@ -1,0 +1,275 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Models\a280.tsp" />
+    <None Remove="Models\att48.tsp" />
+    <None Remove="Models\bayg29.tsp" />
+    <None Remove="Models\bays29.tsp" />
+    <None Remove="Models\berlin52.tsp" />
+    <None Remove="Models\brg180.tsp" />
+    <None Remove="Models\ch130.tsp" />
+    <None Remove="Models\ch150.tsp" />
+    <None Remove="Models\eil101.tsp" />
+    <None Remove="Models\eil51.tsp" />
+    <None Remove="Models\eil76.tsp" />
+    <None Remove="Models\fri26.tsp" />
+    <None Remove="Models\gr120.tsp" />
+    <None Remove="Models\gr202.tsp" />
+    <None Remove="Models\gr24.tsp" />
+    <None Remove="Models\gr48.tsp" />
+    <None Remove="Models\gr666.tsp" />
+    <None Remove="Models\gr96.tsp" />
+    <None Remove="Models\kroA100.tsp" />
+    <None Remove="Models\kroC100.tsp" />
+    <None Remove="Models\kroD100.tsp" />
+    <None Remove="Models\lin105.tsp" />
+    <None Remove="Models\pa561.tsp" />
+    <None Remove="Models\pcb442.tsp" />
+    <None Remove="Models\pr1002.tsp" />
+    <None Remove="Models\pr2392.tsp" />
+    <None Remove="Models\pr76.tsp" />
+    <None Remove="Models\rd100.tsp" />
+    <None Remove="Models\st70.tsp" />
+    <None Remove="Models\tsp225.tsp" />
+    <None Remove="Models\ulysses16.tsp" />
+    <None Remove="Models\ulysses22.tsp" />
+    <None Remove="Solutions\a280.opt.tour" />
+    <None Remove="Solutions\att48.opt.tour" />
+    <None Remove="Solutions\bayg29.opt.tour" />
+    <None Remove="Solutions\bays29.opt.tour" />
+    <None Remove="Solutions\berlin52.opt.tour" />
+    <None Remove="Solutions\brg180.opt.tour" />
+    <None Remove="Solutions\ch130.opt.tour" />
+    <None Remove="Solutions\ch150.opt.tour" />
+    <None Remove="Solutions\eil101.opt.tour" />
+    <None Remove="Solutions\eil51.opt.tour" />
+    <None Remove="Solutions\eil76.opt.tour" />
+    <None Remove="Solutions\fri26.opt.tour" />
+    <None Remove="Solutions\gr120.opt.tour" />
+    <None Remove="Solutions\gr202.opt.tour" />
+    <None Remove="Solutions\gr24.opt.tour" />
+    <None Remove="Solutions\gr48.opt.tour" />
+    <None Remove="Solutions\gr666.opt.tour" />
+    <None Remove="Solutions\gr96.opt.tour" />
+    <None Remove="Solutions\kroA100.opt.tour" />
+    <None Remove="Solutions\kroC100.opt.tour" />
+    <None Remove="Solutions\kroD100.opt.tour" />
+    <None Remove="Solutions\lin105.opt.tour" />
+    <None Remove="Solutions\pa561.opt.tour" />
+    <None Remove="Solutions\pcb442.opt.tour" />
+    <None Remove="Solutions\pr1002.opt.tour" />
+    <None Remove="Solutions\pr2392.opt.tour" />
+    <None Remove="Solutions\pr76.opt.tour" />
+    <None Remove="Solutions\rd100.opt.tour" />
+    <None Remove="Solutions\st70.opt.tour" />
+    <None Remove="Solutions\tsp225.opt.tour" />
+    <None Remove="Solutions\ulysses16.opt.tour" />
+    <None Remove="Solutions\ulysses22.opt.tour" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TSP.Core\TSP.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Models\a280.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\att48.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\bayg29.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\bays29.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\berlin52.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\brg180.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\ch130.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\ch150.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\eil101.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\eil51.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\eil76.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\fri26.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\gr120.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\gr202.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\gr24.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\gr48.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\gr666.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\gr96.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\kroA100.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\kroC100.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\kroD100.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\lin105.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\pa561.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\pcb442.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\pr1002.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\pr2392.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\pr76.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\rd100.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\st70.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\tsp225.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\ulysses16.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\ulysses22.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\a280.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\att48.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\bayg29.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\bays29.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\berlin52.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\brg180.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\ch130.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\ch150.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\eil101.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\eil51.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\eil76.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\fri26.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\gr120.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\gr202.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\gr24.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\gr48.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\gr666.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\gr96.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\kroA100.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\kroC100.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\kroD100.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\lin105.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\pa561.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\pcb442.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\pr1002.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\pr2392.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\pr76.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\rd100.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\st70.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\tsp225.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\ulysses16.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Solutions\ulysses22.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

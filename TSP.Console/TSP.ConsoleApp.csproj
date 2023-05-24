@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TSP.Core\TSP.Core.csproj" />
+    <ProjectReference Include="..\TSP.Examples\TSP.Examples.csproj" />
   </ItemGroup>
 
 </Project>

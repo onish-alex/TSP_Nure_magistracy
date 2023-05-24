@@ -14,19 +14,4 @@
     <ProjectReference Include="..\TSP.Core\TSP.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="a280.tsp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="att48.tsp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="eil51.tsp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="gr96.tsp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

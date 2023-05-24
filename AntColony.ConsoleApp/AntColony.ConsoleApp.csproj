@@ -10,21 +10,6 @@
   <ItemGroup>
     <ProjectReference Include="..\AntColony.Core\AntColony.Core.csproj" />
     <ProjectReference Include="..\TSP.Core\TSP.Core.csproj" />
+    <ProjectReference Include="..\TSP.Examples\TSP.Examples.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <None Update="a280.tsp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="att48.tsp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="eil51.tsp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="gr96.tsp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

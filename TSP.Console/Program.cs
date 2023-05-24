@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using TSP.Core;
+using TSP.Examples;
 
 namespace TSP.ConsoleApp
 {
@@ -11,9 +12,9 @@ namespace TSP.ConsoleApp
             CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
             CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
 
-            var model = TSPModelLoader.GetModelFromFile(TSPExamples.gr96);
+            var model = PreparedModelLoader.GetModel(PreparedModelsEnum.eil51);
 
-            var loadedRoute = TSPModelLoader.GetSolutionFromFile(model, TSPExamples.Solutions[TSPExamples.gr96]);
+            var loadedRoute = PreparedModelLoader.GetSolution(model, PreparedModelsEnum.eil51);
 
             var nodes = model.Nodes;
 

@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using TSP.Core;
+using TSP.Examples;
 
 namespace AntColony.ConsoleApp
 {
@@ -18,11 +19,11 @@ namespace AntColony.ConsoleApp
 
             var modelName = "a280.tsp";
 
-            //var model = TSPModelLoader.GetModelFromFile(modelName);
-            var model = TSPModelGenerator.GetNewModel(
-                nodeCount: 100,
-                xRange: (0, 100),
-                yRange: (0, 100));
+            var model = PreparedModelLoader.GetModel(PreparedModelsEnum.eil51);
+            //var model = TSPModelGenerator.GetNewModel(
+            //    nodeCount: 100,
+            //    xRange: (0, 100),
+            //    yRange: (0, 100));
 
             var settings = new AntColonySettings()
             {

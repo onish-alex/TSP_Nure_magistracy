@@ -19,3 +19,5 @@ GA.Core/obj/
 /AntColony.ConsoleApp/bin
 /AntColony.ConsoleApp/obj
 /AntColony.Core/bin/Release/net6.0
+/TSP.Examples/bin/Debug/net6.0
+/TSP.Examples/obj
