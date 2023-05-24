@@ -14,7 +14,7 @@ namespace TSP.Core
         public static TSPModel GetModelFromFile(string filePath)
         {
             string[] lines = null;
-            
+
             try
             {
                 lines = File.ReadAllLines(filePath);

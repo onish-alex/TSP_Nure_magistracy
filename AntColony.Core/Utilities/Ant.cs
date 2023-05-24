@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace AntColony.Core.Utilities
 {
@@ -10,10 +6,10 @@ namespace AntColony.Core.Utilities
     {
         public IList<TNode> TravelledPathMemory;
         public double PersonalPheromoneAmount;
-        
-        public Ant() 
+
+        public Ant()
         {
-            TravelledPathMemory = new List<TNode>();        
+            TravelledPathMemory = new List<TNode>();
         }
     }
 }

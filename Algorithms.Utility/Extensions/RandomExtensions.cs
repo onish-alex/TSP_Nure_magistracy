@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace GA.Core.Extensions
+namespace Algorithms.Utility.Extensions
 {
     public static class RandomExtensions
     {
@@ -72,7 +69,7 @@ namespace GA.Core.Extensions
         public static IEnumerable<(T, T)> GetPairs<T>(this Random rand, IList<T> set, int count)
         {
             var pairs = new List<(T firstParent, T secondParent)>();
-            
+
             for (int i = 0; i < count; i++)
             {
                 var firstParentIndex = rand.Next(0, set.Count);

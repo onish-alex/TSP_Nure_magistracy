@@ -11,7 +11,7 @@ namespace GA.Core
 {
 	public class GeneticAlgorithm<TGene>
 	{
-		private readonly static Random rand = new Random();
+		private static readonly Random rand = new Random();
 
 		private BaseSelection selection;
 		private BaseCrossover crossover;

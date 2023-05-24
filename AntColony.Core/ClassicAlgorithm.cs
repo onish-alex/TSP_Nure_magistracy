@@ -19,6 +19,16 @@ namespace AntColony.Core
                 var ant = new Ant<TNode>();
                 ants.Add(ant);
                 TravelPath(ant);
+
+                //for (var j = 0; j < ant.TravelledPathMemory.Count - 1; j++)
+                //{
+                //    var currentPheromoneAmount = pheromoneMap[ant.TravelledPathMemory[j]][ant.TravelledPathMemory[j + 1]];
+
+                //    var pheromoneDelta = settings.UseCommonAntPheromoneAmount ? settings.CommonAntPheromoneAmount : ant.PersonalPheromoneAmount;
+                //    pheromoneDelta /= edgeDistanceGetter(ant.TravelledPathMemory[j], ant.TravelledPathMemory[j + 1]);
+
+                //    pheromoneMap[ant.TravelledPathMemory[j]][ant.TravelledPathMemory[j + 1]] = currentPheromoneAmount + pheromoneDelta;
+                //}
             }
 
             EvaporatePheromones();
@@ -31,7 +41,7 @@ namespace AntColony.Core
 
                     var pheromoneDelta = settings.UseCommonAntPheromoneAmount ? settings.CommonAntPheromoneAmount : ant.PersonalPheromoneAmount;
                     pheromoneDelta /= edgeDistanceGetter(ant.TravelledPathMemory[i], ant.TravelledPathMemory[i + 1]);
-                    
+
                     pheromoneMap[ant.TravelledPathMemory[i]][ant.TravelledPathMemory[i + 1]] = currentPheromoneAmount + pheromoneDelta;
                 }
             }
@@ -52,11 +62,6 @@ namespace AntColony.Core
                     pheromoneMap[nodes[i]][nodes[j]] = edgeCurrentAmount * (1 - settings.EvaporationCoefficient);
                 }
             }
-        }
-
-        protected override double GetTravelProbability(TNode currentNode, TNode unvisitedNode)
-        {
-            return Math.Pow(pheromoneMap[currentNode][unvisitedNode], settings.PheromoneWeight) + 1 / edgeDistanceGetter(currentNode, unvisitedNode);
         }
 
         private protected override void TravelPath(Ant<TNode> ant)
@@ -96,16 +101,19 @@ namespace AntColony.Core
                 //generating random value from 0 to 76, i.g. 53
                 //53 in 37-57 interval, so ant chose "1-5" edge
 
+                //if α and β weigths are common for each ant
+
                 for (var i = 0; i < nodes.Count; i++)
                 {
+                    var travelProbabilityPart = GetTravelProbability(ant.TravelledPathMemory.Last(), nodes[i]);
+
                     if (i == 0)
-                        probabilityIntervals.Add(probabilities[ant.TravelledPathMemory.Last()][nodes[i]]);
+                        probabilityIntervals.Add(travelProbabilityPart);
                     else
-                        probabilityIntervals.Add(probabilityIntervals.Last() + probabilities[ant.TravelledPathMemory.Last()][nodes[i]]);   
+                        probabilityIntervals.Add(probabilityIntervals.Last() + travelProbabilityPart);
                 }
 
-                //
-                var randomValue = random.NextDouble() * probabilities[ant.TravelledPathMemory.Last()].Values.Sum();
+                var randomValue = random.NextDouble() * probabilityIntervals.Last();
 
                 probabilityIntervals.Add(randomValue);
                 probabilityIntervals.Sort();

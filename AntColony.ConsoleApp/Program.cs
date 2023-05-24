@@ -1,7 +1,6 @@
 ﻿using AntColony.Core;
 using AntColony.Core.Utilities;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -17,21 +16,25 @@ namespace AntColony.ConsoleApp
             CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
             CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
 
-            var modelName = "eil51.tsp";
+            var modelName = "a280.tsp";
 
-            var model = TSPModelLoader.GetModelFromFile(modelName);
+            //var model = TSPModelLoader.GetModelFromFile(modelName);
+            var model = TSPModelGenerator.GetNewModel(
+                nodeCount: 100,
+                xRange: (0, 100),
+                yRange: (0, 100));
 
             var settings = new AntColonySettings()
             {
                 UseCommonAntPheromoneAmount = true,
-                CommonAntPheromoneAmount = 5,
+                CommonAntPheromoneAmount = 100,
 
                 UseCommonEvaporation = true,
-                EvaporationCoefficient = 0.4,
+                EvaporationCoefficient = 0.8,
 
-                UseCommonWeights = true,
-                DistanceWeight = 0.5,
-                PheromoneWeight = 0.5,
+                //UseCommonWeights = true,
+                DistanceWeight = 1,
+                PheromoneWeight = 1,
 
                 UseSymmetricDistances = true,
             };
@@ -42,8 +45,8 @@ namespace AntColony.ConsoleApp
 
             IList<IList<TSPNode>> paths = null;
 
-            for (int i = 0; i <= 250; i++)
-                paths = algo.Run(250);
+            for (int i = 0; i <= 100; i++)
+                paths = algo.Run(50);
 
             timer.Stop();
 

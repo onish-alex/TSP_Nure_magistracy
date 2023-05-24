@@ -1,5 +1,4 @@
-﻿using GA.Core.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,7 +20,7 @@ namespace TSP.Core
             for (var i = 0; i < nodes.Count; i++)
             {
                 nodesDistancesMap.Add(nodes[i], new Dictionary<TSPNode, double>());
-                
+
                 for (var j = 0; j < nodes.Count; j++)
                 {
                     if (i == j)
@@ -32,8 +31,8 @@ namespace TSP.Core
             }
         }
 
-        public double GetSectionDistance(TSPNode first, TSPNode second) => 
-            Math.Sqrt(Math.Pow(first.X - second.X, 2) 
+        public double GetSectionDistance(TSPNode first, TSPNode second) =>
+            Math.Sqrt(Math.Pow(first.X - second.X, 2)
                     + Math.Pow(first.Y - second.Y, 2));
 
         public double GetDistance(IList<TSPNode> route, bool isClosedRoute = true)

@@ -2,7 +2,6 @@
 using GA.Core.Operations.Crossovers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace GA.Operations.Crossovers
 {

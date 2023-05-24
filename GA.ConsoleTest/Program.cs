@@ -1,18 +1,17 @@
-﻿using GA.Core;
-using GA.Core.Extensions;
-using Algorithms.Utility;
-using GA.Operations.Selections;
-using System;
-using System.Globalization;
-using System.Diagnostics;
-using System.Linq;
-using System.Collections.Generic;
-using TSP.Core;
+﻿using Algorithms.Utility.Extensions;
+using GA.Analytics;
+using GA.Core;
+using GA.Core.Models;
+using GA.Core.Utility;
 using GA.Operations.Crossovers;
 using GA.Operations.Mutations;
-using GA.Core.Models;
-using GA.Analytics;
-using GA.Core.Utility;
+using GA.Operations.Selections;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+using TSP.Core;
 
 namespace GA.ConsoleTest
 {
@@ -30,12 +29,17 @@ namespace GA.ConsoleTest
             double? eliteCoefficient = null;
             var mutationSwapSectionLength = 2;
 
-            var model = TSPModelLoader.GetModelFromFile(modelName);
+            //var model = TSPModelLoader.GetModelFromFile(modelName);
+            var model = TSPModelGenerator.GetNewModel(
+                nodeCount: 100, 
+                xRange: (100, 100),
+                yRange: (100, 100));
+
             var rand = new Random();
 
             var mutation = new SwapMutation() { SwapSectionLength = mutationSwapSectionLength };
 
-            
+
 
             IList<Individual<TSPNode>> population = new List<Individual<TSPNode>>(populationSize);
 

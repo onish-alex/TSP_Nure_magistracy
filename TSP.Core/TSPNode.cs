@@ -1,6 +1,6 @@
 ﻿namespace TSP.Core
 {
-    public class TSPNode 
+    public class TSPNode
     {
         public string Name { get; set; }
         public double X { get; set; }

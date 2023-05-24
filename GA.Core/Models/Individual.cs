@@ -2,9 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GA.Core.Models
 {
@@ -12,7 +9,7 @@ namespace GA.Core.Models
 	{
 		private readonly List<TGene> genotype;
 
-		public Individual(IEnumerable<TGene> genes) 
+		public Individual(IEnumerable<TGene> genes)
 		{
 			genotype = genes.ToList();
 		}
