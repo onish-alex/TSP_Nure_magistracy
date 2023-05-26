@@ -17,9 +17,9 @@ namespace AntColony.ConsoleApp
             CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
             CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
 
-            var modelName = "a280.tsp";
+            //var modelName = "a280.tsp";
 
-            var model = PreparedModelLoader.GetModel(PreparedModelsEnum.eil51);
+            var model = PreparedModelLoader.GetModel(PreparedModelsEnum.ch150);
             //var model = TSPModelGenerator.GetNewModel(
             //    nodeCount: 100,
             //    xRange: (0, 100),
@@ -28,26 +28,32 @@ namespace AntColony.ConsoleApp
             var settings = new AntColonySettings()
             {
                 UseCommonAntPheromoneAmount = true,
-                CommonAntPheromoneAmount = 100,
+                CommonAntPheromoneAmount = 25,
 
-                UseCommonEvaporation = true,
-                EvaporationCoefficient = 0.8,
+                UseCommonEliteAntPheromoneAmount = true,
+                CommonEliteAntPheromoneAmount = 100,
 
-                //UseCommonWeights = true,
+                EvaporationCoefficient = 0.5,
+
                 DistanceWeight = 1,
                 PheromoneWeight = 1,
-
-                UseSymmetricDistances = true,
             };
 
-            var algo = new ClassicAlgorithm<TSPNode>(model.Nodes, model.GetSectionDistance, settings);
+            var antSettings = new AntPopulationSettings()
+            {
+                AntCount = 100,
+                EliteAntCount = 10
+            };
+
+            //var algo = new ClassicAlgorithm<TSPNode>(model.Nodes, model.GetSectionDistance, settings);
+            var algo = new ElitistAlgorithm<TSPNode>(model.Nodes, model.GetSectionDistance, settings, (x) => model.GetDistance(x, true));
 
             var timer = Stopwatch.StartNew();
 
             IList<IList<TSPNode>> paths = null;
 
-            for (int i = 0; i <= 100; i++)
-                paths = algo.Run(50);
+            for (int i = 0; i <= 250; i++)
+                paths = algo.Run(antSettings);
 
             timer.Stop();
 

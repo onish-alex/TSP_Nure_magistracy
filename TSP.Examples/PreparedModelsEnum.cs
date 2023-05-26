@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TSP.Examples
+﻿namespace TSP.Examples
 {
     public enum PreparedModelsEnum
     {
-        eil51
+        eil51,
+        pr2392,
+        ch150
     }
 }

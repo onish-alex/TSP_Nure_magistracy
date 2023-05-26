@@ -41,7 +41,7 @@ namespace AntColony.Core
             //    probabilities[nodes[i]] = new Dictionary<TNode, double>();
         }
 
-        public abstract IList<IList<TNode>> Run(int antCount);
+        public abstract IList<IList<TNode>> Run(AntPopulationSettings antSettings);
 
         private protected abstract void TravelPath(Ant<TNode> ant);
 

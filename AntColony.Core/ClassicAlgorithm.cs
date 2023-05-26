@@ -10,25 +10,15 @@ namespace AntColony.Core
     {
         public ClassicAlgorithm(IList<TNode> nodes, Func<TNode, TNode, double> edgeDistanceGetter, AntColonySettings settings) : base(nodes, edgeDistanceGetter, settings) { }
 
-        public override IList<IList<TNode>> Run(int antCount)
+        public override IList<IList<TNode>> Run(AntPopulationSettings antSettings)
         {
-            var ants = new List<Ant<TNode>>();
+            var ants = new List<Ant<TNode>>(antSettings.AntCount);
 
-            for (int i = 0; i < antCount; i++)
+            for (int i = 0; i < antSettings.AntCount; i++)
             {
                 var ant = new Ant<TNode>();
                 ants.Add(ant);
                 TravelPath(ant);
-
-                //for (var j = 0; j < ant.TravelledPathMemory.Count - 1; j++)
-                //{
-                //    var currentPheromoneAmount = pheromoneMap[ant.TravelledPathMemory[j]][ant.TravelledPathMemory[j + 1]];
-
-                //    var pheromoneDelta = settings.UseCommonAntPheromoneAmount ? settings.CommonAntPheromoneAmount : ant.PersonalPheromoneAmount;
-                //    pheromoneDelta /= edgeDistanceGetter(ant.TravelledPathMemory[j], ant.TravelledPathMemory[j + 1]);
-
-                //    pheromoneMap[ant.TravelledPathMemory[j]][ant.TravelledPathMemory[j + 1]] = currentPheromoneAmount + pheromoneDelta;
-                //}
             }
 
             EvaporatePheromones();
