@@ -12,6 +12,7 @@
     <ProjectReference Include="..\GA.Core\GA.Core.csproj" />
     <ProjectReference Include="..\GA.Operations\GA.Operations.csproj" />
     <ProjectReference Include="..\TSP.Core\TSP.Core.csproj" />
+    <ProjectReference Include="..\TSP.Examples\TSP.Examples.csproj" />
   </ItemGroup>
 
 </Project>

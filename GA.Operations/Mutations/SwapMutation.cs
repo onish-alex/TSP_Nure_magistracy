@@ -11,16 +11,12 @@ namespace GA.Operations.Mutations
 
         public override void ProcessMutation<TIndividual, TGene>(IList<TIndividual> population, double probability)
         {
-            //TODO: also handle values less than 1
-            if (SwapSectionLength < 1)
-                SwapSectionLength = 1;
-
             for (var i = 0; i < population.Count; i++)
             {
                 if (Random.CheckProbability(probability))
                 {
-                    if (SwapSectionLength > population[i].Count / 2)
-                        SwapSectionLength = population[i].Count / 2;
+                    if (SwapSectionLength > population[i].Count / 2 || SwapSectionLength < 1)
+                        SwapSectionLength = Random.Next(1, population[i].Count / 2);
 
                     var firstSectionIndex = Random.Next(0, population[i].Count - SwapSectionLength + 1);
                     var firstRange = population[i].GetRange(firstSectionIndex, SwapSectionLength);

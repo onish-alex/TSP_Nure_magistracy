@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using TSP.Core;
+using TSP.Examples;
 
 namespace GA.ConsoleTest
 {
@@ -22,31 +23,24 @@ namespace GA.ConsoleTest
             CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
             CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
 
-            var modelName = "eil51.tsp";
             var populationSize = 2000;
-            var generationsAmount = 5000;
-            var mutationProbability = 5D;
+            var generationsAmount = 1000;
+            var mutationProbability = 50D;
             double? eliteCoefficient = null;
             var mutationSwapSectionLength = 2;
 
-            //var model = TSPModelLoader.GetModelFromFile(modelName);
-            var model = TSPModelGenerator.GetNewModel(
-                nodeCount: 100, 
-                xRange: (100, 100),
-                yRange: (100, 100));
+            var model = PreparedModelLoader.GetModel(PreparedModelsEnum.ch150);
+            var solution = PreparedModelLoader.GetSolution(model, PreparedModelsEnum.ch150);
+
+            Console.WriteLine(model.GetDistance(solution));
 
             var rand = new Random();
 
             var mutation = new SwapMutation() { SwapSectionLength = mutationSwapSectionLength };
 
-
-
             IList<Individual<TSPNode>> population = new List<Individual<TSPNode>>(populationSize);
 
-            var i = 0;
-
-
-            for (i = 0; i < populationSize; i++)
+            for (var i = 0; i < populationSize; i++)
             {
                 var nodes = rand.GetUniqueRandomSet(model.Nodes, model.Nodes.Count);
                 population.Add(new Individual<TSPNode>(nodes));
@@ -63,20 +57,21 @@ namespace GA.ConsoleTest
 
             var algo = new GeneticAlgorithm<TSPNode>(
                 new RouletteWheelSelection(),
-                new SinglePointCrossover(),
-                new SwapMutation() { SwapSectionLength = mutationSwapSectionLength },
+                new SinglePointCrossover() { IsRandomPoint = true },
+                new ShiftMutation() { UsePermanentParams = false },
+                //new SwapMutation() { SwapSectionLength = 2},
                 population,
                 (x) => 1 / model.GetDistance(x));
 
 
-            for (i = 0; i < generationsAmount; i++)
+            for (var i = 0; i < generationsAmount; i++)
                 population = algo.GetNextGeneration(settings);
 
             timer.Stop();
 
-            Console.WriteLine($"{"Time elapsed"} | {"Minimum"} | {"Maximum"} | {"Average"} | {"Degeneration coef."}");
-            Console.WriteLine($"{timer.Elapsed} | {Math.Round(population.Min(x => model.GetDistance(x)), 2)} | {Math.Round(population.Max(x => model.GetDistance(x)), 2)} | {Math.Round(population.Average(x => model.GetDistance(x)), 2)} | {Math.Round(population.GetDegenerationCoefficient() * 100, 2)}%");
-            Console.ReadKey();
+            Console.WriteLine($"{"Time elapsed", 19} | {"Minimum"} | {"Maximum"} | {"Average"} | {"Degeneration coef."}");
+            Console.WriteLine($"{timer.Elapsed, 19} | {Math.Round(population.Min(x => model.GetDistance(x)), 2), 7} | {Math.Round(population.Max(x => model.GetDistance(x)), 2), 7} | {Math.Round(population.Average(x => model.GetDistance(x)), 2) ,7} | {Math.Round(population.GetDegenerationCoefficient() * 100, 2).ToString() + "%", 17}");
+            //Console.ReadKey();
         }
     }
 }

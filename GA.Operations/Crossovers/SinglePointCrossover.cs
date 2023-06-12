@@ -13,7 +13,7 @@ namespace GA.Operations.Crossovers
 
         public override IList<TIndividual> GetNextGeneration<TIndividual, TGene>(IList<(TIndividual, TIndividual)> parents)
         {
-            IList<TIndividual> children = new List<TIndividual>(parents.Count);
+            IList<TIndividual> children = new List<TIndividual>(parents.Count * 2);
 
             int pointIndex = PointIndex;
 
@@ -31,10 +31,13 @@ namespace GA.Operations.Crossovers
                     secondChildGenome.Add(pair.Item2[i]);
                 }
 
-                for (int i = pointIndex; i < pair.Item1.Count; i++)
+                for (int i = 0; i < pair.Item1.Count; i++)
                 {
-                    firstChildGenome.Add(pair.Item2[i]);
-                    secondChildGenome.Add(pair.Item1[i]);
+                    if (!firstChildGenome.Contains(pair.Item2[i])) 
+                        firstChildGenome.Add(pair.Item2[i]);
+                    
+                    if (!secondChildGenome.Contains(pair.Item1[i]))    
+                        secondChildGenome.Add(pair.Item1[i]);
                 }
 
                 children.Add(Individual<TGene>.GetInstance<TIndividual>(firstChildGenome));

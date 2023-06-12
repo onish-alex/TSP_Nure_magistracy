@@ -4,6 +4,7 @@
     {
         eil51,
         pr2392,
-        ch150
+        ch150,
+        ulysses16
     }
 }
