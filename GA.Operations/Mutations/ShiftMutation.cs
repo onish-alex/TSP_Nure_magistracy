@@ -1,10 +1,8 @@
 ﻿using Algorithms.Utility.Extensions;
 using GA.Core.Operations.Mutations;
+using GA.Core.Utility;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GA.Operations.Mutations
 {
@@ -26,48 +24,19 @@ namespace GA.Operations.Mutations
         /// </summary>
         public int ShiftLength { get; set; }
 
-        /// <summary>
-        /// if parameters are not set and random setting is using, mutation setting applied to all individuals, otherwise it will be regenerated for each individual
-        /// </summary>
-        public bool UsePermanentParams { get; set; } = true;
+        public ShiftMutation(GAOperationSettings operationSettings) : base(operationSettings) { }
 
         public override void ProcessMutation<TIndividual, TGene>(IList<TIndividual> population, double probability)
         {
-            if (StartIndex < 0 && UsePermanentParams)
-                StartIndex = Random.Next(0, population[0].Count);
-
-            var sectionLengthMax = 0;
-            if (UsePermanentParams)
-                sectionLengthMax = population[0].Count - StartIndex;
-
-            if (SectionLength <= 0 && UsePermanentParams)
-                SectionLength = sectionLengthMax == 1
-                    ? sectionLengthMax
-                    : Random.Next(1, (population[0].Count - 1) - StartIndex); //max value exlusive, so param will be in [1, population.count - 1]
-
-            if (ShiftLength == 0 && UsePermanentParams)
-                ShiftLength = Random.CheckProbability(0.5)
-                    ? Random.Next(1, population[0].Count - SectionLength)
-                    : Random.Next(-population[0].Count - SectionLength - 1, 0); // 50/50 choosing [1, population.count - 1] or [-(population.count - 1), -1]
+            if (operationSettings.InitType == GAOperationInitType.EveryGeneration)
+                InitSettings();
 
             for (var i = 0; i < population.Count; i++)
             {
-                if (Random.CheckProbability(probability))
+                if (Random.Shared.CheckProbability(probability))
                 {
-                    if (!UsePermanentParams)
-                    {
-                        StartIndex = Random.Next(0, population[i].Count);
-
-                        sectionLengthMax = population[i].Count - StartIndex;
-                        
-                        SectionLength = sectionLengthMax == 1 
-                            ? sectionLengthMax 
-                            : Random.Next(1, (population[i].Count - 1) - StartIndex); //max value exlusive, so param will be in [1, population.count - 1]
-
-                        ShiftLength = Random.CheckProbability(0.5)
-                            ? Random.Next(1, population[i].Count - SectionLength)
-                            : Random.Next(-population[i].Count + SectionLength + 1, 0); // 50/50 choosing [1, population.count - 1] or [-(population.count - 1), -1]
-                    }
+                    if (operationSettings.InitType == GAOperationInitType.EveryIndividual)
+                        InitSettings();
 
                     var tempIndividualLength = population[i].Count - SectionLength;
 
@@ -85,6 +54,24 @@ namespace GA.Operations.Mutations
                         population[i].Insert(shiftedIndex + j, shiftedSection[j]);
                 }
             }
+        }
+
+        protected override void InitSettings()
+        {
+            if (StartIndex < 0)
+                StartIndex = Random.Shared.Next(0, operationSettings.NodesCount);
+
+            var sectionLengthMax = operationSettings.NodesCount - StartIndex;
+
+            if (SectionLength < 1)
+                SectionLength = sectionLengthMax == 1
+                    ? sectionLengthMax
+                    : Random.Shared.Next(1, (operationSettings.NodesCount - 1) - StartIndex); //max value exlusive, so param will be in [1, population.count - 1]
+
+            if (ShiftLength == 0)
+                ShiftLength = Random.Shared.CheckProbability(50D)
+                    ? Random.Shared.Next(1, operationSettings.NodesCount - SectionLength)
+                    : Random.Shared.Next(-operationSettings.NodesCount + SectionLength + 1, 0); // 50/50 choosing [1, population.count - 1] or [-(population.count - 1), -1]
         }
     }
 }

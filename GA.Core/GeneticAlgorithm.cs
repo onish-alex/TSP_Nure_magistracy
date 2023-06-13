@@ -11,8 +11,6 @@ namespace GA.Core
 {
 	public class GeneticAlgorithm<TGene>
 	{
-		private static readonly Random rand = new Random();
-
 		private BaseSelection selection;
 		private BaseCrossover crossover;
 		private BaseMutation mutation;
@@ -30,15 +28,10 @@ namespace GA.Core
 			BaseMutation mutation,
 			IList<Individual<TGene>> population,
 			Func<Individual<TGene>, double> fitnessGetter)
-		{
+		{			
 			this.selection = selection;
-			selection.Random = rand;
-
 			this.crossover = crossover;
-			crossover.Random = rand;
-
 			this.mutation = mutation;
-			mutation.Random = rand;
 
 			this.population = population;
 			this.fitnessGetter = fitnessGetter;

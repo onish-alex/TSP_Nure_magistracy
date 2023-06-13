@@ -1,5 +1,6 @@
 ﻿using Algorithms.Utility;
 using GA.Core.Operations.Selections;
+using GA.Core.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,8 @@ namespace GA.Operations.Selections
 {
     public class RouletteWheelSelection : BaseSelection
     {
+        public RouletteWheelSelection(GAOperationSettings operationSettings) : base(operationSettings) { }
+
         /// <summary>
         /// Returns parent pairs by wheel selection
         /// </summary>
@@ -51,7 +54,7 @@ namespace GA.Operations.Selections
                 var probabilityValues = probabilities.Keys.ToList();
 
                 //choose first parent
-                var firstWheelTurning = Random.NextDouble() * fitnessSum;
+                var firstWheelTurning = Random.Shared.NextDouble() * fitnessSum;
 
                 probabilityValues.Add(firstWheelTurning);
                 probabilityValues.Sort();
@@ -72,7 +75,7 @@ namespace GA.Operations.Selections
                 fitnessSum -= populationFitnesses[firstParent];
 
                 //choose second parent
-                var secondWheelTurning = Random.NextDouble() * fitnessSum - firstParentProbabilityValue;
+                var secondWheelTurning = Random.Shared.NextDouble() * fitnessSum - firstParentProbabilityValue;
 
                 correctedProbabilityValues.Add(secondWheelTurning);
                 correctedProbabilityValues.Sort();

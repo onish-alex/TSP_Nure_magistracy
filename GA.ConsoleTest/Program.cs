@@ -20,29 +20,25 @@ namespace GA.ConsoleTest
     {
         static void Main(string[] args)
         {
+
             CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
             CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
 
-            var populationSize = 2000;
-            var generationsAmount = 1000;
-            var mutationProbability = 50D;
+            var populationSize = 1000;
+            var generationsAmount = 300;
+            var mutationProbability = 5D;
             double? eliteCoefficient = null;
-            var mutationSwapSectionLength = 2;
 
-            var model = PreparedModelLoader.GetModel(PreparedModelsEnum.ch150);
-            var solution = PreparedModelLoader.GetSolution(model, PreparedModelsEnum.ch150);
+            var model = PreparedModelLoader.GetModel(PreparedModelsEnum.eil51);
+            var solution = PreparedModelLoader.GetSolution(model, PreparedModelsEnum.eil51);
 
             Console.WriteLine(model.GetDistance(solution));
-
-            var rand = new Random();
-
-            var mutation = new SwapMutation() { SwapSectionLength = mutationSwapSectionLength };
 
             IList<Individual<TSPNode>> population = new List<Individual<TSPNode>>(populationSize);
 
             for (var i = 0; i < populationSize; i++)
             {
-                var nodes = rand.GetUniqueRandomSet(model.Nodes, model.Nodes.Count);
+                var nodes = Random.Shared.GetUniqueRandomSet(model.Nodes, model.Nodes.Count);
                 population.Add(new Individual<TSPNode>(nodes));
             }
 
@@ -56,10 +52,11 @@ namespace GA.ConsoleTest
             };
 
             var algo = new GeneticAlgorithm<TSPNode>(
-                new RouletteWheelSelection(),
-                new SinglePointCrossover() { IsRandomPoint = true },
-                new ShiftMutation() { UsePermanentParams = false },
-                //new SwapMutation() { SwapSectionLength = 2},
+                new RouletteWheelSelection(new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count }),
+                //new PartiallyMappedCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
+                new SinglePointCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
+                new ShiftMutation(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
+                //new SwapMutation(new GAOperationSettings() { InitType = GAOperationInitType.Manual, NodesCount = model.Nodes.Count }) { SwapSectionLength = 2},
                 population,
                 (x) => 1 / model.GetDistance(x));
 
@@ -70,8 +67,13 @@ namespace GA.ConsoleTest
             timer.Stop();
 
             Console.WriteLine($"{"Time elapsed", 19} | {"Minimum"} | {"Maximum"} | {"Average"} | {"Degeneration coef."}");
-            Console.WriteLine($"{timer.Elapsed, 19} | {Math.Round(population.Min(x => model.GetDistance(x)), 2), 7} | {Math.Round(population.Max(x => model.GetDistance(x)), 2), 7} | {Math.Round(population.Average(x => model.GetDistance(x)), 2) ,7} | {Math.Round(population.GetDegenerationCoefficient() * 100, 2).ToString() + "%", 17}");
+            Console.WriteLine($"{timer.Elapsed, 19} " +
+                $"| {Math.Round(population.Min(x => model.GetDistance(x)), 2), 7} " +
+                $"| {Math.Round(population.Max(x => model.GetDistance(x)), 2), 7} " +
+                $"| {Math.Round(population.Average(x => model.GetDistance(x)), 2) ,7} " +
+                $"| {Math.Round(population.GetDegenerationCoefficient() * 100, 2).ToString() + "%", 17}");
             //Console.ReadKey();
+        
         }
     }
 }

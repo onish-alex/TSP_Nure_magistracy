@@ -41,13 +41,13 @@ namespace Algorithms.Utility.Extensions
         /// <returns></returns>
         public static bool CheckProbability(this Random rand, double probability)
         {
-            if (probability < 0.0 || probability > 100.0)
+            if (probability < 0D || probability > 100D)
                 throw new ArgumentException("\"probability\" argument value out of range");
 
-            if (probability == 0.0)
+            if (probability == 0D)
                 return false;
 
-            if (probability == 100.0)
+            if (probability == 100D)
                 return true;
 
             var number = rand.NextDouble();

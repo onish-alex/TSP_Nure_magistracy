@@ -1,33 +1,23 @@
 ﻿using GA.Core.Models;
 using GA.Core.Operations.Crossovers;
+using GA.Core.Utility;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GA.Operations.Crossovers
 {
     public class PartiallyMappedCrossover : BaseCrossover
     {
         public int IntervalStartIndex { get; set; } = -1;
+        
         public int IntervalEndIndex { get; set; } = -1;
-        public bool UsePermanentParams { get; set; } = true;
+        
+        public PartiallyMappedCrossover(GAOperationSettings operationSettings) : base(operationSettings) {}
 
         public override IList<TIndividual> GetNextGeneration<TIndividual, TGene>(IList<(TIndividual, TIndividual)> parents)
         {
-            if ((IntervalStartIndex == -1
-             || IntervalEndIndex == -1
-             || IntervalEndIndex < IntervalStartIndex)
-             && UsePermanentParams)
-            {
-                var genomeLength = parents.First().Item1.Count;
-
-                IntervalStartIndex = Random.Next(genomeLength);
-                IntervalEndIndex = (IntervalStartIndex == genomeLength - 1)
-                    ? IntervalStartIndex
-                    : Random.Next(IntervalEndIndex, genomeLength);
-            }
+            if (operationSettings.InitType == GAOperationInitType.EveryGeneration)
+                InitSettings();
 
             IList<TIndividual> children = new List<TIndividual>(parents.Count * 2);
 
@@ -36,14 +26,9 @@ namespace GA.Operations.Crossovers
                 var firstChildGenome = new List<TGene>();
                 var secondChildGenome = new List<TGene>();
 
-                if (!UsePermanentParams)
+                if (operationSettings.InitType == GAOperationInitType.EveryIndividual)
                 {
-                    var genomeLength = parents.First().Item1.Count;
-
-                    IntervalStartIndex = Random.Next(genomeLength);
-                    IntervalEndIndex = (IntervalStartIndex == genomeLength - 1)
-                        ? IntervalStartIndex
-                        : Random.Next(IntervalEndIndex, genomeLength);
+                    InitSettings();
                 }
 
                 var firstInterval = pair.Item1.GetRange(IntervalStartIndex, IntervalEndIndex - IntervalStartIndex + 1);
@@ -61,11 +46,29 @@ namespace GA.Operations.Crossovers
                         firstChildGene = MapGene(pair.Item2[i], firstInterval, secondInterval);
 
                     if (secondInterval.Contains(pair.Item1[i]))
-                        secondChildGene = MapGene(pair.Item1[i], firstInterval, secondInterval);
+                        secondChildGene = MapGene(pair.Item1[i], secondInterval, firstInterval);
+
+                    firstChildGenome.Insert(i, firstChildGene);
+                    secondChildGenome.Insert(i, secondChildGene);
+                }
+
+                for (var i = IntervalEndIndex + 1; i < pair.Item1.Count; i++)
+                {
+                    var firstChildGene = pair.Item2[i];
+                    var secondChildGene = pair.Item1[i];
+
+                    if (firstInterval.Contains(pair.Item2[i]))
+                        firstChildGene = MapGene(pair.Item2[i], firstInterval, secondInterval);
+
+                    if (secondInterval.Contains(pair.Item1[i]))
+                        secondChildGene = MapGene(pair.Item1[i], secondInterval, firstInterval);
 
                     firstChildGenome.Add(firstChildGene);
                     secondChildGenome.Add(secondChildGene);
                 }
+
+                children.Add(Individual<TGene>.GetInstance<TIndividual>(firstChildGenome));
+                children.Add(Individual<TGene>.GetInstance<TIndividual>(secondChildGenome));
             }
 
             return children;
@@ -74,15 +77,22 @@ namespace GA.Operations.Crossovers
         private TGene MapGene<TGene>(TGene repeatedGene, List<TGene> sourceInterval, List<TGene> otherInterval)
         {
             var mappedGene = repeatedGene;
-            (List<TGene> Current, List<TGene> Searched) intervals = (sourceInterval, otherInterval);
-
-            while (intervals.Current.Contains(mappedGene))
-            {
-                mappedGene = intervals.Searched[intervals.Current.IndexOf(mappedGene)];
-                intervals = (intervals.Searched, intervals.Current);
-            }
+            
+            while (sourceInterval.Contains(mappedGene))
+                mappedGene = otherInterval[sourceInterval.IndexOf(mappedGene)];
 
             return mappedGene;
+        }
+
+        protected override void InitSettings()
+        {
+            if (IntervalStartIndex < 0)
+                IntervalStartIndex = Random.Shared.Next(operationSettings.NodesCount);
+
+            if (IntervalEndIndex < IntervalStartIndex)
+                IntervalEndIndex = (IntervalStartIndex == operationSettings.NodesCount - 1)
+                    ? IntervalStartIndex
+                    : Random.Shared.Next(IntervalStartIndex, operationSettings.NodesCount);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Algorithms.Utility.Extensions;
 using GA.Core.Operations.Mutations;
+using GA.Core.Utility;
 using System;
 using System.Collections.Generic;
 
@@ -7,22 +8,27 @@ namespace GA.Operations.Mutations
 {
     public class SwapMutation : BaseMutation
     {
-        public int SwapSectionLength { get; set; } = 1;
+        public int SwapSectionLength { get; set; }
+
+        public SwapMutation(GAOperationSettings operationSettings) : base(operationSettings) { }
 
         public override void ProcessMutation<TIndividual, TGene>(IList<TIndividual> population, double probability)
         {
+            if (operationSettings.InitType == GAOperationInitType.EveryGeneration)
+                InitSettings();
+
             for (var i = 0; i < population.Count; i++)
             {
-                if (Random.CheckProbability(probability))
+                if (Random.Shared.CheckProbability(probability))
                 {
-                    if (SwapSectionLength > population[i].Count / 2 || SwapSectionLength < 1)
-                        SwapSectionLength = Random.Next(1, population[i].Count / 2);
+                    if (operationSettings.InitType == GAOperationInitType.EveryIndividual)
+                        InitSettings();
 
-                    var firstSectionIndex = Random.Next(0, population[i].Count - SwapSectionLength + 1);
+                    var firstSectionIndex = Random.Shared.Next(0, population[i].Count - SwapSectionLength + 1);
                     var firstRange = population[i].GetRange(firstSectionIndex, SwapSectionLength);
                     population[i].RemoveRange(firstSectionIndex, SwapSectionLength);
 
-                    var secondSectionIndex = Random.Next(0, population[i].Count - SwapSectionLength + 1);
+                    var secondSectionIndex = Random.Shared.Next(0, population[i].Count - SwapSectionLength + 1);
                     var secondRange = population[i].GetRange(secondSectionIndex, SwapSectionLength);
                     population[i].RemoveRange(secondSectionIndex, SwapSectionLength);
 
@@ -39,6 +45,12 @@ namespace GA.Operations.Mutations
                             population[i].Insert(secondSectionIndex + j, firstRange[j]);
                 }
             }
+        }
+
+        protected override void InitSettings()
+        {
+            if (SwapSectionLength > operationSettings.NodesCount / 2 || SwapSectionLength < 1)
+                SwapSectionLength = Random.Shared.Next(1, operationSettings.NodesCount / 2);
         }
     }
 }
