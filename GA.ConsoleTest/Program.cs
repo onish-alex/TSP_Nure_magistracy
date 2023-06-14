@@ -24,8 +24,8 @@ namespace GA.ConsoleTest
             CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
             CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
 
-            var populationSize = 1000;
-            var generationsAmount = 300;
+            var populationSize = 750;
+            var generationsAmount = 350;
             var mutationProbability = 5D;
             double? eliteCoefficient = null;
 
@@ -48,17 +48,27 @@ namespace GA.ConsoleTest
             {
                 ElitePercent = eliteCoefficient,
                 MutationProbability = mutationProbability,
-                OnlyChildrenInNewGeneration = false
+                OnlyChildrenInNewGeneration = false,
+                RemoveClones = true,
             };
 
             var algo = new GeneticAlgorithm<TSPNode>(
                 new RouletteWheelSelection(new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count }),
                 //new PartiallyMappedCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
-                new SinglePointCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
+                new SinglePointOrderedCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
+                //new TwoPointOrderedCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
+                //new CyclicCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
+                
                 new ShiftMutation(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
                 //new SwapMutation(new GAOperationSettings() { InitType = GAOperationInitType.Manual, NodesCount = model.Nodes.Count }) { SwapSectionLength = 2},
+                //new InverseMutation(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
                 population,
-                (x) => 1 / model.GetDistance(x));
+                (x) => 1 / model.GetDistance(x),
+                () => 
+                { 
+                    var nodes = Random.Shared.GetUniqueRandomSet(model.Nodes, model.Nodes.Count); 
+                    return new Individual<TSPNode>(nodes); 
+                });
 
 
             for (var i = 0; i < generationsAmount; i++)

@@ -89,5 +89,7 @@ namespace GA.Operations.Selections
 
             return pairs;
         }
+
+        protected override void InitSettings() { }
     }
 }

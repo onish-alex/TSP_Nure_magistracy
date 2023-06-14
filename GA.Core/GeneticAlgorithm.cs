@@ -16,6 +16,7 @@ namespace GA.Core
 		private BaseMutation mutation;
 		private IList<Individual<TGene>> population;
 		Func<Individual<TGene>, double> fitnessGetter;
+		Func<Individual<TGene>> individualCreator;
 		Dictionary<Individual<TGene>, double> fitnesses;
 
 		/// <summary>
@@ -27,7 +28,8 @@ namespace GA.Core
 			BaseCrossover crossover,
 			BaseMutation mutation,
 			IList<Individual<TGene>> population,
-			Func<Individual<TGene>, double> fitnessGetter)
+			Func<Individual<TGene>, double> fitnessGetter,
+			Func<Individual<TGene>> individualCreator = null)
 		{			
 			this.selection = selection;
 			this.crossover = crossover;
@@ -35,6 +37,7 @@ namespace GA.Core
 
 			this.population = population;
 			this.fitnessGetter = fitnessGetter;
+			this.individualCreator = individualCreator;
 
 			fitnesses = new Dictionary<Individual<TGene>, double>();
 
@@ -91,7 +94,28 @@ namespace GA.Core
 				population = fitnesses.Select(x => x.Key).ToList();
 			}
 
+			if (settings.RemoveClones)
+			{
+				var originalPopulationSize = population.Count;
+				population = GetUniqueGenoms(population);
+				var newPopulationSize = population.Count;
+
+				for (int i = 0; i < originalPopulationSize - newPopulationSize; i++)
+					population.Add(individualCreator());					
+			}
+
 			return population;
+		}
+
+		private IList<Individual<TGene>> GetUniqueGenoms(IList<Individual<TGene>> population)
+		{
+			var genomeSet = new HashSet<Individual<TGene>>(new Individual<TGene>.IndividualComparer());
+
+			foreach (var individual in population)
+				if (!genomeSet.Contains(individual))
+					genomeSet.Add(individual);
+
+			return genomeSet.ToList();
 		}
 	}
 }

@@ -49,8 +49,7 @@ namespace GA.Operations.Mutations
 
         protected override void InitSettings()
         {
-            if (SwapSectionLength > operationSettings.NodesCount / 2 || SwapSectionLength < 1)
-                SwapSectionLength = Random.Shared.Next(1, operationSettings.NodesCount / 2);
+            SwapSectionLength = Random.Shared.Next(1, operationSettings.NodesCount / 2);
         }
     }
 }

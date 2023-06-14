@@ -58,20 +58,17 @@ namespace GA.Operations.Mutations
 
         protected override void InitSettings()
         {
-            if (StartIndex < 0)
-                StartIndex = Random.Shared.Next(0, operationSettings.NodesCount);
+            StartIndex = Random.Shared.Next(0, operationSettings.NodesCount);
 
             var sectionLengthMax = operationSettings.NodesCount - StartIndex;
 
-            if (SectionLength < 1)
-                SectionLength = sectionLengthMax == 1
-                    ? sectionLengthMax
-                    : Random.Shared.Next(1, (operationSettings.NodesCount - 1) - StartIndex); //max value exlusive, so param will be in [1, population.count - 1]
+            SectionLength = sectionLengthMax == 1
+                ? sectionLengthMax
+                : Random.Shared.Next(1, (operationSettings.NodesCount - 1) - StartIndex); //max value exlusive, so param will be in [1, population.count - 1]
 
-            if (ShiftLength == 0)
-                ShiftLength = Random.Shared.CheckProbability(50D)
-                    ? Random.Shared.Next(1, operationSettings.NodesCount - SectionLength)
-                    : Random.Shared.Next(-operationSettings.NodesCount + SectionLength + 1, 0); // 50/50 choosing [1, population.count - 1] or [-(population.count - 1), -1]
+            ShiftLength = Random.Shared.CheckProbability(50D)
+                ? Random.Shared.Next(1, operationSettings.NodesCount - SectionLength)
+                : Random.Shared.Next(-operationSettings.NodesCount + SectionLength + 1, 0); // 50/50 choosing [1, population.count - 1] or [-(population.count - 1), -1]
         }
     }
 }

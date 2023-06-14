@@ -18,8 +18,6 @@ namespace GA.Core
 				InitSettings();
 		}
 
-		protected virtual void InitSettings()
-		{
-		}
+		protected abstract void InitSettings();
 	}
 }

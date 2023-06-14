@@ -6,11 +6,11 @@ using System.Collections.Generic;
 
 namespace GA.Operations.Crossovers
 {
-    public class SinglePointCrossover : BaseCrossover
+    public class SinglePointOrderedCrossover : BaseCrossover
     {
         public int PointIndex { get; set; }
 
-        public SinglePointCrossover(GAOperationSettings operationSettings) : base(operationSettings) { }
+        public SinglePointOrderedCrossover(GAOperationSettings operationSettings) : base(operationSettings) { }
 
         public override IList<TIndividual> GetNextGeneration<TIndividual, TGene>(IList<(TIndividual, TIndividual)> parents)
         {

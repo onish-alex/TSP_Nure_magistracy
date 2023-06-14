@@ -17,5 +17,10 @@
 		/// if <c>true</c>, new generation include only new individuals (children). Otherwise, generation will include concatenation of best (by fitness) parents and children
 		/// </summary>
 		public bool OnlyChildrenInNewGeneration { get; set; } = false;
+
+		/// <summary>
+		/// if <c>true</c>, deletes individuals with equal genomes
+		/// </summary>
+		public bool RemoveClones { get; set; } = false;
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace GA.Core.Models
@@ -90,6 +91,26 @@ namespace GA.Core.Models
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return ((IEnumerable)genotype).GetEnumerator();
+		}
+	
+		public class IndividualComparer : IEqualityComparer<Individual<TGene>>
+		{
+			public bool Equals(Individual<TGene> x, Individual<TGene> y)
+			{
+				if (x.Equals(y))
+					return true;
+
+				return x.genotype.SequenceEqual(y.genotype);
+			}
+
+			public int GetHashCode([DisallowNull] Individual<TGene> obj)
+			{
+				var hc = 0;
+				foreach (var item in obj.genotype)
+					hc ^= item.GetHashCode();
+
+				return hc;
+			}
 		}
 	}
 }

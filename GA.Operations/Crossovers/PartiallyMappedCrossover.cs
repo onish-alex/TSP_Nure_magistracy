@@ -86,13 +86,11 @@ namespace GA.Operations.Crossovers
 
         protected override void InitSettings()
         {
-            if (IntervalStartIndex < 0)
-                IntervalStartIndex = Random.Shared.Next(operationSettings.NodesCount);
+            IntervalStartIndex = Random.Shared.Next(operationSettings.NodesCount);
 
-            if (IntervalEndIndex < IntervalStartIndex)
-                IntervalEndIndex = (IntervalStartIndex == operationSettings.NodesCount - 1)
-                    ? IntervalStartIndex
-                    : Random.Shared.Next(IntervalStartIndex, operationSettings.NodesCount);
+            IntervalEndIndex = (IntervalStartIndex == operationSettings.NodesCount - 1)
+                ? IntervalStartIndex
+                : Random.Shared.Next(IntervalStartIndex, operationSettings.NodesCount);
         }
     }
 }
