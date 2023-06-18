@@ -103,7 +103,7 @@ namespace AntColony.Core
                         probabilityIntervals.Add(probabilityIntervals.Last() + travelProbabilityPart);
                 }
 
-                var randomValue = random.NextDouble() * probabilityIntervals.Last();
+                var randomValue = Random.Shared.NextDouble() * probabilityIntervals.Last();
 
                 probabilityIntervals.Add(randomValue);
                 probabilityIntervals.Sort();

@@ -22,3 +22,5 @@ GA.Core/obj/
 /TSP.Examples/bin/Debug/net6.0
 /TSP.Examples/obj
 /TSP.Examples/bin/Release/net6.0
+/TSP.Desktop/obj
+/TSP.Desktop/bin/Debug/net6.0-windows

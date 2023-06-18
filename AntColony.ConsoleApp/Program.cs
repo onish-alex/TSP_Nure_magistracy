@@ -19,11 +19,14 @@ namespace AntColony.ConsoleApp
 
             //var modelName = "a280.tsp";
 
-            var model = PreparedModelLoader.GetModel(PreparedModelsEnum.ch150);
+            var model = PreparedModelLoader.GetModel(PreparedModelsEnum.pr2392);
+            var solution = PreparedModelLoader.GetSolution(model, PreparedModelsEnum.pr2392);
             //var model = TSPModelGenerator.GetNewModel(
             //    nodeCount: 100,
             //    xRange: (0, 100),
             //    yRange: (0, 100));
+
+            Console.WriteLine("Optimal route length: {0}", model.GetDistance(solution, true));
 
             var settings = new AntColonySettings()
             {
@@ -31,9 +34,9 @@ namespace AntColony.ConsoleApp
                 CommonAntPheromoneAmount = 25,
 
                 UseCommonEliteAntPheromoneAmount = true,
-                CommonEliteAntPheromoneAmount = 100,
+                CommonEliteAntPheromoneAmount = 1000,
 
-                EvaporationCoefficient = 0.5,
+                EvaporationCoefficient = 0.25,
 
                 DistanceWeight = 1,
                 PheromoneWeight = 1,
@@ -41,7 +44,7 @@ namespace AntColony.ConsoleApp
 
             var antSettings = new AntPopulationSettings()
             {
-                AntCount = 100,
+                AntCount = 250,
                 EliteAntCount = 10
             };
 
@@ -52,7 +55,7 @@ namespace AntColony.ConsoleApp
 
             IList<IList<TSPNode>> paths = null;
 
-            for (int i = 0; i <= 250; i++)
+            for (int i = 0; i <= 50; i++)
                 paths = algo.Run(antSettings);
 
             timer.Stop();

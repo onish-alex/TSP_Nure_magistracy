@@ -56,7 +56,8 @@ namespace AntColony.Core
                 {
                     var currentPheromoneAmount = pheromoneMap[route[i]][route[i + 1]];
 
-                    var pheromoneDelta = (settings.UseCommonEliteAntPheromoneAmount || antSettings.EliteAntPersonalPheromoneAmounts.Length <= i) 
+                    var pheromoneDelta = (settings.UseCommonEliteAntPheromoneAmount 
+                                     || (!settings.UseCommonEliteAntPheromoneAmount && antSettings.EliteAntPersonalPheromoneAmounts.Length <= i)) 
                         ? settings.CommonEliteAntPheromoneAmount 
                         : antSettings.EliteAntPersonalPheromoneAmounts[i];
                     pheromoneDelta /= edgeDistanceGetter(route[i], route[i + 1]);
