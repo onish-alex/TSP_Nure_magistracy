@@ -1,4 +1,5 @@
-﻿using Algorithms.Utility;
+﻿using Algorithms.Utility.Extensions;
+using Algorithms.Utility;
 using GA.Core.Models;
 using GA.Core.Operations.Selections;
 using GA.Core.Utility;
@@ -28,20 +29,15 @@ namespace GA.Operations.Selections
 
             for (var i = 0; i < populationFitnesses.Count; i++)
             {
-                var firstCandidateIndex = Random.Shared.Next(0, populationFitnesses.Count);
-                var secondCandidateIndex = Random.Shared.Next(0, populationFitnesses.Count);
+                var candidateIndexes = Random.Shared.GetNumbers(2, 0, populationFitnesses.Count, true);
 
-                //prevent choosing same candidates for pair forming
-                while (firstCandidateIndex == secondCandidateIndex)
-                    secondCandidateIndex = Random.Shared.Next(0, populationFitnesses.Count);
-
-                var firstCandidateFitness = populationFitnesses[population[firstCandidateIndex]];
-                var secondCandidateFitness = populationFitnesses[population[secondCandidateIndex]];
+                var firstCandidateFitness = populationFitnesses[population[candidateIndexes[0]]];
+                var secondCandidateFitness = populationFitnesses[population[candidateIndexes[1]]];
 
                 parentCandidates.Add(
                     (firstCandidateFitness > secondCandidateFitness)
-                        ? (population[firstCandidateIndex], firstCandidateFitness)
-                        : (population[secondCandidateIndex], secondCandidateFitness));
+                        ? (population[candidateIndexes[0]], firstCandidateFitness)
+                        : (population[candidateIndexes[1]], secondCandidateFitness));
             }
 
             var pairsCount = populationFitnesses.Count / 2;
@@ -50,7 +46,7 @@ namespace GA.Operations.Selections
             //switch (ParentSelecting)
             //{
             //    case ParentSelectingPrinciple.Panmixia:
-                    pairs = FormPairsPanmixia(parentCandidates, pairsCount);
+                      pairs = FormPairsPanmixia(parentCandidates, pairsCount);
             //        break;
 
             //    case ParentSelectingPrinciple.Inbreeding:
@@ -133,23 +129,10 @@ namespace GA.Operations.Selections
 
             for (int i = 0; i < pairsCount; i++)
             {
-                var firstParentIndex = Random.Shared.Next(0, parentCandidates.Count);
-                var secondParentIndex = Random.Shared.Next(0, parentCandidates.Count);
+                var parentIndexes = Random.Shared.GetNumbers(2, 0, parentCandidates.Count, true);
 
-                if (parentCandidates.Count <= 2)
-                {
-                    firstParentIndex = 0;
-                    secondParentIndex = parentCandidates.Count - 1;
-                }
-                else
-                {
-                    //prevent choosing same candidates for pair forming
-                    while (firstParentIndex == secondParentIndex)
-                        secondParentIndex = Random.Shared.Next(0, parentCandidates.Count);
-                }
-
-                var firstParent = parentCandidates[firstParentIndex];
-                var secondParent = parentCandidates[secondParentIndex];
+                var firstParent = parentCandidates[parentIndexes[0]];
+                var secondParent = parentCandidates[parentIndexes[1]];
 
                 pairs.Add((firstParent.Item1, secondParent.Item1));
 

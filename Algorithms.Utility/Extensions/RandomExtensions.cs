@@ -87,5 +87,37 @@ namespace Algorithms.Utility.Extensions
 
             return pairs;
         }
+
+        public static int[] GetNumbers(this Random rand, int count, int minValue, int maxValue, bool unique)
+        {
+            var result = new int[count];
+
+            if (!unique)
+            {
+                for (int i = 0; i < count; i++)
+                    result[i] = rand.Next(minValue, maxValue);
+            }
+            else
+            {
+                int needed = count;
+                int remaining = maxValue - minValue;
+                int taken = 0;
+
+                for (int i = 0; i < maxValue - minValue; i++)
+                {
+                    if (taken == count)
+                        break;
+
+                    if (rand.NextDouble() <= needed / (double)remaining)
+                    {
+                        result[taken++] = minValue + i;
+                        needed--;
+                    }
+                    remaining--;
+                }
+            }
+
+            return result;
+        }
     }
 }
