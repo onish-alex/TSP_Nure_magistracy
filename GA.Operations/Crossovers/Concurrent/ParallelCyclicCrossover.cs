@@ -1,5 +1,5 @@
 ﻿using GA.Core.Models;
-using GA.Core.Operations.Crossovers;
+using GA.Core.Operations.Crossovers.Concurrent;
 using GA.Core.Utility;
 using System;
 using System.Collections.Concurrent;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace GA.Operations.Crossovers.Concurrent
 {
-    public class ParallelCyclicCrossover : BaseCrossover
+    public class ParallelCyclicCrossover : ParallelBaseCrossover
     {
         public int CycleSearchIndex { get; set; }
 
@@ -26,7 +26,7 @@ namespace GA.Operations.Crossovers.Concurrent
             if (operationSettings.InitType == GAOperationInitType.EveryGeneration)
                 InitSettings();
 
-            Parallel.ForEach(parents, (pair) =>
+            Parallel.ForEach(parents, parallelOptions, (pair) =>
             {
                 var firstChildGenome = new List<TGene>(pair.Item1);
                 var secondChildGenome = new List<TGene>(pair.Item2);
@@ -39,11 +39,7 @@ namespace GA.Operations.Crossovers.Concurrent
                 var cycle = GetCycleIndexes(cycleSearchIndex, pair.Item1, pair.Item2);
 
                 foreach (var index in cycle)
-                {
-                    var swapBuffer = firstChildGenome[index];
-                    firstChildGenome[index] = secondChildGenome[index];
-                    secondChildGenome[index] = swapBuffer;
-                }
+                    (secondChildGenome[index], firstChildGenome[index]) = (firstChildGenome[index], secondChildGenome[index]);
 
                 children.Add(Individual<TGene>.GetInstance<TIndividual>(firstChildGenome));
                 children.Add(Individual<TGene>.GetInstance<TIndividual>(secondChildGenome));

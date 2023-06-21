@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace GA.Operations.Mutations
 {
-    public class SwapMutation : BaseMutation
+    public class SwapMutation : ParallelBaseMutation
     {
         public int SwapSectionLength { get; set; }
 

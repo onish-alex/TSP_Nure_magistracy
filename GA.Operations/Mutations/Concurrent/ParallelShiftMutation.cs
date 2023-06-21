@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GA.Operations.Mutations.Concurrent
 {
-    public class ParallelShiftMutation : BaseMutation
+    public class ParallelShiftMutation : ParallelBaseMutation
     {
         /// <summary>
         /// amount of elements that will be shifted, from 1 to population.Count - 1
@@ -32,7 +32,7 @@ namespace GA.Operations.Mutations.Concurrent
             if (operationSettings.InitType == GAOperationInitType.EveryGeneration)
                 InitSettings();
 
-            Parallel.For(0, population.Count, (i) =>
+            Parallel.For(0, population.Count, parallelOptions, (i) =>
             {
                 if (Random.Shared.CheckProbability(probability))
                 {

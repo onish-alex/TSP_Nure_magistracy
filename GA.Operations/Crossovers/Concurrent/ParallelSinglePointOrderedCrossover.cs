@@ -1,5 +1,6 @@
 ﻿using GA.Core.Models;
 using GA.Core.Operations.Crossovers;
+using GA.Core.Operations.Crossovers.Concurrent;
 using GA.Core.Utility;
 using System;
 using System.Collections.Concurrent;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace GA.Operations.Crossovers.Concurrent
 {
-    public class ParallelSinglePointOrderedCrossover : BaseCrossover
+    public class ParallelSinglePointOrderedCrossover : ParallelBaseCrossover
     {
         public int PointIndex { get; set; }
 
@@ -23,7 +24,7 @@ namespace GA.Operations.Crossovers.Concurrent
             if (operationSettings.InitType == GAOperationInitType.EveryGeneration)
                 InitSettings();
 
-            Parallel.ForEach(parents, new ParallelOptions() {  }, (pair, state) =>
+            Parallel.ForEach(parents, parallelOptions, (pair, state) =>
             {
                 var firstChildGenome = new List<TGene>();
                 var secondChildGenome = new List<TGene>();

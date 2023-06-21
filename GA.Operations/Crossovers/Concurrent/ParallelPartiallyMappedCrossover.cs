@@ -1,16 +1,15 @@
 ﻿using GA.Core.Models;
-using GA.Core.Operations.Crossovers;
+using GA.Core.Operations.Crossovers.Concurrent;
 using GA.Core.Utility;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GA.Operations.Crossovers.Concurrent
 {
-    public class ParallelPartiallyMappedCrossover : BaseCrossover
+    public class ParallelPartiallyMappedCrossover : ParallelBaseCrossover
     {
         public int IntervalStartIndex { get; set; } = -1;
 
@@ -25,7 +24,7 @@ namespace GA.Operations.Crossovers.Concurrent
 
             ConcurrentBag<TIndividual> children = new ConcurrentBag<TIndividual>();
 
-            Parallel.ForEach(parents, (pair) =>
+            Parallel.ForEach(parents, parallelOptions, (pair) =>
             {
                 var firstChildGenome = new List<TGene>();
                 var secondChildGenome = new List<TGene>();

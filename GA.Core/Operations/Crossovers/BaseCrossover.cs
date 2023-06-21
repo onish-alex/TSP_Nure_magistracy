@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace GA.Core.Operations.Crossovers
 {
-	public abstract class BaseCrossover : BaseGAOperation
+	public abstract class BaseCrossover : BaseGAOperation, ICrossover
 	{
 		protected BaseCrossover(GAOperationSettings operationSettings) : base(operationSettings) { }
 

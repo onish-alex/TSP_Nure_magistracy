@@ -3,10 +3,11 @@ using GA.Core.Operations.Mutations;
 using GA.Core.Utility;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GA.Operations.Mutations.Concurrent
 {
-    public class ParallelSwapMutation : BaseMutation
+    public class ParallelSwapMutation : ParallelBaseMutation
     {
         public int SwapSectionLength { get; set; }
 
@@ -17,7 +18,7 @@ namespace GA.Operations.Mutations.Concurrent
             if (operationSettings.InitType == GAOperationInitType.EveryGeneration)
                 InitSettings();
 
-            for (var i = 0; i < population.Count; i++)
+            Parallel.For(0, population.Count, parallelOptions, (i) =>
             {
                 if (Random.Shared.CheckProbability(probability))
                 {
@@ -46,7 +47,7 @@ namespace GA.Operations.Mutations.Concurrent
                         else
                             population[i].Insert(secondSectionIndex + j, firstRange[j]);
                 }
-            }
+            });
         }
 
         protected override void InitSettings()

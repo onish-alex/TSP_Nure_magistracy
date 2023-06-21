@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace GA.Operations.Mutations
 {
-    public class ShiftMutation : BaseMutation
+    public class ShiftMutation : ParallelBaseMutation
     {
         /// <summary>
         /// amount of elements that will be shifted, from 1 to population.Count - 1

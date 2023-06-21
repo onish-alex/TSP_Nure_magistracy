@@ -11,9 +11,9 @@ namespace GA.Core
 {
 	public class GeneticAlgorithm<TGene>
 	{
-		private BaseSelection selection;
-		private BaseCrossover crossover;
-		private BaseMutation mutation;
+		private ISelection selection;
+		private ICrossover crossover;
+		private IMutation mutation;
 		private IList<Individual<TGene>> population;
 		Func<Individual<TGene>, double> fitnessGetter;
 		Func<Individual<TGene>> individualCreator;
@@ -24,9 +24,9 @@ namespace GA.Core
 		/// </summary>
 		/// <param name="genotype"></param>
 		public GeneticAlgorithm(
-			BaseSelection selection,
-			BaseCrossover crossover,
-			BaseMutation mutation,
+			ISelection selection,
+			ICrossover crossover,
+			IMutation mutation,
 			IList<Individual<TGene>> population,
 			Func<Individual<TGene>, double> fitnessGetter,
 			Func<Individual<TGene>> individualCreator = null)

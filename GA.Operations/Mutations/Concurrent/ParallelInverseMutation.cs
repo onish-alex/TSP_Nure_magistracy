@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace GA.Operations.Mutations.Concurrent
 {
-    public class ParallelInverseMutation : BaseMutation
+    public class ParallelInverseMutation : ParallelBaseMutation
     {
         public int IntervalStartIndex { get; set; } = -1;
 
@@ -22,7 +22,7 @@ namespace GA.Operations.Mutations.Concurrent
             if (operationSettings.InitType == GAOperationInitType.EveryGeneration)
                 InitSettings();
 
-            Parallel.For(0, population.Count, (i) =>
+            Parallel.For(0, population.Count, parallelOptions, (i) =>
             {
                 if (Random.Shared.CheckProbability(probability))
                 {

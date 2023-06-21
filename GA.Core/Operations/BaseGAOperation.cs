@@ -9,10 +9,7 @@ namespace GA.Core
 
 		protected BaseGAOperation(GAOperationSettings operationSettings)
 		{
-			if (operationSettings == null) 
-				throw new ArgumentNullException(nameof(operationSettings));
-			
-			this.operationSettings = operationSettings;
+			this.operationSettings = operationSettings ?? throw new ArgumentNullException(nameof(operationSettings));
 
 			if (operationSettings.InitType == GAOperationInitType.OneTime)
 				InitSettings();
