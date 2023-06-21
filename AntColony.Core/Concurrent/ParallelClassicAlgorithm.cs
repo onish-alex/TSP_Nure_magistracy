@@ -3,12 +3,13 @@ using AntColony.Core.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
-namespace AntColony.Core
+namespace AntColony.Core.Concurrent
 {
-    public class ClassicAlgorithm<TNode> : BaseAlgorithm<TNode> where TNode : class
+    public class ParallelClassicAlgorithm<TNode> : BaseAlgorithm<TNode> where TNode : class
     {
-        public ClassicAlgorithm(IList<TNode> nodes, Func<TNode, TNode, double> edgeDistanceGetter, AntColonySettings settings) : base(nodes, edgeDistanceGetter, settings) { }
+        public ParallelClassicAlgorithm(IList<TNode> nodes, Func<TNode, TNode, double> edgeDistanceGetter, AntColonySettings settings) : base(nodes, edgeDistanceGetter, settings) { }
 
         public override IList<IList<TNode>> Run(AntPopulationSettings antSettings)
         {
@@ -34,7 +35,7 @@ namespace AntColony.Core
 
         protected override void EvaporatePheromones()
         {
-            for (int i = 0; i < nodes.Count; i++)
+            Parallel.For(0, nodes.Count, (i) =>
             {
                 for (int j = 0; j < nodes.Count; j++)
                 {
@@ -44,7 +45,7 @@ namespace AntColony.Core
                     var edgeCurrentAmount = pheromoneMap[nodes[i]][nodes[j]];
                     pheromoneMap[nodes[i]][nodes[j]] = edgeCurrentAmount * (1 - settings.EvaporationCoefficient);
                 }
-            }
+            });
         }
 
         private protected override void TravelPath(Ant<TNode> ant)

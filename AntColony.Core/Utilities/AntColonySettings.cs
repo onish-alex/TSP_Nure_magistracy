@@ -5,7 +5,7 @@ namespace AntColony.Core.Utilities
     public class AntColonySettings
     {
         /// <summary>
-        /// Initial pheromone amount on each edge, 0 by default. For MAX-MIN, takes value from <c>MaxPheromoneAmount</c>
+        /// Initial pheromone amount on each edge, 0 by default. 
         /// </summary>
         public double InitialPheromoneAmount { get; set; }
 
@@ -51,6 +51,8 @@ namespace AntColony.Core.Utilities
         [JsonProperty("elite_common_pheromone")]
         public double CommonEliteAntPheromoneAmount { get; set; }
 
+        #region MAXMIN
+
         /// <summary>
         /// Defines minimum pheromone amount on edges, for MAX-MIN only
         /// </summary>
@@ -60,5 +62,12 @@ namespace AntColony.Core.Utilities
         /// Defines maximum pheromone amount on edges, for MAX-MIN only
         /// </summary>
         public double MaxPheromoneAmount { get; set; }
+        
+        /// <summary>
+        /// Defines how many iterations algo shouldn't change it best result to refresh pheromones. For MAX-MIN only
+        /// </summary>
+        public double IterationsToRefreshNumber { get; set; }
+
+        #endregion
     }
 }

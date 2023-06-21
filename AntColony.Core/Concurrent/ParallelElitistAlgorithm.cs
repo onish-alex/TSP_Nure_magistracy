@@ -2,16 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace AntColony.Core
+namespace AntColony.Core.Concurrent
 {
-    public class ElitistAlgorithm<TNode> : ClassicAlgorithm<TNode> where TNode : class
+    public class ParallelElitistAlgorithm<TNode> : ClassicAlgorithm<TNode> where TNode : class
     {
         private Func<IList<TNode>, double> routeDistanceGetter;
 
-        public ElitistAlgorithm(
+        public ParallelElitistAlgorithm(
             IList<TNode> nodes,
             Func<TNode, TNode, double> edgeDistanceGetter,
             AntColonySettings settings,
@@ -41,7 +39,7 @@ namespace AntColony.Core
 
             var routes = ants.Select(x => x.TravelledPathMemory).ToList();
 
-            var bestRoutes = routes.OrderBy(x => routeDistanceGetter(x)).Take(antSettings.EliteAntCount);
+            var bestRoutes = routes.AsParallel().OrderBy(x => routeDistanceGetter(x)).Take(antSettings.EliteAntCount);
 
             foreach (var route in bestRoutes)
             {
