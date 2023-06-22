@@ -1,0 +1,18 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:cs="clr-namespace:System;assembly=mscorlib">
+
+    <cs:String x:Key="tabTSPMap">TSP Map</cs:String>
+    <cs:String x:Key="tabAlgorithms">Algorithms</cs:String>
+    <cs:String x:Key="tabResults">Results</cs:String>
+
+    <cs:String x:Key="bCreateMap">Create new map</cs:String>
+    <cs:String x:Key="bLoadMap">Load map</cs:String>
+    <cs:String x:Key="bSaveMap">Save map</cs:String>
+    
+    <cs:String x:Key="lCreateMap">Create new TSP map</cs:String>
+    <cs:String x:Key="lMapName">Map name:</cs:String>
+    <cs:String x:Key="lMapNodeAmount">Node amount:</cs:String>
+    <cs:String x:Key="bCreateMapModal">Create</cs:String>
+
+</ResourceDictionary>

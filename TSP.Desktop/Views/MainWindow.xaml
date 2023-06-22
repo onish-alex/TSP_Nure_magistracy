@@ -1,0 +1,30 @@
+﻿<Window x:Class="TSP.Desktop.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TSP.Desktop"
+        xmlns:vm="clr-namespace:TSP.Desktop.ViewModels"
+        xmlns:map="clr-namespace:TSP.Desktop.Views.TSPMap"        
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800"
+        d:DataContext="{d:DesignInstance Type=vm:MainViewModel}">
+
+    <!--<Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>-->
+
+    <DockPanel>
+        <TabControl FontSize="14" DockPanel.Dock="Top">
+            <TabItem Header="{DynamicResource tabTSPMap}">
+                <map:TSPMapWrapper  />
+            </TabItem>
+            <TabItem Header="{DynamicResource tabAlgorithms}">
+                
+            </TabItem>
+            <TabItem Header="{DynamicResource tabResults}">
+                
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>
