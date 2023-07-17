@@ -17,7 +17,7 @@
     <DockPanel>
         <TabControl FontSize="14" DockPanel.Dock="Top">
             <TabItem Header="{DynamicResource tabTSPMap}">
-                <map:TSPMapWrapper  />
+                <map:TSPMapWrapper />
             </TabItem>
             <TabItem Header="{DynamicResource tabAlgorithms}">
                 

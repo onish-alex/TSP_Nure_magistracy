@@ -13,37 +13,20 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TSP.Desktop.ViewModels.TSPMap;
+using TSP.Desktop.ViewModels.Validators;
 using TSP.Desktop.Views.Modals;
 
 namespace TSP.Desktop.Views.TSPMap
 {
-    /// <summary>
-    /// Interaction logic for TSPMap.xaml
-    /// </summary>
-    public partial class TSPMapWrapper : UserControl
-    {
-        private TSPMapContext Context => DataContext as TSPMapContext;
-
-        public TSPMapWrapper()
-        {
-            InitializeComponent();
-        }
-
-        public void OnCreateMapClick(object sender, EventArgs e)
-        {
-            var createMapModal = new CreateMapModal();
-
-            createMapModal.ShowDialog();
-        }
-
-        public void OnLoadMapClick(object sender, EventArgs e)
-        {
-
-        }
-
-        public void OnSaveMapClick(object sender, EventArgs e)
-        {
-
-        }
-    }
+	/// <summary>
+	/// Interaction logic for TSPMap.xaml
+	/// </summary>
+	public partial class TSPMapWrapper : UserControl
+	{	
+		public TSPMapWrapper()
+		{
+			InitializeComponent();
+			DataContext = new TSPMapViewModel();	
+		}
+	}
 }

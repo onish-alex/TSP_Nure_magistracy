@@ -5,11 +5,19 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>disable</Nullable>
     <UseWPF>true</UseWPF>
+    <StartupObject>TSP.Desktop.App</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Views\002_Base\" />
     <Folder Include="Views\Algorithms\" />
     <Folder Include="Views\Results\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+    <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
   </ItemGroup>
 
 </Project>

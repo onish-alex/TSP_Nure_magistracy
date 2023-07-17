@@ -7,13 +7,13 @@
              xmlns:vmmap="clr-namespace:TSP.Desktop.ViewModels.TSPMap"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance Type=vmmap:TSPMapContext}">
-
+             d:DataContext="{d:DesignInstance Type=vmmap:TSPMapViewModel}">
     <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal">
-            <Button x:Name="bCreateMap" Click="OnCreateMapClick" ToolTip="{DynamicResource bCreateMap}" Style="{StaticResource MenuButton }">+</Button>
-            <Button x:Name="bLoadMap"   Click="OnLoadMapClick"   ToolTip="{DynamicResource bLoadMap}"   Style="{StaticResource MenuButton }">&lt;</Button>
-            <Button x:Name="bSaveMap"   Click="OnSaveMapClick"   ToolTip="{DynamicResource bSaveMap}"   Style="{StaticResource MenuButton }">&gt;</Button>
+            <Button x:Name="bCreateMap" Command="{Binding ShowCreateTSPMapWindowCommand}" ToolTip="{DynamicResource bCreateMap}" Style="{StaticResource MenuButton }">+</Button>
+            <Button x:Name="bLoadMap"   Command="{Binding ShowLoadTSPMapWindowCommand}"   ToolTip="{DynamicResource bLoadMap}"   Style="{StaticResource MenuButton }">&lt;</Button>
+            <Button x:Name="bSaveMap"   Command="{Binding ShowSaveTSPMapWindowCommand}"   ToolTip="{DynamicResource bSaveMap}"   Style="{StaticResource MenuButton }" IsEnabled="{Binding MapSelected}">&gt;</Button>
+            <TextBox x:Name="tbSelectedMapName" Width="100px" Margin="10 5 0 5" IsReadOnly="True" Text="{Binding SelectedMapName}" FontWeight="{Binding SelectedMapNameFontWeight}"/>
         </StackPanel>
     </StackPanel>
 </UserControl>
