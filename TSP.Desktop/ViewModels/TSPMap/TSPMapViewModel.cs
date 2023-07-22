@@ -1,16 +1,13 @@
 ﻿using Microsoft.Win32;
 using PropertyChanged;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using System.Windows;
 using System.Windows.Input;
 using TSP.Desktop.Commands;
+using TSP.Desktop.Models.Entities;
 using TSP.Desktop.Models.Managers;
-using TSP.Desktop.ViewModels.Validators;
 using TSP.Desktop.Views.Modals;
 
 namespace TSP.Desktop.ViewModels.TSPMap
@@ -36,14 +33,36 @@ namespace TSP.Desktop.ViewModels.TSPMap
 
 			MapManager.GetInstance().PropertyChanged += (sender, args) =>
 			{
-				if (args.PropertyName == "Map")
+				if (Enum.TryParse(args.PropertyName, out MapState state))
 				{
-					MapSelected = MapManager.GetInstance().Map != null;
-					SelectedMapName = MapSelected 
-						? $"{MapManager.GetInstance().Map.Name}.{ConfigurationManager.AppSettings["MaxExtension"]}*"
-						: string.Empty;
+					switch (state)
+					{
+						case MapState.MapCreated:
+							MapSelected = MapManager.GetInstance().Map != null;
+							SelectedMapName = MapSelected
+								? $"{MapManager.GetInstance().Map.Name}.{ConfigurationManager.AppSettings["MaxExtension"]}*"
+								: string.Empty;
 
-					SelectedMapNameFontWeight = FontWeight.FromOpenTypeWeight(600);
+							SelectedMapNameFontWeight = FontWeight.FromOpenTypeWeight(600);
+							IsMapSaved = false;
+							break;
+
+						case MapState.MapLoaded:
+							MapSelected = MapManager.GetInstance().Map != null;
+
+							SelectedMapName = MapSelected
+								? $"{MapManager.GetInstance().Map.Name}.{ConfigurationManager.AppSettings["MaxExtension"]}"
+								: string.Empty;
+
+							SelectedMapNameFontWeight = FontWeight.FromOpenTypeWeight(100);
+							break;
+
+						case MapState.MapSaved:
+							SelectedMapNameFontWeight = FontWeight.FromOpenTypeWeight(100);
+							SelectedMapName = SelectedMapName.TrimEnd('*');
+							IsMapSaved = true;
+							break;
+					}
 				}
 			};
 		}
@@ -63,19 +82,20 @@ namespace TSP.Desktop.ViewModels.TSPMap
 				Filter = $"{ConfigurationManager.AppSettings["MaxExtensionName"]}|*.{ConfigurationManager.AppSettings["MaxExtension"]}",
 			};
 
-			loadMapDialog.ShowDialog();
-			//var stream = loadMapDialog.OpenFile();
+			if (loadMapDialog.ShowDialog().GetValueOrDefault())
+				MapManager.GetInstance().LoadMap(loadMapDialog.FileName);
 		}
 
 		private void OpenSaveTSPMapWindow()
 		{
 			var saveMapDialog = new SaveFileDialog()
 			{
-				FileName = SelectedMapName,
+				FileName = SelectedMapName.TrimEnd('*'),
 				Filter = $"{ConfigurationManager.AppSettings["MaxExtensionName"]}|*.{ConfigurationManager.AppSettings["MaxExtension"]}",
 			};
 
-			saveMapDialog.ShowDialog();
+			if (saveMapDialog.ShowDialog().GetValueOrDefault())
+				MapManager.GetInstance().SaveMap(saveMapDialog.FileName);
 		}
 	}
 }
