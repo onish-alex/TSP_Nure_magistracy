@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:cs="clr-namespace:System;assembly=mscorlib">
 
+    <!--Maps-->
     <cs:String x:Key="tabTSPMap">TSP Map</cs:String>
     <cs:String x:Key="tabAlgorithms">Algorithms</cs:String>
     <cs:String x:Key="tabResults">Results</cs:String>
@@ -14,6 +15,15 @@
     <cs:String x:Key="lMapName">Map name:</cs:String>
     <cs:String x:Key="lMapNodeAmount">Node amount:</cs:String>
     <cs:String x:Key="bCreateMapModal">Create</cs:String>
+
+    <!--Algorithms-->
+    <cs:String x:Key="bCreateAlgorithm">Add new algorithm</cs:String>
+    <cs:String x:Key="bLoadAlgorithm">Load algorithm</cs:String>
+    <cs:String x:Key="bSaveAlgorithm">Save algorithm</cs:String>
+
+    <cs:String x:Key="lCreateAlgorithm">Add new algorithm</cs:String>
+    <cs:String x:Key="lAlgorithmName">Name:</cs:String>
+    <cs:String x:Key="bCreateAlgorithmModal">Add</cs:String>
 
     <!--Validation messages-->
     <cs:String x:Key="FieldCannotBeEmpty">Field can't be empty!</cs:String>

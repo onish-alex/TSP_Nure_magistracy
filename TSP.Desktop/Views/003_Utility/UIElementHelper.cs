@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Controls;
 
-namespace TSP.Desktop.Views._003_Utility
+namespace TSP.Desktop.Views.Utility
 {
 	public static class UIElementHelper
 	{

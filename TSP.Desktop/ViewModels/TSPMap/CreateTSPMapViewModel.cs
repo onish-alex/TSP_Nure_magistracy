@@ -12,10 +12,10 @@ namespace TSP.Desktop.ViewModels.TSPMap
 
 		public CreateTSPMapViewModel()
 		{
-			this.CreateTSPMapCommand = new CommonCommand((x) => CreateTSPMapWindow(x));
+			this.CreateTSPMapCommand = new CommonCommand((x) => CreateTSPMap(x));
 		}
 
-		private void CreateTSPMapWindow(object param)
+		private void CreateTSPMap(object param)
 		{
 			if (param is MapDTO mapDto)
 				MapManager.GetInstance().CreateMap(mapDto);

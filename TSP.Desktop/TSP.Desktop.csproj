@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <Folder Include="Views\002_Base\" />
-    <Folder Include="Views\Algorithms\" />
     <Folder Include="Views\Results\" />
   </ItemGroup>
 

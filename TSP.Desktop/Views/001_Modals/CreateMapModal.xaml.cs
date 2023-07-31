@@ -5,8 +5,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using TSP.Desktop.ViewModels.Entities;
 using TSP.Desktop.ViewModels.TSPMap;
-using TSP.Desktop.ViewModels.Validators;
-using TSP.Desktop.Views._003_Utility;
+using TSP.Desktop.ViewModels.Validators.Map;
+using TSP.Desktop.Views.Utility;
 
 namespace TSP.Desktop.Views.Modals
 {

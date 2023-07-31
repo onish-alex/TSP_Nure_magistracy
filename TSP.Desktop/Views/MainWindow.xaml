@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TSP.Desktop"
         xmlns:vm="clr-namespace:TSP.Desktop.ViewModels"
-        xmlns:map="clr-namespace:TSP.Desktop.Views.TSPMap"        
+        xmlns:map="clr-namespace:TSP.Desktop.Views.TSPMap"      
+        xmlns:algo="clr-namespace:TSP.Desktop.Views.Algorithms"      
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         d:DataContext="{d:DesignInstance Type=vm:MainViewModel}">
@@ -20,7 +21,7 @@
                 <map:TSPMapWrapper />
             </TabItem>
             <TabItem Header="{DynamicResource tabAlgorithms}">
-                
+                <algo:AlgorithmWrapper />
             </TabItem>
             <TabItem Header="{DynamicResource tabResults}">
                 

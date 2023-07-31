@@ -40,7 +40,7 @@ namespace TSP.Desktop.ViewModels.TSPMap
 						case MapState.MapCreated:
 							MapSelected = MapManager.GetInstance().Map != null;
 							SelectedMapName = MapSelected
-								? $"{MapManager.GetInstance().Map.Name}.{ConfigurationManager.AppSettings["MaxExtension"]}*"
+								? $"{MapManager.GetInstance().Map.Name}.{ConfigurationManager.AppSettings["MapExtension"]}*"
 								: string.Empty;
 
 							SelectedMapNameFontWeight = FontWeight.FromOpenTypeWeight(600);
@@ -51,7 +51,7 @@ namespace TSP.Desktop.ViewModels.TSPMap
 							MapSelected = MapManager.GetInstance().Map != null;
 
 							SelectedMapName = MapSelected
-								? $"{MapManager.GetInstance().Map.Name}.{ConfigurationManager.AppSettings["MaxExtension"]}"
+								? $"{MapManager.GetInstance().Map.Name}.{ConfigurationManager.AppSettings["MapExtension"]}"
 								: string.Empty;
 
 							SelectedMapNameFontWeight = FontWeight.FromOpenTypeWeight(100);
@@ -79,7 +79,7 @@ namespace TSP.Desktop.ViewModels.TSPMap
 			{
 				AddExtension = true,
 				Multiselect = false,
-				Filter = $"{ConfigurationManager.AppSettings["MaxExtensionName"]}|*.{ConfigurationManager.AppSettings["MaxExtension"]}",
+				Filter = $"{ConfigurationManager.AppSettings["MapExtensionName"]}|*.{ConfigurationManager.AppSettings["MapExtension"]}",
 			};
 
 			if (loadMapDialog.ShowDialog().GetValueOrDefault())
@@ -91,7 +91,7 @@ namespace TSP.Desktop.ViewModels.TSPMap
 			var saveMapDialog = new SaveFileDialog()
 			{
 				FileName = SelectedMapName.TrimEnd('*'),
-				Filter = $"{ConfigurationManager.AppSettings["MaxExtensionName"]}|*.{ConfigurationManager.AppSettings["MaxExtension"]}",
+				Filter = $"{ConfigurationManager.AppSettings["MapExtensionName"]}|*.{ConfigurationManager.AppSettings["MapExtension"]}",
 			};
 
 			if (saveMapDialog.ShowDialog().GetValueOrDefault())
