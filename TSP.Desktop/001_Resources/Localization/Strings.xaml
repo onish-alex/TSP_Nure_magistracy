@@ -23,6 +23,7 @@
 
     <cs:String x:Key="lCreateAlgorithm">Add new algorithm</cs:String>
     <cs:String x:Key="lAlgorithmName">Name:</cs:String>
+    <cs:String x:Key="lAlgorithmType">Type:</cs:String>
     <cs:String x:Key="bCreateAlgorithmModal">Add</cs:String>
 
     <!--Validation messages-->

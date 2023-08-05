@@ -36,6 +36,17 @@ namespace TSP.Desktop.Models.Managers
 		{
 			Instance.Algorithm = Mappers.Algorithm.Map<AlgorithmDTO, Algorithm>(algoDto);
 
+			switch (Instance.Algorithm.Type)
+			{
+				case AlgorithmType.AntColony:
+						
+					break;
+
+				case AlgorithmType.Genetic:
+
+					break;
+			}
+
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AlgorithmState.AlgorithmCreated)));
 		}
 

@@ -22,6 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AntColony.Core\AntColony.Core.csproj" />
+    <ProjectReference Include="..\GA.Core\GA.Core.csproj" />
     <ProjectReference Include="..\TSP.Core\TSP.Core.csproj" />
   </ItemGroup>
 

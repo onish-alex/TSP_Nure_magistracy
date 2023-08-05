@@ -13,6 +13,7 @@
             <Button x:Name="bCreateAlgorithm" Command="{Binding ShowCreateAlgorithmWindowCommand}" ToolTip="{DynamicResource bCreateAlgorithm}" Style="{StaticResource MenuButton }">+</Button>
             <Button x:Name="bLoadAlgorithm"   Command="{Binding ShowLoadAlgorithmWindowCommand}"   ToolTip="{DynamicResource bLoadAlgorithm}"   Style="{StaticResource MenuButton }">&lt;</Button>
             <Button x:Name="bSaveAlgorithm"   Command="{Binding ShowSaveAlgorithmWindowCommand}"   ToolTip="{DynamicResource bSaveAlgorithm}"   Style="{StaticResource MenuButton }" IsEnabled="{Binding AlgorithmSelected}">&gt;</Button>
+            <TextBox x:Name="tbSelectedAlgoName" Width="100px" Margin="10 5 0 5" IsReadOnly="True" Text="{Binding SelectedAlgorithmName}" FontWeight="{Binding SelectedAlgoNameFontWeight}"/>
         </StackPanel>
     </StackPanel>
 </UserControl>
