@@ -26,6 +26,7 @@ namespace AntColony.Core
 
             EvaporatePheromones();
 
+            //default pheromone increasing
             foreach (var ant in ants)
             {
                 for (var i = 0; i < ant.TravelledPathMemory.Count - 1; i++)
@@ -43,6 +44,7 @@ namespace AntColony.Core
 
             var bestRoutes = routes.OrderBy(x => routeDistanceGetter(x)).Take(antSettings.EliteAntCount);
 
+            //elitist ants pheromone increasing
             foreach (var route in bestRoutes)
             {
                 for (var i = 0; i < route.Count - 1; i++)

@@ -64,9 +64,9 @@ namespace AntColony.Core.Utilities
         public double MaxPheromoneAmount { get; set; }
         
         /// <summary>
-        /// Defines how many iterations algo shouldn't change it best result to refresh pheromones. For MAX-MIN only
+        /// Defines if pheromone growing must perform for global-best way, or for current iteration best way. For MAX-MIN only
         /// </summary>
-        public double IterationsToRefreshNumber { get; set; }
+        public bool UpdatePheromonesForGlobalBestWay { get; set; }
 
         #endregion
     }

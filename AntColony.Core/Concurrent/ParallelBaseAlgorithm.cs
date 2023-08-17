@@ -32,8 +32,7 @@ namespace AntColony.Core.Concurrent
 
                     pheromoneMap[nodes[i]].TryAdd(nodes[j], settings.InitialPheromoneAmount);
                 }
-            }
-            );
+            });
         }
 
         public abstract IList<IList<TNode>> Run(AntPopulationSettings antSettings);

@@ -11,6 +11,8 @@ namespace AntColony.Core
     public class MaxMinAlgorithm<TNode> : ClassicAlgorithm<TNode> where TNode : class
     {
         private Func<IList<TNode>, double> routeDistanceGetter;
+        private IList<TNode> bestRoute;
+        private double bestRouteLength;
 
         public MaxMinAlgorithm(IList<TNode> nodes, Func<TNode, TNode, double> edgeDistanceGetter, AntColonySettings settings, Func<IList<TNode>, double> routeDistanceGetter)
             : base(nodes, edgeDistanceGetter, settings) 
@@ -20,14 +22,7 @@ namespace AntColony.Core
 
         public override IList<IList<TNode>> Run(AntPopulationSettings antSettings)
         {
-            var ants = new List<Ant<TNode>>(antSettings.AntCount);
-
-            for (int i = 0; i < antSettings.AntCount; i++)
-            {
-                var ant = new Ant<TNode>();
-                ants.Add(ant);
-                TravelPath(ant);
-            }
+            var ants = TravelAllPaths(antSettings.AntCount);
 
             EvaporatePheromones();
 
@@ -35,32 +30,34 @@ namespace AntColony.Core
 
             var bestRouteAnt = ants.OrderBy(x => routeDistanceGetter(x.TravelledPathMemory)).First();
 
-            for (var i = 0; i < bestRouteAnt.TravelledPathMemory.Count - 1; i++)
+            if (settings.UpdatePheromonesForGlobalBestWay)
             {
-                var currentPheromoneAmount = pheromoneMap[bestRouteAnt.TravelledPathMemory[i]][bestRouteAnt.TravelledPathMemory[i + 1]];
+                var currentIterationBestRouteLength = routeDistanceGetter(bestRouteAnt.TravelledPathMemory);
+
+                if (bestRoute == null || !bestRoute.Any() || bestRouteLength > currentIterationBestRouteLength)
+                {
+                    bestRoute = bestRouteAnt.TravelledPathMemory.ToList();
+                    bestRouteLength = currentIterationBestRouteLength;
+                }
+            }
+
+            var bestPathForUpdating = settings.UpdatePheromonesForGlobalBestWay
+                ? bestRoute
+                : bestRouteAnt.TravelledPathMemory;
+
+            for (var i = 0; i < bestPathForUpdating.Count - 1; i++)
+            {
+                var currentPheromoneAmount = pheromoneMap[bestPathForUpdating[i]][bestPathForUpdating[i + 1]];
 
                 var pheromoneDelta = settings.UseCommonAntPheromoneAmount ? settings.CommonAntPheromoneAmount : bestRouteAnt.PersonalPheromoneAmount;
-                pheromoneDelta /= edgeDistanceGetter(bestRouteAnt.TravelledPathMemory[i], bestRouteAnt.TravelledPathMemory[i + 1]);
+                pheromoneDelta /= edgeDistanceGetter(bestPathForUpdating[i], bestPathForUpdating[i + 1]);
 
                 var edgeNewAmount = currentPheromoneAmount + pheromoneDelta;
 
-                pheromoneMap[bestRouteAnt.TravelledPathMemory[i]][bestRouteAnt.TravelledPathMemory[i + 1]] = 
+                pheromoneMap[bestPathForUpdating[i]][bestPathForUpdating[i + 1]] = 
                     (edgeNewAmount > settings.MaxPheromoneAmount)
                         ? settings.MaxPheromoneAmount
                         : edgeNewAmount;
-            }
-
-            foreach (var ant in ants)
-            {
-                for (var i = 0; i < ant.TravelledPathMemory.Count - 1; i++)
-                {
-                    var currentPheromoneAmount = pheromoneMap[ant.TravelledPathMemory[i]][ant.TravelledPathMemory[i + 1]];
-
-                    var pheromoneDelta = settings.UseCommonAntPheromoneAmount ? settings.CommonAntPheromoneAmount : ant.PersonalPheromoneAmount;
-                    pheromoneDelta /= edgeDistanceGetter(ant.TravelledPathMemory[i], ant.TravelledPathMemory[i + 1]);
-
-                    pheromoneMap[ant.TravelledPathMemory[i]][ant.TravelledPathMemory[i + 1]] = currentPheromoneAmount + pheromoneDelta;
-                }
             }
 
             return routes;
@@ -81,6 +78,24 @@ namespace AntColony.Core
                     pheromoneMap[nodes[i]][nodes[j]] = (edgeNewAmount < settings.MinPheromoneAmount)
                         ? settings.MinPheromoneAmount 
                         : edgeNewAmount;
+                }
+            }
+        }
+
+        protected virtual void RefreshPheromones()
+        {
+            pheromoneMap = new Dictionary<TNode, Dictionary<TNode, double>>();
+
+            for (var i = 0; i < nodes.Count; i++)
+            {
+                pheromoneMap.Add(nodes[i], new Dictionary<TNode, double>());
+
+                for (var j = 0; j < nodes.Count; j++)
+                {
+                    if (i == j)
+                        continue;
+
+                    pheromoneMap[nodes[i]].Add(nodes[j], settings.InitialPheromoneAmount);
                 }
             }
         }
