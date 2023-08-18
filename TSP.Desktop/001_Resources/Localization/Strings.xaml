@@ -20,13 +20,23 @@
     <cs:String x:Key="bCreateAlgorithm">Add new algorithm</cs:String>
     <cs:String x:Key="bLoadAlgorithm">Load algorithm</cs:String>
     <cs:String x:Key="bSaveAlgorithm">Save algorithm</cs:String>
-
+    
     <cs:String x:Key="lCreateAlgorithm">Add new algorithm</cs:String>
     <cs:String x:Key="lAlgorithmName">Name:</cs:String>
     <cs:String x:Key="lAlgorithmType">Type:</cs:String>
     <cs:String x:Key="bCreateAlgorithmModal">Add</cs:String>
+    
+    <cs:String x:Key="lGeneticAlgorithmSetup">Setup genetic algorithm</cs:String>
+    <cs:String x:Key="lCrossoverType">Crossover:</cs:String>
+    <cs:String x:Key="lSelectionType">Selection:</cs:String>
+    <cs:String x:Key="lMutationType">Mutation:</cs:String>
+    <cs:String x:Key="bSetupGeneticAlgorithm">Apply settings</cs:String>
+    <cs:String x:Key="lPopulationSize">Population size</cs:String>
+    <cs:String x:Key="lMutationProbability">Mutation probability</cs:String>
+    <cs:String x:Key="lUseElite">Use elite individuals</cs:String>
 
     <!--Validation messages-->
     <cs:String x:Key="FieldCannotBeEmpty">Field can't be empty!</cs:String>
     <cs:String x:Key="FieldMustBeInteger">Field value must be an integer between {0} and {1}!</cs:String>
+    <cs:String x:Key="InvalidAlgorithmType">Invalid algorithm type!</cs:String>
 </ResourceDictionary>

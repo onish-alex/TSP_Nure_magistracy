@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Controls;
@@ -11,33 +7,35 @@ namespace TSP.Desktop.Views.Utility
 {
 	public static class UIElementHelper
 	{
-		private static Dictionary<TextBox, ToolTip> ToolTips = new Dictionary<TextBox, ToolTip>();
+		private static Dictionary<UIElement, ToolTip> ToolTips = new Dictionary<UIElement, ToolTip>();
 
-		public static void ShowTooltip(this TextBox textBox, string toolTipMessage)
+		public static void ShowTooltip(this UIElement element, string toolTipMessage)
 		{
-			if (ToolTips.ContainsKey(textBox))
+			if (ToolTips.ContainsKey(element))
 			{
-				ToolTips[textBox].IsOpen = true;
-				ToolTips[textBox].PlacementTarget = textBox;
+				ToolTips[element].IsOpen = true;
+				ToolTips[element].PlacementTarget = element;
 			}
 			else
 			{
-				ToolTips.Add(textBox, new ToolTip() { Placement = PlacementMode.Bottom, PlacementTarget = textBox, IsOpen = true });
+				ToolTips.Add(element, new ToolTip() { Placement = PlacementMode.Bottom, PlacementTarget = element, IsOpen = true });
 			}
 
-			ToolTips[textBox].Content = toolTipMessage;
-			textBox.ToolTip = ToolTips[textBox];
-		}
+			ToolTips[element].Content = toolTipMessage;
+            new ToolTipAbleWrapper(element).ToolTip = ToolTips[element];
+        }
 
-		public static void RefreshTooltip(this TextBox textBox)
+		public static void RefreshTooltip(this UIElement element)
 		{
-			if (ToolTips.ContainsKey(textBox))
+			var wrapper = new ToolTipAbleWrapper(element);
+
+			if (ToolTips.ContainsKey(wrapper.Element))
 			{
-				textBox.ToolTip = null;
-				ToolTips[textBox].IsOpen = true;
-				ToolTips[textBox].PlacementTarget = textBox;
-				ToolTips[textBox].Placement = PlacementMode.Bottom;
-				textBox.ToolTip = ToolTips[textBox];
+                wrapper.ToolTip = null;
+				ToolTips[wrapper.Element].IsOpen = true;
+				ToolTips[wrapper.Element].PlacementTarget = wrapper.Element;
+				ToolTips[wrapper.Element].Placement = PlacementMode.Bottom;
+                wrapper.ToolTip = ToolTips[wrapper.Element];
 			}
 		}
 	}

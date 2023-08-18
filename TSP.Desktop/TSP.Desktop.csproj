@@ -27,4 +27,10 @@
     <ProjectReference Include="..\TSP.Core\TSP.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Views\001_Modals\SetupAntColonyAlgorithmModal.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
 </Project>

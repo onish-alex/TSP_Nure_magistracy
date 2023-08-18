@@ -39,7 +39,7 @@ namespace TSP.Desktop.Models.Managers
 			switch (Instance.Algorithm.Type)
 			{
 				case AlgorithmType.AntColony:
-						
+					
 					break;
 
 				case AlgorithmType.Genetic:

@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using TSP.Desktop.Models.Entities;
 using TSP.Desktop.ViewModels.Algorithms;
 using TSP.Desktop.ViewModels.Entities;
 using TSP.Desktop.ViewModels.TSPMap;
@@ -37,12 +38,16 @@ namespace TSP.Desktop.Views.Modals
                 validated = false;
             }
 
+            if (!Enum.TryParse(cbAlgorithmType.SelectedValue.ToString(), out AlgorithmType algoType))
+            {
+                cbAlgorithmType.Background = Brushes.Red;
+                cbAlgorithmType.ShowTooltip(FindResource("InvalidAlgorithmType").ToString());
+                validated = false;
+            }
+
             if (validated)
             {
-                (DataContext as CreateAlgorithmViewModel).CreateAlgorithmCommand.Execute(new AlgorithmDTO()
-                {
-                    Name = tbAlgorithmName.Text,
-                });
+                DialogResult = true;
                 Close();
             }
         }
@@ -67,7 +72,7 @@ namespace TSP.Desktop.Views.Modals
         protected void ClearToolTips()
         {
             var tbAlgorithmNameToolTip = tbAlgorithmName.ToolTip as ToolTip;
-            
+
             if (tbAlgorithmNameToolTip != null)
                 tbAlgorithmNameToolTip.IsOpen = false;
         }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Transactions;
 using System.Windows.Input;
 using TSP.Desktop.Commands;
 using TSP.Desktop.Models.Entities;
@@ -13,26 +14,22 @@ namespace TSP.Desktop.ViewModels.Algorithms
     [AddINotifyPropertyChangedInterface]
     public class CreateAlgorithmViewModel
 	{
-		public ICommand CreateAlgorithmCommand { get; set; }
 		
-		//public IEnumerable<(int Value, string Name)> AlgorithmTypes { get; set; }
 		public IEnumerable<AlgorithmType> AlgorithmTypes { get; set; }
-		public AlgorithmType SelectedType { get; set; }
-
+		
+		public AlgorithmDTO AlgorithmDTO { get; private set; }
 
         public CreateAlgorithmViewModel()
 		{
-			this.CreateAlgorithmCommand = new CommonCommand((x) => CreateAlgorithm(x));
 			this.AlgorithmTypes = Enum.GetValues<AlgorithmType>();
-			//.Select(x => ((int)x,  x.ToString()));
 
-			this.SelectedType = this.AlgorithmTypes.First();
+			this.AlgorithmDTO = new AlgorithmDTO();
         }
 
-		private void CreateAlgorithm(object param)
+		public void SetAlgorithm(AlgorithmDTO algorithmDTO)
 		{
-			if (param is AlgorithmDTO algoDto)
-				AlgorithmManager.GetInstance().CreateAlgorithm(algoDto);
-		}
+            AlgorithmDTO.Name = algorithmDTO.Name;
+            AlgorithmDTO.Type = algorithmDTO.Type;
+        }
 	}
 }

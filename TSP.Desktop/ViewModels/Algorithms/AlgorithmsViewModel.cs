@@ -11,6 +11,7 @@ using System.Windows.Input;
 using TSP.Desktop.Commands;
 using TSP.Desktop.Models.Entities;
 using TSP.Desktop.Models.Managers;
+using TSP.Desktop.ViewModels.Entities;
 using TSP.Desktop.Views.Modals;
 
 namespace TSP.Desktop.ViewModels.Algorithms
@@ -18,6 +19,8 @@ namespace TSP.Desktop.ViewModels.Algorithms
     [AddINotifyPropertyChangedInterface]
     public class AlgorithmsViewModel
     {
+        private AlgorithmDTO algorithmDTO { get; set; }
+
 		public ICommand ShowCreateAlgorithmWindowCommand { get; set; }
 		public ICommand ShowLoadAlgorithmWindowCommand { get; set; }
 		public ICommand ShowSaveAlgorithmWindowCommand { get; set; }
@@ -73,10 +76,30 @@ namespace TSP.Desktop.ViewModels.Algorithms
 		private void OpenCreateAlgorithmWindow()
 		{
 			var createAlgoModal = new CreateAlgorithmModal();
-            createAlgoModal.ShowDialog();
-		}
+            
+            if (createAlgoModal.ShowDialog().GetValueOrDefault())
+                algorithmDTO = (createAlgoModal.DataContext as CreateAlgorithmViewModel).AlgorithmDTO;
 
-		private void OpenLoadAlgorithmWindow()
+            switch (algorithmDTO.Type)
+            {
+                case AlgorithmType.AntColony:
+                    var setupAntColonyModal = new SetupAntColonyAlgorithmModal();
+                    setupAntColonyModal.ShowDialog();
+                    break;
+
+                case AlgorithmType.Genetic:
+                    var setupGeneticModal = new SetupGeneticAlgorithmModal();
+                    setupGeneticModal.ShowDialog();
+                    break;
+            }
+
+            //if (param is AlgorithmDTO algoDto)
+
+
+            AlgorithmManager.GetInstance().CreateAlgorithm(algorithmDTO);
+        }
+
+        private void OpenLoadAlgorithmWindow()
 		{
 			var loadMapDialog = new OpenFileDialog()
 			{
