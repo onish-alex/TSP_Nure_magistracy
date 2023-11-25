@@ -12,11 +12,18 @@ using System.Threading.Tasks;
 
 namespace GA.Operations.Selections
 {
+    /*
+     Панмиксия — оба родителя выбираются случайно, каждая особь популяции имеет равные шансы быть выбранной
+     Инбридинг — первый родитель выбирается случайно, а вторым выбирается такой, который наиболее похож на первого родителя
+     Аутбридинг — первый родитель выбирается случайно, а вторым выбирается такой, который наименее похож на первого родителя
+     */
+
     public class TournamentSelection : BaseSelection
     {
         //public ParentSelectingPrinciple ParentSelecting { get; set; }
 
         public bool IndividualCanJoinOnlyOnePair { get; set; }
+        public int TournamentDimension { get; set; } = 2;
 
         public TournamentSelection(GAOperationSettings operationSettings) : base(operationSettings)
         {
@@ -24,29 +31,27 @@ namespace GA.Operations.Selections
 
         public override IList<(TIndividual, TIndividual)> GetParentPairs<TIndividual>(IDictionary<TIndividual, double> populationFitnesses)
         {
-            var parentCandidates = new List<(TIndividual, double)>();
+            //var parentCandidates = new List<(TIndividual, double)>();
             var population = populationFitnesses.Keys.ToList();
 
-            for (var i = 0; i < populationFitnesses.Count; i++)
+            var pairsCount = population.Count / 2;
+            var pairs = new List<(TIndividual, TIndividual)>(pairsCount);
+
+            for (var i = 0; i < pairsCount; i++)
             {
-                var candidateIndexes = Random.Shared.GetNumbers(2, 0, populationFitnesses.Count, true);
+                var firstParent = GetTournamentResult(populationFitnesses, population);
+                var secondParent = GetTournamentResult(populationFitnesses, population);
 
-                var firstCandidateFitness = populationFitnesses[population[candidateIndexes[0]]];
-                var secondCandidateFitness = populationFitnesses[population[candidateIndexes[1]]];
-
-                parentCandidates.Add(
-                    (firstCandidateFitness > secondCandidateFitness)
-                        ? (population[candidateIndexes[0]], firstCandidateFitness)
-                        : (population[candidateIndexes[1]], secondCandidateFitness));
+                pairs.Add((firstParent, secondParent));
             }
 
-            var pairsCount = populationFitnesses.Count / 2;
-            var pairs = new List<(TIndividual, TIndividual)>(pairsCount);
+            //var pairsCount = populationFitnesses.Count / 2;
+            //var pairs = new List<(TIndividual, TIndividual)>(pairsCount);
 
             //switch (ParentSelecting)
             //{
             //    case ParentSelectingPrinciple.Panmixia:
-                      pairs = FormPairsPanmixia(parentCandidates, pairsCount);
+            //        pairs = FormPairsPanmixia(parentCandidates, pairsCount);
             //        break;
 
             //    case ParentSelectingPrinciple.Inbreeding:
@@ -61,67 +66,79 @@ namespace GA.Operations.Selections
             return pairs;
         }
 
-        //private List<(TIndividual, TIndividual)> FormPairsOutbreeding<TIndividual>(List<(TIndividual, double)> parentCandidates, int pairsCount)
-        //{
-        //    var pairs = new List<(TIndividual, TIndividual)>();
+        private TIndividual GetTournamentResult<TIndividual>(
+            IDictionary<TIndividual, double> populationFitnesses, 
+            IList<TIndividual> population,
+            int dimension = 2)
+        {
+            if (dimension < 2)
+                throw new ArgumentException($"Parameter {nameof(dimension)} should be greater or equal 2");
 
-        //    while (pairs.Count < pairsCount)
-        //    {
-        //        var firstParent = parentCandidates[Random.Shared.Next(parentCandidates.Count)];
-        //        var secondParent =
-        //            parentCandidates
-        //            .First(x => Math.Abs(firstParent.Item2 - x.Item2) ==
-        //                        parentCandidates
-        //                            .Where(z => !z.Equals(firstParent))
-        //                            .Select(y => Math.Abs(firstParent.Item2 - y.Item2))
-        //                            .Max()
-        //                  );
+            var candidateIndexes = Random.Shared.GetNumbers(dimension, 0, population.Count, true);
 
-        //        pairs.Add((firstParent.Item1, secondParent.Item1));
+            var candidates = new List<TIndividual>();
 
-        //        if (IndividualCanJoinOnlyOnePair)
-        //        {
-        //            parentCandidates.Remove(firstParent);
-        //            parentCandidates.Remove(secondParent);
+            foreach (var candidateIndex in candidateIndexes)
+                candidates.Add(population[candidateIndex]);
 
-        //            if (parentCandidates.Count < 2)
-        //                break;
-        //        }
-        //    }
+            var winner = candidates.OrderByDescending(x => populationFitnesses[x]).FirstOrDefault();
 
-        //    return pairs;
-        //}
+            return winner;
+        }
 
-        //private List<(TIndividual, TIndividual)> FormPairsInbreeding<TIndividual>(List<(TIndividual, double)> parentCandidates, int pairsCount)
-        //{
-        //    var pairs = new List<(TIndividual, TIndividual)>();
+        private List<(TIndividual, TIndividual)> FormPairsOutbreeding<TIndividual>(List<(TIndividual, double)> parentCandidates, int pairsCount)
+        {
+            var pairs = new List<(TIndividual, TIndividual)>();
 
-        //    while (pairs.Count < pairsCount)
-        //    {
-        //        var firstParent = parentCandidates[Random.Shared.Next(parentCandidates.Count)];
-        //        var secondParent = 
-        //            parentCandidates
-        //            .First(x => Math.Abs(firstParent.Item2 - x.Item2) == 
-        //                        parentCandidates
-        //                            .Where(z => !z.Equals(firstParent))
-        //                            .Select(y => Math.Abs(firstParent.Item2 - y.Item2))
-        //                            .Min()
-        //                  );
+            while (pairs.Count < pairsCount)
+            {
+                var firstParent = parentCandidates[Random.Shared.Next(parentCandidates.Count)];
+                var secondParent = parentCandidates
+                    .Except(new List<(TIndividual, double)>() { firstParent })
+                    .OrderByDescending(x => Math.Abs(firstParent.Item2 - x.Item2))
+                    .First();
 
-        //        pairs.Add((firstParent.Item1, secondParent.Item1));
+                pairs.Add((firstParent.Item1, secondParent.Item1));
 
-        //        if (IndividualCanJoinOnlyOnePair)
-        //        {
-        //            parentCandidates.Remove(firstParent);
-        //            parentCandidates.Remove(secondParent);
+                if (IndividualCanJoinOnlyOnePair)
+                {
+                    parentCandidates.Remove(firstParent);
+                    parentCandidates.Remove(secondParent);
 
-        //            if (parentCandidates.Count < 2)
-        //                break;
-        //        }
-        //    }
+                    if (parentCandidates.Count < 2)
+                        break;
+                }
+            }
 
-        //    return pairs;
-        //}
+            return pairs;
+        }
+
+        private List<(TIndividual, TIndividual)> FormPairsInbreeding<TIndividual>(List<(TIndividual, double)> parentCandidates, int pairsCount)
+        {
+            var pairs = new List<(TIndividual, TIndividual)>();
+
+            while (pairs.Count < pairsCount)
+            {
+                var firstParent = parentCandidates[Random.Shared.Next(parentCandidates.Count)];
+                var secondParent = parentCandidates
+                    .Except(new List<(TIndividual, double)>() { firstParent })
+                    .OrderBy(x => Math.Abs(firstParent.Item2 - x.Item2))
+                    .First();
+
+                pairs.Add((firstParent.Item1, secondParent.Item1));
+
+                if (IndividualCanJoinOnlyOnePair)
+                {
+                    parentCandidates.Remove(firstParent);
+                    parentCandidates.Remove(secondParent);
+
+                    if (parentCandidates.Count < 2)
+                        break;
+                }
+            }
+
+            return pairs;
+        }
 
         private List<(TIndividual, TIndividual)> FormPairsPanmixia<TIndividual>(List<(TIndividual, double)> parentCandidates, int pairsCount)
         {

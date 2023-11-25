@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GA.Core.Operations.Selections
 {
-	public abstract class BaseSelection : BaseGAOperation
+	public abstract class BaseSelection : BaseGAOperation, ISelection
 	{
 		protected BaseSelection(GAOperationSettings operationSettings) : base(operationSettings) { }
 
