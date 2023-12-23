@@ -24,3 +24,8 @@ GA.Core/obj/
 /TSP.Examples/bin/Release/net6.0
 /TSP.Desktop/obj
 /TSP.Desktop/bin/Debug/net6.0-windows
+/Algorithms.SphereCovering/obj
+/SOM/obj
+/Algorithms.ConsoleApp/bin/Debug/net6.0
+/Algorithms.ConsoleApp/obj
+/Algorithms.SphereCovering/bin/Debug/net6.0
