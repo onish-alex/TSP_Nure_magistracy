@@ -36,6 +36,11 @@ namespace SOM.TSPCompatibility
             }
         }
 
+        public double this[int index] { get => parameters[index]; set => parameters[index] = value; }
+
+
+        public int Count => parameters.Count;
+
         public IEnumerator<double> GetEnumerator()
         {
             return parameters.GetEnumerator();
@@ -44,6 +49,11 @@ namespace SOM.TSPCompatibility
         IEnumerator IEnumerable.GetEnumerator()
         {
             return parameters.GetEnumerator();
+        }
+
+        public override string ToString()
+        {
+            return string.Join("; ", parameters);
         }
     }
 }

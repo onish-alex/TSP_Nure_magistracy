@@ -72,7 +72,7 @@ namespace Algorithms.SphereCovering
                 double y = Math.Sin(tetha) * Math.Sin(phi);
                 double z = Math.Cos(phi);
 
-                spherePoints.Add((Math.Round(x, 4), Math.Round(y, 4), Math.Round(z, 4)));
+                spherePoints.Add((x, y, z));
             }
 
             return spherePoints;
