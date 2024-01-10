@@ -1,18 +1,21 @@
 ﻿using Algorithms.Utility.Extensions;
 using GA.Core.Models;
 using GA.Core.Operations.Crossovers;
+using GA.Core.Operations.Crossovers.Concurrent;
 using GA.Core.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GA.Operations.Crossovers
 {
-    public class BitMaskCrossover : BaseCrossover
+    [Obsolete("In development")]
+    public class ParallelBitMaskCrossover : ParallelBaseCrossover
     {
         public IList<bool> Mask { get; set; }
 
-        public BitMaskCrossover(GAOperationSettings operationSettings) : base(operationSettings) { }
+        public ParallelBitMaskCrossover(GAOperationSettings operationSettings) : base(operationSettings) { }
 
         public override IList<TIndividual> GetNextGeneration<TIndividual, TGene>(IList<(TIndividual, TIndividual)> parents)
         {
@@ -21,7 +24,7 @@ namespace GA.Operations.Crossovers
             if (operationSettings.InitType == GAOperationInitType.EveryGeneration)
                 InitSettings();
 
-            foreach (var pair in parents)
+            Parallel.ForEach(parents, parallelOptions, (pair) =>
             {
                 var firstChildGenome = new List<TGene>(pair.Item1.Count);
                 var secondChildGenome = new List<TGene>(pair.Item2.Count);
@@ -35,7 +38,7 @@ namespace GA.Operations.Crossovers
                     {
                         if (!firstChildGenome.Contains(pair.Item1[i]))
                             firstChildGenome.Add(pair.Item1[i]);
-                        
+
                         if (!secondChildGenome.Contains(pair.Item2[i]))
                             secondChildGenome.Add(pair.Item2[i]);
                     }
@@ -43,7 +46,7 @@ namespace GA.Operations.Crossovers
                     {
                         if (!firstChildGenome.Contains(pair.Item2[i]))
                             firstChildGenome.Add(pair.Item2[i]);
-                        
+
                         if (!secondChildGenome.Contains(pair.Item1[i]))
                             secondChildGenome.Add(pair.Item1[i]);
                     }
@@ -54,7 +57,7 @@ namespace GA.Operations.Crossovers
 
                 children.Add(Individual<TGene>.GetInstance<TIndividual>(firstChildGenome));
                 children.Add(Individual<TGene>.GetInstance<TIndividual>(secondChildGenome));
-            }
+            });
 
             return children;
         }

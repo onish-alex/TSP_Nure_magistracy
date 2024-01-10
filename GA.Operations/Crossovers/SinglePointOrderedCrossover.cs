@@ -3,6 +3,7 @@ using GA.Core.Operations.Crossovers;
 using GA.Core.Utility;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GA.Operations.Crossovers
 {
@@ -27,20 +28,28 @@ namespace GA.Operations.Crossovers
                 if (operationSettings.InitType == GAOperationInitType.EveryIndividual)
                     InitSettings();
 
-                for (int i = 0; i < PointIndex; i++)
-                {
-                    firstChildGenome.Add(pair.Item1[i]);
-                    secondChildGenome.Add(pair.Item2[i]);
-                }
+                //for (int i = 0; i < PointIndex; i++)
+                //{
+                //    firstChildGenome.Add(pair.Item1[i]);
+                //    secondChildGenome.Add(pair.Item2[i]);
+                //}
 
-                for (int i = 0; i < operationSettings.NodesCount; i++)
-                {
-                    if (!firstChildGenome.Contains(pair.Item2[i])) 
-                        firstChildGenome.Add(pair.Item2[i]);
+                //for (int i = 0; i < operationSettings.NodesCount; i++)
+                //{
+                //    if (!firstChildGenome.Contains(pair.Item2[i])) 
+                //        firstChildGenome.Add(pair.Item2[i]);
                     
-                    if (!secondChildGenome.Contains(pair.Item1[i]))    
-                        secondChildGenome.Add(pair.Item1[i]);
-                }
+                //    if (!secondChildGenome.Contains(pair.Item1[i]))    
+                //        secondChildGenome.Add(pair.Item1[i]);
+                //}
+
+                Func<TGene, int, bool> pointIndexPredicate = (x, i) => i < PointIndex;
+
+                firstChildGenome.AddRange(pair.Item1.TakeWhile(pointIndexPredicate));
+                secondChildGenome.AddRange(pair.Item2.TakeWhile(pointIndexPredicate));
+
+                firstChildGenome.AddRange(pair.Item2.Except(firstChildGenome));
+                secondChildGenome.AddRange(pair.Item1.Except(secondChildGenome));
 
                 children.Add(Individual<TGene>.GetInstance<TIndividual>(firstChildGenome));
                 children.Add(Individual<TGene>.GetInstance<TIndividual>(secondChildGenome));

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SOM\SOM.csproj" />
+    <ProjectReference Include="..\TSP.Core\TSP.Core.csproj" />
+    <ProjectReference Include="..\TSP.Examples\TSP.Examples.csproj" />
+  </ItemGroup>
+
+</Project>

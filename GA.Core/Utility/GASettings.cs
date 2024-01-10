@@ -1,8 +1,10 @@
-﻿namespace GA.Core.Utility
+﻿using GA.Core.Models;
+using System;
+
+namespace GA.Core.Utility
 {
 	public class GASettings
 	{
-
 		/// <summary>
 		/// probability of mutation for each generation individual. Can take values from 0 to 100. <c>Zero by default</c>
 		/// </summary>
@@ -18,9 +20,18 @@
 		/// </summary>
 		public bool OnlyChildrenInNewGeneration { get; set; } = false;
 
-		/// <summary>
-		/// if <c>true</c>, deletes individuals with equal genomes
-		/// </summary>
-		public bool RemoveClones { get; set; } = false;
+		public int GenerationsMaxCount { get; set; } = 1;
+
+		public int StagnatingGenerationsLimit { get; set; } = 1;
+
+		#region ForExperimentsOnly
+
+		public CrossoversEnum CrossoverType { get; set; }
+		
+		public MutationsEnum MutationsType { get; set; }
+		
+		public SelectionsEnum SelectionType { get; set; }
+
+		#endregion
 	}
 }

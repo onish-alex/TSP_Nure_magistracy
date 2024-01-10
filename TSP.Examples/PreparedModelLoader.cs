@@ -8,6 +8,8 @@ namespace TSP.Examples
 {
     public static class PreparedModelLoader
     {
+        public static int? FractionLength = 1;
+
         private const string MODEL_EXTENSION = ".tsp";
         private const string OPTIMAL_TOUR_EXTENSION = ".opt.tour";
 
@@ -62,8 +64,26 @@ namespace TSP.Examples
                 }
                 else
                 {
-                    x = double.Parse(nodeParts[1]);
-                    y = double.Parse(nodeParts[2]);
+                    var xSplitted = nodeParts[1].Split('.');
+                    var xInt = xSplitted[0];
+                    var xFractional = string.Empty;
+
+                    if (xSplitted.Length > 1)
+                        xFractional = (FractionLength.HasValue && FractionLength >= 0)
+                            ? xSplitted[1][..FractionLength.Value]
+                            : xSplitted[1];
+
+                    var ySplitted = nodeParts[2].Split('.');
+                    var yInt = ySplitted[0];
+                    var yFractional = string.Empty;
+
+                    if (xSplitted.Length > 1)
+                        yFractional = (FractionLength.HasValue && FractionLength >= 0)
+                            ? ySplitted[1][..FractionLength.Value]
+                            : ySplitted[1];
+
+                    x = double.Parse($"{xInt}{(string.IsNullOrEmpty(xFractional) ? string.Empty : $".{xFractional}")}");
+                    y = double.Parse($"{yInt}{(string.IsNullOrEmpty(yFractional) ? string.Empty : $".{yFractional}")}");
                 }
 
                 var tspNode = new TSPNode()
@@ -85,7 +105,7 @@ namespace TSP.Examples
             string modelNameStr = Enum.GetName(typeof(PreparedModelsEnum), modelName);
             string fileName = modelNameStr + OPTIMAL_TOUR_EXTENSION;
             string filePath = Path.Combine(solutionsFolder, fileName);
-            
+
             try
             {
                 lines = File.ReadAllLines(filePath);

@@ -14,8 +14,4 @@
     <None Include="C:\Users\oleks\source\repos\GA\GA.Core\.editorconfig" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Helpers\" />
-  </ItemGroup>
-
 </Project>

@@ -6,6 +6,7 @@ using GA.Core.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Transactions;
 
 namespace GA.Core
 {
@@ -14,10 +15,20 @@ namespace GA.Core
 		private ISelection selection;
 		private ICrossover crossover;
 		private IMutation mutation;
+
 		private IList<Individual<TGene>> population;
 		Func<Individual<TGene>, double> fitnessGetter;
-		Func<Individual<TGene>> individualCreator;
+		
 		Dictionary<Individual<TGene>, double> fitnesses;
+
+		private (Individual<TGene> Individual, double Fitness) currentBestResult;
+		private GASettings settings;
+
+		private int iteration = 0;
+		private int stagnationCounter = 0;
+		private bool stopByStagnationFlag = false;
+
+		public IList<Individual<TGene>> Population => population.ToList();
 
 		/// <summary>
 		/// Build algorithm for individuals which distinguish by order of genes
@@ -28,18 +39,19 @@ namespace GA.Core
 			ICrossover crossover,
 			IMutation mutation,
 			IList<Individual<TGene>> population,
-			Func<Individual<TGene>, double> fitnessGetter,
-			Func<Individual<TGene>> individualCreator = null)
+			GASettings settings,
+			Func<Individual<TGene>, double> fitnessGetter)
 		{			
 			this.selection = selection;
 			this.crossover = crossover;
 			this.mutation = mutation;
 
 			this.population = population;
-			this.fitnessGetter = fitnessGetter;
-			this.individualCreator = individualCreator;
 
 			fitnesses = new Dictionary<Individual<TGene>, double>();
+			this.fitnessGetter = fitnessGetter;
+
+			this.settings = settings;
 
 			try
 			{
@@ -52,11 +64,27 @@ namespace GA.Core
 			}
 		}
 
-		public IList<Individual<TGene>> GetNextGeneration(GASettings settings = null)
+		public (Individual<TGene> Individual, double Fitness) Run()
 		{
-			if (settings == null)
-				settings = new GASettings();
+			if (settings.GenerationsMaxCount < 1)
+				throw new ArgumentOutOfRangeException(
+					nameof(settings.GenerationsMaxCount), 
+					settings.GenerationsMaxCount, 
+					$"{nameof(settings.GenerationsMaxCount)} must be greater than 0");
 
+			for (iteration = 0; iteration < settings.GenerationsMaxCount; iteration++)
+			{
+				GetNextGeneration();
+
+				if (stopByStagnationFlag)
+					break;
+			}
+
+			return currentBestResult;
+		}
+
+		public IList<Individual<TGene>> GetNextGeneration()
+		{
 			if (settings.ElitePercent.HasValue)
 			{
 				if (settings.ElitePercent < 0D && settings.ElitePercent > 100D)
@@ -94,28 +122,17 @@ namespace GA.Core
 				population = fitnesses.Select(x => x.Key).ToList();
 			}
 
-			if (settings.RemoveClones)
-			{
-				var originalPopulationSize = population.Count;
-				population = GetUniqueGenoms(population);
-				var newPopulationSize = population.Count;
+			var currentIterationBestResult = fitnesses.OrderByDescending(x => x.Value).FirstOrDefault();
 
-				for (int i = 0; i < originalPopulationSize - newPopulationSize; i++)
-					population.Add(individualCreator());					
-			}
+			if (currentIterationBestResult.Value > currentBestResult.Fitness)
+				currentBestResult = (currentIterationBestResult.Key, currentIterationBestResult.Value);
+			else
+				stagnationCounter++;
+
+			if (settings.StagnatingGenerationsLimit > 0 && stagnationCounter >= settings.StagnatingGenerationsLimit)
+				stopByStagnationFlag = true;
 
 			return population;
-		}
-
-		private IList<Individual<TGene>> GetUniqueGenoms(IList<Individual<TGene>> population)
-		{
-			var genomeSet = new HashSet<Individual<TGene>>(new Individual<TGene>.IndividualComparer());
-
-			foreach (var individual in population)
-				if (!genomeSet.Contains(individual))
-					genomeSet.Add(individual);
-
-			return genomeSet.ToList();
 		}
 	}
 }

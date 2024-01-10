@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace SOM
 {
@@ -45,6 +46,11 @@ namespace SOM
             var centerY = yValues.Average();
             //var centerX = 0;
             //var centerY = 0;
+
+            var rand = new Random();
+
+            //var centerX = rand.NextDouble() * (xValues.Max() - xValues.Min()) + xValues.Min();
+            //var centerY = rand.NextDouble() * (yValues.Max() - yValues.Min()) + yValues.Min();
 
             var radius = (xWidth < yWidth)
                 ? xWidth / 100D * radiusPercent
@@ -87,6 +93,9 @@ namespace SOM
                 foreach (var vector in this.networkVectors)
                     this.networkDistancePenalties.Add(vector, networkDistancePenaltiesDefaultValue);
             }
+
+            Console.WriteLine(string.Join("\r\n", this.networkVectors.Select(x => $"{x[0]};{x[1]}")));
+
         }
 
         protected override double GetDistance(TPoint2D first, TPoint2D second)
