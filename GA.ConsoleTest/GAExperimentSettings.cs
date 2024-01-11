@@ -1,14 +1,6 @@
 ﻿using Algorithms.Utility.NumberWrapper;
-using GA.Core.Operations.Crossovers;
-using GA.Core.Operations.Mutations;
-using GA.Core.Operations.Selections;
 using GA.Core.Utility;
-using GA.Operations;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GA.ConsoleApp
 {
@@ -18,7 +10,7 @@ namespace GA.ConsoleApp
         
         public (INumber<T> Min, INumber<T> Max) ResearchedParameterRange { get; set; }
 
-        public INumber<T> ResearchedParameterIncrement { get; set; }
+        public T ResearchedParameterIncrement { get; set; }
 
         public int PopulationSize { get; set; }
         
@@ -36,5 +28,7 @@ namespace GA.ConsoleApp
         //public ISelection Selection { get; set; }
         //public ICrossover Crossover { get; set; }
         //public IMutation Mutation { get; set; }
+
+        public int ControlRepeatingCount { get; set; } = 1;
     }
 }

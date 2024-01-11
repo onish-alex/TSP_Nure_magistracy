@@ -8,15 +8,9 @@ using GA.Operations.Crossovers.Concurrent;
 using GA.Operations.Mutations;
 using GA.Operations.Mutations.Concurrent;
 using GA.Operations.Selections;
-using GA.Operations.Selections.Concurrent;
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
-using System.Reflection;
 using System.Linq;
-using TSP.Core;
 using TSP.Examples;
 using GA.ConsoleApp;
 using Algorithms.Utility.NumberWrapper;
@@ -40,8 +34,8 @@ namespace GA.ConsoleTest
                 ElitePercent = 100D,
                 MutationProbability = 0,
                 OnlyChildrenInNewGeneration = false,
-                GenerationsMaxCount = 500,
-                StagnatingGenerationsLimit = 5,
+                GenerationsMaxCount = 1000,
+                StagnatingGenerationsLimit = 200,
             };
 
             var crossovers = Enum.GetValues<CrossoversEnum>()
@@ -51,21 +45,47 @@ namespace GA.ConsoleTest
             var experimentSettings = new GAExperimentSettings<int>()
             {
                 PopulationSize = 1000,
-                ResearchedParameterName = (x) => nameof(x.CrossoverType),
-                ResearchedParameterIncrement = new NumberInt(1),
-                ResearchedParameterRange = (new NumberInt(crossovers.First()), new NumberInt(crossovers.Last())),
+                ResearchedParameterName = (x) => nameof(x.MutationProbability),
+                ResearchedParameterIncrement = 20,
+                ResearchedParameterRange = (new NumberInt(0), new NumberInt(100)),
                 UseSameInitialPopulation = true,
 
-                CrossoverSettings = new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count },
-                SelectionSettings = new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count },
-                MutationSettings = new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count },
-                
+                CrossoverSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryGeneration, NodesCount = model.Nodes.Count },
+                SelectionSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryGeneration, NodesCount = model.Nodes.Count },
+                MutationSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryGeneration, NodesCount = model.Nodes.Count },
+
+                CrossoverType = CrossoversEnum.PartiallyMapped,
+                MutationsType = MutationsEnum.Shift,
+                SelectionType = SelectionsEnum.RouletteWheel,
+
+                ControlRepeatingCount = 3
+
                 //Crossover = new SinglePointOrderedCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryGeneration, NodesCount = model.Nodes.Count }),
                 //Selection = new TournamentSelection(new GAOperationSettings() { InitType = GAOperationInitType.Manual, NodesCount = model.Nodes.Count }),
                 //Mutation = new InverseMutation(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
             };
 
-            ExperimentsHelper.Run(model.Nodes, settings, experimentSettings, (x) => 1 / model.GetDistance(x), (x) => model.GetDistance(x));
+            var results = ExperimentsHelper.Run(
+                model.Nodes,
+                settings,
+                experimentSettings,
+                (x) => 1 / model.GetDistance(x),
+                (x) => model.GetDistance(x));
+
+            Console.WriteLine($"| {"Group", 10} | {experimentSettings.ResearchedParameterName(settings),20} | {"Time elapsed",19} | {"Minimum",9} | {"Maximum",9} | {"Average",9} | {"Iterations",12} | {"Degeneration coef.",17}");
+
+            foreach (var result in results.OrderBy(x => x.ResearchedParameterValue).ThenBy(x => x.GroupGuid).ThenBy(x => x.IsGroupResult))
+            {
+                Console.WriteLine(
+                    $"| {result.IsGroupResult, 10} " +
+                    $"| {result.ResearchedParameterValue,20} " +
+                    $"| {result.Time,19} " +
+                    $"| {Math.Round(result.MinResult, 2),9} " +
+                    $"| {Math.Round(result.MaxResult, 2),9} " +
+                    $"| {Math.Round(result.AverageResult, 2),9} " +
+                    $"| {result.LastIterationNumber,12} " +
+                    $"| {Math.Round(result.DegenerationCoefficient, 2).ToString() + "%",17}");
+            }
 
             //=====================================
 
@@ -108,7 +128,7 @@ namespace GA.ConsoleTest
             //    //new RouletteWheelSelection(new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count }),
             //    new TournamentSelection(new GAOperationSettings() { InitType = GAOperationInitType.Manual, NodesCount = model.Nodes.Count }) { },
             //    //{ ParentSelecting = ParentSelectingPrinciple.Outbreeding, IndividualCanJoinOnlyOnePair = false },
-                
+
             //    //new PartiallyMappedCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
             //    //new ParallelPartiallyMappedCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
             //    new SinglePointOrderedCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryGeneration, NodesCount = model.Nodes.Count }),

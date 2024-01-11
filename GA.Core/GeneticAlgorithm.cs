@@ -29,6 +29,7 @@ namespace GA.Core
 		private bool stopByStagnationFlag = false;
 
 		public IList<Individual<TGene>> Population => population.ToList();
+		public int Iteration => iteration;
 
 		/// <summary>
 		/// Build algorithm for individuals which distinguish by order of genes
@@ -125,9 +126,14 @@ namespace GA.Core
 			var currentIterationBestResult = fitnesses.OrderByDescending(x => x.Value).FirstOrDefault();
 
 			if (currentIterationBestResult.Value > currentBestResult.Fitness)
+			{
 				currentBestResult = (currentIterationBestResult.Key, currentIterationBestResult.Value);
+				stagnationCounter = 0;
+			}
 			else
+			{
 				stagnationCounter++;
+			}
 
 			if (settings.StagnatingGenerationsLimit > 0 && stagnationCounter >= settings.StagnatingGenerationsLimit)
 				stopByStagnationFlag = true;

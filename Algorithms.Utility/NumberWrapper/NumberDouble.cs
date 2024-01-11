@@ -1,15 +1,10 @@
 ﻿namespace Algorithms.Utility.NumberWrapper
 {
-    public class NumberDouble : INumber<double>
+    public class NumberDouble : NumberBase<double>
     {
-        public double Value { get; private set; }
+        public NumberDouble(double value) : base(value) { }
 
-        public NumberDouble(double value)
-        {
-            Value = value;
-        }
-
-        public double AddStore(double added)
+        public override double AddStore(double added)
         {
             Value += added;
             return Value;

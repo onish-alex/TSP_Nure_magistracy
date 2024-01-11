@@ -6,7 +6,6 @@ using GA.Core.Operations.Crossovers;
 using GA.Core.Operations.Mutations;
 using GA.Core.Operations.Selections;
 using GA.Core.Utility;
-using GA.Operations;
 using GA.Operations.Crossovers;
 using GA.Operations.Crossovers.Concurrent;
 using GA.Operations.Mutations;
@@ -21,7 +20,7 @@ namespace GA.ConsoleApp
 {
     public static class ExperimentsHelper
     {
-        public static void Run<TNode, TResearch>(
+        public static IList<ExperimentResult<TNode>> Run<TNode, TResearch>(
             IList<TNode> nodes,
             GASettings settings,
             GAExperimentSettings<TResearch> experimentSettings,
@@ -33,7 +32,7 @@ namespace GA.ConsoleApp
 
             if (researchedProperty == null)
                 throw new Exception();
-            
+
             var researchedParam = experimentSettings.ResearchedParameterRange.Min;
 
             IList<Individual<TNode>> population = null;
@@ -41,43 +40,85 @@ namespace GA.ConsoleApp
             if (experimentSettings.UseSameInitialPopulation)
                 population = GeneratePopulation(nodes, experimentSettings.PopulationSize);
 
-            Console.WriteLine($"{experimentSettings.ResearchedParameterName(settings), 20} | {"Time elapsed", 19} | {"Minimum", 9} | {"Maximum", 9} | {"Average", 9} | {"Degeneration coef.", 17}");
+            var resultsList = new List<ExperimentResult<TNode>>();
 
-            while (researchedParam.Value.CompareTo(experimentSettings.ResearchedParameterRange.Max.Value) < 0) 
+            while (researchedParam.Value.CompareTo(experimentSettings.ResearchedParameterRange.Max.Value) <= 0)
             {
                 if (!experimentSettings.UseSameInitialPopulation)
                     population = GeneratePopulation(nodes, experimentSettings.PopulationSize);
 
                 researchedProperty.SetValue(settings, researchedParam.Value);
 
-                var selection = CreateSelection(settings.SelectionType, experimentSettings.SelectionSettings);
-                var crossover = CreateCrossover(settings.CrossoverType, experimentSettings.CrossoverSettings);
-                var mutation = CreateMutation(settings.MutationsType, experimentSettings.MutationSettings);
+                var repeatingCount = experimentSettings.ControlRepeatingCount;
+                var groupGuid = Guid.Empty;
 
-                var algo = new GeneticAlgorithm<TNode>(
-                    selection,
-                    crossover,
-                    mutation,
-                    population.ToList(),
-                    settings, 
-                    fitnessGetter);
+                if (experimentSettings.ControlRepeatingCount < 1)
+                    repeatingCount = 1;
+                else if (experimentSettings.ControlRepeatingCount > 1)
+                    groupGuid = Guid.NewGuid();
 
-                var timer = Stopwatch.StartNew();
-                algo.Run();
-                timer.Stop();
+                for (int i = 0; i < repeatingCount; i++)
+                {
+                    var selection = CreateSelection(settings.SelectionType, experimentSettings.SelectionSettings);
+                    var crossover = CreateCrossover(settings.CrossoverType, experimentSettings.CrossoverSettings);
+                    var mutation = CreateMutation(settings.MutationsType, experimentSettings.MutationSettings);
 
-                var resultPopulation = algo.Population;
+                    var algo = new GeneticAlgorithm<TNode>(
+                        selection,
+                        crossover,
+                        mutation,
+                        population.ToList(),
+                        settings,
+                        fitnessGetter);
 
-                Console.WriteLine(
-                    $"{researchedParam,20} " +
-                    $"| {timer.Elapsed,19} " +
-                    $"| {Math.Round(resultPopulation.Min(x => resultGetter(x)), 2),9} " +
-                    $"| {Math.Round(resultPopulation.Max(x => resultGetter(x)), 2),9} " +
-                    $"| {Math.Round(resultPopulation.Average(x => resultGetter(x)), 2),9} " +
-                    $"| {Math.Round(resultPopulation.GetDegenerationCoefficient() * 100, 2).ToString() + "%",17}");
+                    var timer = Stopwatch.StartNew();
+                    var bestResult = algo.Run();
+                    timer.Stop();
 
-                researchedParam.AddStore(experimentSettings.ResearchedParameterIncrement.Value);
+                    var resultPopulation = algo.Population;
+
+                    resultsList.Add(new ExperimentResult<TNode>()
+                    {
+                        StartPopulation = population,
+                        FinishPopulation = algo.Population,
+                        MinResult = resultGetter(bestResult.Individual),
+                        MaxResult = resultPopulation.Max(x => resultGetter(x)),
+                        AverageResult = resultPopulation.Average(x => resultGetter(x)),
+                        DegenerationCoefficient = resultPopulation.GetDegenerationCoefficient() * 100,
+                        LastIterationNumber = algo.Iteration,
+                        ResearchedParameterName = experimentSettings.ResearchedParameterName(settings),
+                        ResearchedParameterValue = researchedProperty.GetValue(settings),
+                        Time = timer.Elapsed,
+                        IsGroupResult = false,
+                        GroupGuid = groupGuid
+                    });
+                }
+
+                if (repeatingCount > 0)
+                {
+                    var group = resultsList.Where(x => !x.IsGroupResult && x.GroupGuid == groupGuid);
+
+                    resultsList.Add(new ExperimentResult<TNode>()
+                    {
+                        StartPopulation = population,
+                        FinishPopulation = group.First().FinishPopulation,
+                        MinResult = group.Min(x => x.MinResult),
+                        MaxResult = group.Max(x => x.MaxResult),
+                        AverageResult = group.Average(x => x.AverageResult),
+                        DegenerationCoefficient = group.Average(x => x.DegenerationCoefficient),
+                        LastIterationNumber = group.Average(x => x.LastIterationNumber),
+                        ResearchedParameterName = experimentSettings.ResearchedParameterName(settings),
+                        ResearchedParameterValue = researchedProperty.GetValue(settings),
+                        Time = new TimeSpan((long)group.Average(x => x.Time.Ticks)),
+                        IsGroupResult = true,
+                        GroupGuid = groupGuid
+                    });
+                }
+
+                researchedParam.AddStore(experimentSettings.ResearchedParameterIncrement);
             }
+
+            return resultsList;
         }
 
         private static IMutation CreateMutation(MutationsEnum mutationsType, GAOperationSettings mutationSettings)
@@ -87,11 +128,11 @@ namespace GA.ConsoleApp
                 MutationsEnum.Swap => new SwapMutation(mutationSettings),
                 MutationsEnum.Shift => new ShiftMutation(mutationSettings),
                 MutationsEnum.Inverse => new InverseMutation(mutationSettings),
-                
+
                 MutationsEnum.ParallelSwap => new SwapMutation(mutationSettings),
                 MutationsEnum.ParallelShift => new ShiftMutation(mutationSettings),
                 MutationsEnum.ParallelInverse => new InverseMutation(mutationSettings),
-                
+
                 _ => throw new ArgumentException()
             };
         }
@@ -111,7 +152,7 @@ namespace GA.ConsoleApp
                 CrossoversEnum.ParallelPartiallyMapped => new ParallelPartiallyMappedCrossover(crossoverSettings),
                 CrossoversEnum.ParallelTwoPointOrdered => new ParallelTwoPointOrderedCrossover(crossoverSettings),
                 CrossoversEnum.ParallelSinglePointOrdered => new ParallelSinglePointOrderedCrossover(crossoverSettings),
-                
+
                 _ => throw new ArgumentException()
             };
         }
@@ -122,7 +163,7 @@ namespace GA.ConsoleApp
             {
                 SelectionsEnum.RouletteWheel => new RouletteWheelSelection(selectionSettings),
                 SelectionsEnum.Tournament => new TournamentSelection(selectionSettings),
-                
+
                 SelectionsEnum.ParallelRouletteWheel => new ParallelRouletteWheelSelection(selectionSettings),
                 SelectionsEnum.ParallelTournament => new ParallelTournamentSelection(selectionSettings),
 
