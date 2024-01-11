@@ -1,5 +1,6 @@
 ﻿using Algorithms.Utility.Extensions;
 using GA.Analytics;
+using GA.ConsoleApp.Experiments.Writer;
 using GA.Core;
 using GA.Core.Models;
 using GA.Core.Operations.Crossovers;
@@ -16,16 +17,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace GA.ConsoleApp
+namespace GA.ConsoleApp.Experiments
 {
-    public static class ExperimentsHelper
+    internal static class ExperimentsHelper
     {
-        public static IList<ExperimentResult<TNode>> Run<TNode, TResearch>(
+        internal static IList<ExperimentResult<TNode>> Run<TNode, TResearch>(
             IList<TNode> nodes,
             GASettings settings,
             GAExperimentSettings<TResearch> experimentSettings,
             Func<Individual<TNode>, double> fitnessGetter,
-            Func<Individual<TNode>, double> resultGetter)
+            Func<Individual<TNode>, double> resultGetter,
+            IList<IExperimentResultWriter<TResearch>> writers = null)
             where TResearch : struct, IComparable<TResearch>
         {
             var researchedProperty = settings.GetType().GetProperty(experimentSettings.ResearchedParameterName(settings));
@@ -77,7 +79,7 @@ namespace GA.ConsoleApp
 
                     var resultPopulation = algo.Population;
 
-                    resultsList.Add(new ExperimentResult<TNode>()
+                    var experimentResult = new ExperimentResult<TNode>()
                     {
                         StartPopulation = population,
                         FinishPopulation = algo.Population,
@@ -91,14 +93,20 @@ namespace GA.ConsoleApp
                         Time = timer.Elapsed,
                         IsGroupResult = false,
                         GroupGuid = groupGuid
-                    });
+                    };
+
+                    resultsList.Add(experimentResult);
+
+                    if (writers != null && writers.Any())
+                        foreach (var writer in writers)
+                            writer.Write(experimentResult);
                 }
 
                 if (repeatingCount > 0)
                 {
                     var group = resultsList.Where(x => !x.IsGroupResult && x.GroupGuid == groupGuid);
 
-                    resultsList.Add(new ExperimentResult<TNode>()
+                    var groupExperimentResult = new ExperimentResult<TNode>()
                     {
                         StartPopulation = population,
                         FinishPopulation = group.First().FinishPopulation,
@@ -112,7 +120,13 @@ namespace GA.ConsoleApp
                         Time = new TimeSpan((long)group.Average(x => x.Time.Ticks)),
                         IsGroupResult = true,
                         GroupGuid = groupGuid
-                    });
+                    };
+
+                    resultsList.Add(groupExperimentResult);
+                    
+                    if (writers != null && writers.Any())
+                        foreach (var writer in writers)
+                            writer.Write(groupExperimentResult);
                 }
 
                 researchedParam.AddStore(experimentSettings.ResearchedParameterIncrement);
@@ -171,7 +185,7 @@ namespace GA.ConsoleApp
             };
         }
 
-        public static IList<Individual<TNode>> GeneratePopulation<TNode>(IList<TNode> nodes, int size)
+        internal static IList<Individual<TNode>> GeneratePopulation<TNode>(IList<TNode> nodes, int size)
         {
             IList<Individual<TNode>> population = new List<Individual<TNode>>(size);
 

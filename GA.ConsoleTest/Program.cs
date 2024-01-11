@@ -1,19 +1,12 @@
-﻿using Algorithms.Utility.Extensions;
-using GA.Analytics;
-using GA.Core;
-using GA.Core.Models;
-using GA.Core.Utility;
-using GA.Operations.Crossovers;
-using GA.Operations.Crossovers.Concurrent;
-using GA.Operations.Mutations;
-using GA.Operations.Mutations.Concurrent;
-using GA.Operations.Selections;
+﻿using GA.Core.Utility;
 using System;
 using System.Globalization;
 using System.Linq;
 using TSP.Examples;
-using GA.ConsoleApp;
 using Algorithms.Utility.NumberWrapper;
+using GA.ConsoleApp.Experiments;
+using GA.ConsoleApp.Experiments.Writer;
+using System.Collections.Generic;
 
 namespace GA.ConsoleTest
 {
@@ -42,12 +35,12 @@ namespace GA.ConsoleTest
                 .OrderBy(x => (int)x)
                 .Select(x => (int)x);
 
-            var experimentSettings = new GAExperimentSettings<int>()
+            var experimentSettings = new GAExperimentSettings<double>()
             {
                 PopulationSize = 1000,
                 ResearchedParameterName = (x) => nameof(x.MutationProbability),
                 ResearchedParameterIncrement = 20,
-                ResearchedParameterRange = (new NumberInt(0), new NumberInt(100)),
+                ResearchedParameterRange = (new NumberDouble(0), new NumberDouble(100)),
                 UseSameInitialPopulation = true,
 
                 CrossoverSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryGeneration, NodesCount = model.Nodes.Count },
@@ -65,116 +58,120 @@ namespace GA.ConsoleTest
                 //Mutation = new InverseMutation(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
             };
 
-            var results = ExperimentsHelper.Run(
-                model.Nodes,
-                settings,
-                experimentSettings,
-                (x) => 1 / model.GetDistance(x),
-                (x) => model.GetDistance(x));
-
-            Console.WriteLine($"| {"Group", 10} | {experimentSettings.ResearchedParameterName(settings),20} | {"Time elapsed",19} | {"Minimum",9} | {"Maximum",9} | {"Average",9} | {"Iterations",12} | {"Degeneration coef.",17}");
-
-            foreach (var result in results.OrderBy(x => x.ResearchedParameterValue).ThenBy(x => x.GroupGuid).ThenBy(x => x.IsGroupResult))
+            using (var writer = new CSVWriter<double>("1.csv", ",", settings, experimentSettings))
             {
-                Console.WriteLine(
-                    $"| {result.IsGroupResult, 10} " +
-                    $"| {result.ResearchedParameterValue,20} " +
-                    $"| {result.Time,19} " +
-                    $"| {Math.Round(result.MinResult, 2),9} " +
-                    $"| {Math.Round(result.MaxResult, 2),9} " +
-                    $"| {Math.Round(result.AverageResult, 2),9} " +
-                    $"| {result.LastIterationNumber,12} " +
-                    $"| {Math.Round(result.DegenerationCoefficient, 2).ToString() + "%",17}");
+                var results = ExperimentsHelper.Run(
+                    model.Nodes,
+                    settings,
+                    experimentSettings,
+                    (x) => 1 / model.GetDistance(x),
+                    (x) => model.GetDistance(x),
+                    new List<IExperimentResultWriter<double>>() { writer });
             }
 
-            //=====================================
+        //Console.WriteLine($"| {"Group", 10} | {experimentSettings.ResearchedParameterName(settings),20} | {"Time elapsed",19} | {"Minimum",9} | {"Maximum",9} | {"Average",9} | {"Iterations",12} | {"Degeneration coef.",17}");
 
-            //Console.WriteLine(Environment.ProcessorCount);
+        //foreach (var result in results.OrderBy(x => x.ResearchedParameterValue).ThenBy(x => x.GroupGuid).ThenBy(x => x.IsGroupResult))
+        //{
+        //    Console.WriteLine(
+        //        $"| {result.IsGroupResult, 10} " +
+        //        $"| {result.ResearchedParameterValue,20} " +
+        //        $"| {result.Time,19} " +
+        //        $"| {Math.Round(result.MinResult, 2),9} " +
+        //        $"| {Math.Round(result.MaxResult, 2),9} " +
+        //        $"| {Math.Round(result.AverageResult, 2),9} " +
+        //        $"| {result.LastIterationNumber,12} " +
+        //        $"| {Math.Round(result.DegenerationCoefficient, 2).ToString() + "%",17}");
+        //}
 
-            //CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
-            //CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
+        //=====================================
 
-            //var populationSize = 1000;
-            ////var generationsAmount = 1000;
-            //var mutationProbability = 100D;
-            //double? eliteCoefficient = null;
+        //Console.WriteLine(Environment.ProcessorCount);
 
-            //var model = PreparedModelLoader.GetModel(PreparedModelsEnum.ch150);
-            //var solution = PreparedModelLoader.GetSolution(model, PreparedModelsEnum.ch150);
+        //CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+        //CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
 
-            //Console.WriteLine(model.GetDistance(solution, true));
+        //var populationSize = 1000;
+        ////var generationsAmount = 1000;
+        //var mutationProbability = 100D;
+        //double? eliteCoefficient = null;
 
-            //IList<Individual<TSPNode>> population = new List<Individual<TSPNode>>(populationSize);
+        //var model = PreparedModelLoader.GetModel(PreparedModelsEnum.ch150);
+        //var solution = PreparedModelLoader.GetSolution(model, PreparedModelsEnum.ch150);
 
-            //for (var i = 0; i < populationSize; i++)
-            //{
-            //    var nodes = Random.Shared.GetUniqueRandomSet(model.Nodes, model.Nodes.Count);
-            //    population.Add(new Individual<TSPNode>(nodes));
-            //}
+        //Console.WriteLine(model.GetDistance(solution, true));
 
-            //var timer = Stopwatch.StartNew();
+        //IList<Individual<TSPNode>> population = new List<Individual<TSPNode>>(populationSize);
 
-            //var settings = new GASettings()
-            //{
-            //    ElitePercent = eliteCoefficient,
-            //    MutationProbability = mutationProbability,
-            //    OnlyChildrenInNewGeneration = false,
-            //     GenerationsMaxCount = 500,
-            //     StagnatingGenerationsLimit = 5,
-            //};
+        //for (var i = 0; i < populationSize; i++)
+        //{
+        //    var nodes = Random.Shared.GetUniqueRandomSet(model.Nodes, model.Nodes.Count);
+        //    population.Add(new Individual<TSPNode>(nodes));
+        //}
 
-            //var algo = new GeneticAlgorithm<TSPNode>(
-            //    //new RouletteWheelSelection(new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count }),
-            //    //new RouletteWheelSelection(new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count }),
-            //    new TournamentSelection(new GAOperationSettings() { InitType = GAOperationInitType.Manual, NodesCount = model.Nodes.Count }) { },
-            //    //{ ParentSelecting = ParentSelectingPrinciple.Outbreeding, IndividualCanJoinOnlyOnePair = false },
+        //var timer = Stopwatch.StartNew();
 
-            //    //new PartiallyMappedCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
-            //    //new ParallelPartiallyMappedCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
-            //    new SinglePointOrderedCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryGeneration, NodesCount = model.Nodes.Count }),
-            //    //new ParallelSinglePointOrderedCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
-            //    //new BitMaskCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
-            //    //new TwoPointOrderedCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
-            //    //new ParallelTwoPointOrderedCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
-            //    //new CyclicCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
-            //    //new ParallelCyclicCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
+        //var settings = new GASettings()
+        //{
+        //    ElitePercent = eliteCoefficient,
+        //    MutationProbability = mutationProbability,
+        //    OnlyChildrenInNewGeneration = false,
+        //     GenerationsMaxCount = 500,
+        //     StagnatingGenerationsLimit = 5,
+        //};
 
-            //    //new ShiftMutation(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
-            //    //new ParallelShiftMutation(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
-            //    //new SwapMutation(new GAOperationSettings() { InitType = GAOperationInitType.Manual, NodesCount = model.Nodes.Count }) { SwapSectionLength = 2 },
-            //    //new ParallelSwapMutation(new GAOperationSettings() { InitType = GAOperationInitType.Manual, NodesCount = model.Nodes.Count }) { SwapSectionLength = 2},
-            //    new InverseMutation(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
-            //    //new ParallelInverseMutation(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
-            //    population,
-            //    //,
-            //    //() => 
-            //    //{ 
-            //    //    var nodes = Random.Shared.GetUniqueRandomSet(model.Nodes, model.Nodes.Count); 
-            //    //    return new Individual<TSPNode>(nodes); 
-            //    //}
-            //    settings, (x) => 1 / model.GetDistance(x));
+        //var algo = new GeneticAlgorithm<TSPNode>(
+        //    //new RouletteWheelSelection(new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count }),
+        //    //new RouletteWheelSelection(new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count }),
+        //    new TournamentSelection(new GAOperationSettings() { InitType = GAOperationInitType.Manual, NodesCount = model.Nodes.Count }) { },
+        //    //{ ParentSelecting = ParentSelectingPrinciple.Outbreeding, IndividualCanJoinOnlyOnePair = false },
 
-            //algo.Run();
-            //population = algo.Population;
-            ////for (var i = 0; i < generationsAmount; i++)
-            ////    population = algo.GetNextGeneration();
+        //    //new PartiallyMappedCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
+        //    //new ParallelPartiallyMappedCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
+        //    new SinglePointOrderedCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryGeneration, NodesCount = model.Nodes.Count }),
+        //    //new ParallelSinglePointOrderedCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
+        //    //new BitMaskCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
+        //    //new TwoPointOrderedCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
+        //    //new ParallelTwoPointOrderedCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
+        //    //new CyclicCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
+        //    //new ParallelCyclicCrossover(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
 
-            //timer.Stop();
+        //    //new ShiftMutation(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
+        //    //new ParallelShiftMutation(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
+        //    //new SwapMutation(new GAOperationSettings() { InitType = GAOperationInitType.Manual, NodesCount = model.Nodes.Count }) { SwapSectionLength = 2 },
+        //    //new ParallelSwapMutation(new GAOperationSettings() { InitType = GAOperationInitType.Manual, NodesCount = model.Nodes.Count }) { SwapSectionLength = 2},
+        //    new InverseMutation(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
+        //    //new ParallelInverseMutation(new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count }),
+        //    population,
+        //    //,
+        //    //() => 
+        //    //{ 
+        //    //    var nodes = Random.Shared.GetUniqueRandomSet(model.Nodes, model.Nodes.Count); 
+        //    //    return new Individual<TSPNode>(nodes); 
+        //    //}
+        //    settings, (x) => 1 / model.GetDistance(x));
 
-            ////Console.WriteLine($"{"Time elapsed",19} | {"Minimum"} | {"Maximum"} | {"Average"} | {"Degeneration coef."}");
-            ////Console.WriteLine($"{timer.Elapsed,19} " +
-            ////    $",{Math.Round(population.Min(x => model.GetDistance(x)), 2),7} " +
-            ////    $",{Math.Round(population.Max(x => model.GetDistance(x)), 2),7} " +
-            ////    $",{Math.Round(population.Average(x => model.GetDistance(x)), 2),7} " +
-            ////    $",{Math.Round(population.GetDegenerationCoefficient() * 100, 2).ToString() + "%",17}");
-            //Console.WriteLine($"{"Time elapsed",19} | {"Minimum"} | {"Maximum"} | {"Average"} | {"Degeneration coef."}");
-            //Console.WriteLine($"{timer.Elapsed} " +
-            //    $"{Math.Round(population.Min(x => model.GetDistance(x)), 2)} " +
-            //    $"{Math.Round(population.Max(x => model.GetDistance(x)), 2)} " +
-            //    $"{Math.Round(population.Average(x => model.GetDistance(x)), 2)} " +
-            //    $"{Math.Round(population.GetDegenerationCoefficient() * 100, 2).ToString() + "%"}");
-            ////Console.ReadKey();
+        //algo.Run();
+        //population = algo.Population;
+        ////for (var i = 0; i < generationsAmount; i++)
+        ////    population = algo.GetNextGeneration();
 
-        }
+        //timer.Stop();
+
+        ////Console.WriteLine($"{"Time elapsed",19} | {"Minimum"} | {"Maximum"} | {"Average"} | {"Degeneration coef."}");
+        ////Console.WriteLine($"{timer.Elapsed,19} " +
+        ////    $",{Math.Round(population.Min(x => model.GetDistance(x)), 2),7} " +
+        ////    $",{Math.Round(population.Max(x => model.GetDistance(x)), 2),7} " +
+        ////    $",{Math.Round(population.Average(x => model.GetDistance(x)), 2),7} " +
+        ////    $",{Math.Round(population.GetDegenerationCoefficient() * 100, 2).ToString() + "%",17}");
+        //Console.WriteLine($"{"Time elapsed",19} | {"Minimum"} | {"Maximum"} | {"Average"} | {"Degeneration coef."}");
+        //Console.WriteLine($"{timer.Elapsed} " +
+        //    $"{Math.Round(population.Min(x => model.GetDistance(x)), 2)} " +
+        //    $"{Math.Round(population.Max(x => model.GetDistance(x)), 2)} " +
+        //    $"{Math.Round(population.Average(x => model.GetDistance(x)), 2)} " +
+        //    $"{Math.Round(population.GetDegenerationCoefficient() * 100, 2).ToString() + "%"}");
+        ////Console.ReadKey();
+
     }
+}
 }
