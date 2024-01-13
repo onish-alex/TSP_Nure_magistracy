@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\GA.Analytics\GA.Analytics.csproj" />
     <ProjectReference Include="..\GA.Core\GA.Core.csproj" />
     <ProjectReference Include="..\GA.Operations\GA.Operations.csproj" />

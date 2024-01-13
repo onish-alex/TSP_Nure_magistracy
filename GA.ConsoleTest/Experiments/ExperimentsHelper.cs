@@ -19,7 +19,7 @@ using System.Linq;
 
 namespace GA.ConsoleApp.Experiments
 {
-    internal static class ExperimentsHelper
+    public static class ExperimentsHelper
     {
         internal static IList<ExperimentResult<TNode>> Run<TNode, TResearch>(
             IList<TNode> nodes,
@@ -27,30 +27,33 @@ namespace GA.ConsoleApp.Experiments
             GAExperimentSettings<TResearch> experimentSettings,
             Func<Individual<TNode>, double> fitnessGetter,
             Func<Individual<TNode>, double> resultGetter,
-            IList<IExperimentResultWriter<TResearch>> writers = null)
+            WritersEnum writerTypes = WritersEnum.None,
+            string path = null)
             where TResearch : struct, IComparable<TResearch>
         {
-            var researchedProperty = settings.GetType().GetProperty(experimentSettings.ResearchedParameterName(settings));
-
-            if (researchedProperty == null)
-                throw new Exception();
-
-            var researchedParam = experimentSettings.ResearchedParameterRange.Min;
-
-            IList<Individual<TNode>> population = null;
-
-            if (experimentSettings.UseSameInitialPopulation)
-                population = GeneratePopulation(nodes, experimentSettings.PopulationSize);
+            IList<IExperimentResultWriter<TResearch>> writers = CreateWriters(writerTypes, path, settings, experimentSettings);
 
             var resultsList = new List<ExperimentResult<TNode>>();
 
+            //get researched parameter reflection info
+            var researchedProperty = settings.GetType().GetProperty(experimentSettings.ResearchedParameterName);
+            var researchedParam = experimentSettings.ResearchedParameterRange.Min;
+
+            //set initial population
+            IList<Individual<TNode>> population = null;
+            if (experimentSettings.UseSameInitialPopulation)
+                population = GeneratePopulation(nodes, experimentSettings.PopulationSize);
+
             while (researchedParam.Value.CompareTo(experimentSettings.ResearchedParameterRange.Max.Value) <= 0)
             {
+                //reinit population if needed
                 if (!experimentSettings.UseSameInitialPopulation)
                     population = GeneratePopulation(nodes, experimentSettings.PopulationSize);
 
+                //set researched parameter 
                 researchedProperty.SetValue(settings, researchedParam.Value);
 
+                //control repeating
                 var repeatingCount = experimentSettings.ControlRepeatingCount;
                 var groupGuid = Guid.Empty;
 
@@ -61,9 +64,9 @@ namespace GA.ConsoleApp.Experiments
 
                 for (int i = 0; i < repeatingCount; i++)
                 {
-                    var selection = CreateSelection(settings.SelectionType, experimentSettings.SelectionSettings);
-                    var crossover = CreateCrossover(settings.CrossoverType, experimentSettings.CrossoverSettings);
-                    var mutation = CreateMutation(settings.MutationsType, experimentSettings.MutationSettings);
+                    var selection = CreateSelection(experimentSettings.SelectionType, experimentSettings.SelectionSettings);
+                    var crossover = CreateCrossover(experimentSettings.CrossoverType, experimentSettings.CrossoverSettings);
+                    var mutation = CreateMutation(experimentSettings.MutationsType, experimentSettings.MutationSettings);
 
                     var algo = new GeneticAlgorithm<TNode>(
                         selection,
@@ -77,18 +80,16 @@ namespace GA.ConsoleApp.Experiments
                     var bestResult = algo.Run();
                     timer.Stop();
 
-                    var resultPopulation = algo.Population;
-
                     var experimentResult = new ExperimentResult<TNode>()
                     {
                         StartPopulation = population,
                         FinishPopulation = algo.Population,
                         MinResult = resultGetter(bestResult.Individual),
-                        MaxResult = resultPopulation.Max(x => resultGetter(x)),
-                        AverageResult = resultPopulation.Average(x => resultGetter(x)),
-                        DegenerationCoefficient = resultPopulation.GetDegenerationCoefficient() * 100,
+                        MaxResult = algo.Population.Max(x => resultGetter(x)),
+                        AverageResult = algo.Population.Average(x => resultGetter(x)),
+                        DegenerationCoefficient = algo.Population.GetDegenerationCoefficient() * 100,
                         LastIterationNumber = algo.Iteration,
-                        ResearchedParameterName = experimentSettings.ResearchedParameterName(settings),
+                        ResearchedParameterName = experimentSettings.ResearchedParameterName,
                         ResearchedParameterValue = researchedProperty.GetValue(settings),
                         Time = timer.Elapsed,
                         IsGroupResult = false,
@@ -115,7 +116,7 @@ namespace GA.ConsoleApp.Experiments
                         AverageResult = group.Average(x => x.AverageResult),
                         DegenerationCoefficient = group.Average(x => x.DegenerationCoefficient),
                         LastIterationNumber = group.Average(x => x.LastIterationNumber),
-                        ResearchedParameterName = experimentSettings.ResearchedParameterName(settings),
+                        ResearchedParameterName = experimentSettings.ResearchedParameterName,
                         ResearchedParameterValue = researchedProperty.GetValue(settings),
                         Time = new TimeSpan((long)group.Average(x => x.Time.Ticks)),
                         IsGroupResult = true,
@@ -133,6 +134,17 @@ namespace GA.ConsoleApp.Experiments
             }
 
             return resultsList;
+        }
+
+        private static IList<IExperimentResultWriter<TResearch>> CreateWriters<TResearch>(WritersEnum writerTypes, string path, GASettings settings, GAExperimentSettings<TResearch> experimentSettings) where TResearch : struct, IComparable<TResearch>
+        {
+            var writers = new List<IExperimentResultWriter<TResearch>>();
+            var fileName = GetFileName(experimentSettings);
+
+            if ((writerTypes & WritersEnum.CSV) > 0) writers.Add(new CSVWriter<TResearch>(path, fileName, settings, experimentSettings));
+            if ((writerTypes & WritersEnum.JSON) > 0) writers.Add(new JsonWriter<TResearch>(path, fileName, settings, experimentSettings));
+
+            return writers;
         }
 
         private static IMutation CreateMutation(MutationsEnum mutationsType, GAOperationSettings mutationSettings)
@@ -185,7 +197,7 @@ namespace GA.ConsoleApp.Experiments
             };
         }
 
-        internal static IList<Individual<TNode>> GeneratePopulation<TNode>(IList<TNode> nodes, int size)
+        private static IList<Individual<TNode>> GeneratePopulation<TNode>(IList<TNode> nodes, int size)
         {
             IList<Individual<TNode>> population = new List<Individual<TNode>>(size);
 
@@ -198,6 +210,18 @@ namespace GA.ConsoleApp.Experiments
             return population;
         }
 
-        //private static void 
+        private static string GetFileName<TResearch>(GAExperimentSettings<TResearch> experimentSettings) where TResearch : struct, IComparable<TResearch>
+        {
+            var nameComponents = new List<string>()
+            {
+                DateTime.Now.ToString("yyyyMMdd_HHmmss"),
+                experimentSettings.ResearchedParameterName,
+                experimentSettings.ResearchedParameterRange.Min.Value.ToString(),
+                experimentSettings.ResearchedParameterRange.Max.Value.ToString(),
+                experimentSettings.ResearchedParameterIncrement.ToString(),
+            };
+
+            return string.Join('-', nameComponents);
+        } 
     }
 }

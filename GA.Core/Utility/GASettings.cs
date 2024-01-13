@@ -26,11 +26,11 @@ namespace GA.Core.Utility
 
 		#region ForExperimentsOnly
 
-		public CrossoversEnum CrossoverType { get; set; }
+		//public CrossoversEnum CrossoverType { get; set; }
 		
-		public MutationsEnum MutationsType { get; set; }
+		//public MutationsEnum MutationsType { get; set; }
 		
-		public SelectionsEnum SelectionType { get; set; }
+		//public SelectionsEnum SelectionType { get; set; }
 
 		#endregion
 	}

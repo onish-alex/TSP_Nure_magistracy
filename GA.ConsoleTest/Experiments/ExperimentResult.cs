@@ -1,26 +1,27 @@
 ﻿using GA.Core.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
 namespace GA.ConsoleApp.Experiments
 {
-    internal class ExperimentResult<TNode>
+    public class ExperimentResult<TNode>
     {
-        internal bool IsGroupResult { get; set; }
-        internal Guid GroupGuid { get; set; }
+        [JsonProperty("group")] public bool IsGroupResult { get; set; }
+        [JsonProperty("guid")] public Guid GroupGuid { get; set; }
 
-        internal IList<Individual<TNode>> StartPopulation { get; set; }
-        internal IList<Individual<TNode>> FinishPopulation { get; set; }
+        [JsonProperty("spop")] public IList<Individual<TNode>> StartPopulation { get; set; }
+        [JsonProperty("fpop")] public IList<Individual<TNode>> FinishPopulation { get; set; }
 
-        internal double MinResult { get; set; }
-        internal double MaxResult { get; set; }
-        internal double AverageResult { get; set; }
-        internal double DegenerationCoefficient { get; set; }
-        internal double LastIterationNumber { get; set; }
+        [JsonProperty("min")] public double MinResult { get; set; }
+        [JsonProperty("max")] public double MaxResult { get; set; }
+        [JsonProperty("avg")] public double AverageResult { get; set; }
+        [JsonProperty("dcoef")] public double DegenerationCoefficient { get; set; }
+        [JsonProperty("iter")] public double LastIterationNumber { get; set; }
 
-        internal TimeSpan Time { get; set; }
+        [JsonProperty("time")] public TimeSpan Time { get; set; }
 
-        internal string ResearchedParameterName { get; set; }
-        internal object ResearchedParameterValue { get; set; }
+        [JsonProperty("param")] public string ResearchedParameterName { get; set; }
+        [JsonProperty("value")] public object ResearchedParameterValue { get; set; }
     }
 }
