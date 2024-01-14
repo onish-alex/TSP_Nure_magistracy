@@ -7,60 +7,60 @@ using System.Linq;
 
 namespace GA.Operations.Crossovers
 {
-    public class SinglePointOrderedCrossover : BaseCrossover
-    {
-        public int PointIndex { get; set; }
+	public class SinglePointOrderedCrossover : BaseCrossover
+	{
+		public int PointIndex { get; set; }
 
-        public SinglePointOrderedCrossover(GAOperationSettings operationSettings) : base(operationSettings) { }
+		public SinglePointOrderedCrossover(GAOperationSettings operationSettings) : base(operationSettings) { }
 
-        public override IList<TIndividual> GetNextGeneration<TIndividual, TGene>(IList<(TIndividual, TIndividual)> parents)
-        {
-            IList<TIndividual> children = new List<TIndividual>(parents.Count * 2);
+		public override IList<TIndividual> GetNextGeneration<TIndividual, TGene>(IList<(TIndividual, TIndividual)> parents)
+		{
+			IList<TIndividual> children = new List<TIndividual>(parents.Count * 2);
 
-            if (operationSettings.InitType == GAOperationInitType.EveryGeneration)
-                InitSettings();
+			if (operationSettings.InitType == GAOperationInitType.EveryGeneration)
+				InitSettings();
 
-            foreach (var pair in parents)
-            {
-                var firstChildGenome = new List<TGene>();
-                var secondChildGenome = new List<TGene>();
+			foreach (var pair in parents)
+			{
+				var firstChildGenome = new List<TGene>();
+				var secondChildGenome = new List<TGene>();
 
-                if (operationSettings.InitType == GAOperationInitType.EveryIndividual)
-                    InitSettings();
+				if (operationSettings.InitType == GAOperationInitType.EveryIndividual)
+					InitSettings();
 
-                //for (int i = 0; i < PointIndex; i++)
-                //{
-                //    firstChildGenome.Add(pair.Item1[i]);
-                //    secondChildGenome.Add(pair.Item2[i]);
-                //}
+				//for (int i = 0; i < PointIndex; i++)
+				//{
+				//    firstChildGenome.Add(pair.Item1[i]);
+				//    secondChildGenome.Add(pair.Item2[i]);
+				//}
 
-                //for (int i = 0; i < operationSettings.NodesCount; i++)
-                //{
-                //    if (!firstChildGenome.Contains(pair.Item2[i])) 
-                //        firstChildGenome.Add(pair.Item2[i]);
-                    
-                //    if (!secondChildGenome.Contains(pair.Item1[i]))    
-                //        secondChildGenome.Add(pair.Item1[i]);
-                //}
+				//for (int i = 0; i < operationSettings.NodesCount; i++)
+				//{
+				//    if (!firstChildGenome.Contains(pair.Item2[i])) 
+				//        firstChildGenome.Add(pair.Item2[i]);
 
-                Func<TGene, int, bool> pointIndexPredicate = (x, i) => i < PointIndex;
+				//    if (!secondChildGenome.Contains(pair.Item1[i]))    
+				//        secondChildGenome.Add(pair.Item1[i]);
+				//}
 
-                firstChildGenome.AddRange(pair.Item1.TakeWhile(pointIndexPredicate));
-                secondChildGenome.AddRange(pair.Item2.TakeWhile(pointIndexPredicate));
+				Func<TGene, int, bool> pointIndexPredicate = (x, i) => i < PointIndex;
 
-                firstChildGenome.AddRange(pair.Item2.Except(firstChildGenome));
-                secondChildGenome.AddRange(pair.Item1.Except(secondChildGenome));
+				firstChildGenome.AddRange(pair.Item1.TakeWhile(pointIndexPredicate));
+				secondChildGenome.AddRange(pair.Item2.TakeWhile(pointIndexPredicate));
 
-                children.Add(Individual<TGene>.GetInstance<TIndividual>(firstChildGenome));
-                children.Add(Individual<TGene>.GetInstance<TIndividual>(secondChildGenome));
-            }
+				firstChildGenome.AddRange(pair.Item2.Except(firstChildGenome));
+				secondChildGenome.AddRange(pair.Item1.Except(secondChildGenome));
 
-            return children;
-        }
+				children.Add(Individual<TGene>.GetInstance<TIndividual>(firstChildGenome));
+				children.Add(Individual<TGene>.GetInstance<TIndividual>(secondChildGenome));
+			}
 
-        protected override void InitSettings()
-        {
-            PointIndex = Random.Shared.Next(1, operationSettings.NodesCount);
-        }
-    }
+			return children;
+		}
+
+		protected override void InitSettings()
+		{
+			PointIndex = Random.Shared.Next(1, operationSettings.NodesCount);
+		}
+	}
 }

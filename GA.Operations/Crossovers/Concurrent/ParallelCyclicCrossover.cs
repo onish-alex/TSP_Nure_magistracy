@@ -5,74 +5,73 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GA.Operations.Crossovers.Concurrent
 {
-    public class ParallelCyclicCrossover : ParallelBaseCrossover
-    {
-        public int CycleSearchIndex { get; set; }
+	public class ParallelCyclicCrossover : ParallelBaseCrossover
+	{
+		public int CycleSearchIndex { get; set; }
 
-        public ParallelCyclicCrossover(GAOperationSettings operationSettings) : base(operationSettings)
-        {
-        }
+		public ParallelCyclicCrossover(GAOperationSettings operationSettings) : base(operationSettings)
+		{
+		}
 
-        public override IList<TIndividual> GetNextGeneration<TIndividual, TGene>(IList<(TIndividual, TIndividual)> parents)
-        {
-            //IList<TIndividual> children = new List<TIndividual>(parents.Count * 2);
-            var children = new ConcurrentBag<TIndividual>();
+		public override IList<TIndividual> GetNextGeneration<TIndividual, TGene>(IList<(TIndividual, TIndividual)> parents)
+		{
+			//IList<TIndividual> children = new List<TIndividual>(parents.Count * 2);
+			var children = new ConcurrentBag<TIndividual>();
 
-            if (operationSettings.InitType == GAOperationInitType.EveryGeneration)
-                InitSettings();
+			if (operationSettings.InitType == GAOperationInitType.EveryGeneration)
+				InitSettings();
 
-            Parallel.ForEach(parents, parallelOptions, (pair) =>
-            {
-                var firstChildGenome = new List<TGene>(pair.Item1);
-                var secondChildGenome = new List<TGene>(pair.Item2);
+			Parallel.ForEach(parents, parallelOptions, (pair) =>
+			{
+				var firstChildGenome = new List<TGene>(pair.Item1);
+				var secondChildGenome = new List<TGene>(pair.Item2);
 
-                var cycleSearchIndex = CycleSearchIndex;
+				var cycleSearchIndex = CycleSearchIndex;
 
-                if (operationSettings.InitType == GAOperationInitType.EveryIndividual)
-                    InitSettingsInner(out cycleSearchIndex);
-                    
-                var cycle = GetCycleIndexes(cycleSearchIndex, pair.Item1, pair.Item2);
+				if (operationSettings.InitType == GAOperationInitType.EveryIndividual)
+					InitSettingsInner(out cycleSearchIndex);
 
-                foreach (var index in cycle)
-                    (secondChildGenome[index], firstChildGenome[index]) = (firstChildGenome[index], secondChildGenome[index]);
+				var cycle = GetCycleIndexes(cycleSearchIndex, pair.Item1, pair.Item2);
 
-                children.Add(Individual<TGene>.GetInstance<TIndividual>(firstChildGenome));
-                children.Add(Individual<TGene>.GetInstance<TIndividual>(secondChildGenome));
-            });
+				foreach (var index in cycle)
+					(secondChildGenome[index], firstChildGenome[index]) = (firstChildGenome[index], secondChildGenome[index]);
 
-            return children.ToList();
-        }
+				children.Add(Individual<TGene>.GetInstance<TIndividual>(firstChildGenome));
+				children.Add(Individual<TGene>.GetInstance<TIndividual>(secondChildGenome));
+			});
 
-        private IEnumerable<int> GetCycleIndexes<TGene>(int startIndex, Individual<TGene> firstParent, Individual<TGene> secondParent)
-        {
-            var cycleIndexes = new List<int>() { startIndex };
-            var currentItem = secondParent[startIndex];
+			return children.ToList();
+		}
 
-            while (!currentItem.Equals(firstParent[startIndex]))
-            {
-                var cycleItemIndex = firstParent.IndexOf(currentItem);
-                cycleIndexes.Add(cycleItemIndex);
+		private IEnumerable<int> GetCycleIndexes<TGene>(int startIndex, Individual<TGene> firstParent, Individual<TGene> secondParent)
+		{
+			var cycleIndexes = new List<int>() { startIndex };
+			var currentItem = secondParent[startIndex];
 
-                currentItem = secondParent[cycleItemIndex];
-            }
+			while (!currentItem.Equals(firstParent[startIndex]))
+			{
+				var cycleItemIndex = firstParent.IndexOf(currentItem);
+				cycleIndexes.Add(cycleItemIndex);
 
-            return cycleIndexes;
-        }
+				currentItem = secondParent[cycleItemIndex];
+			}
 
-        protected override void InitSettings()
-        {
-            InitSettingsInner(out int cycleSearchIndex);
-            CycleSearchIndex = cycleSearchIndex;
-        }
+			return cycleIndexes;
+		}
 
-        private void InitSettingsInner(out int cycleSearchIndex)
-        {
-            cycleSearchIndex = Random.Shared.Next(0, operationSettings.NodesCount - 1);
-        }
-    }
+		protected override void InitSettings()
+		{
+			InitSettingsInner(out int cycleSearchIndex);
+			CycleSearchIndex = cycleSearchIndex;
+		}
+
+		private void InitSettingsInner(out int cycleSearchIndex)
+		{
+			cycleSearchIndex = Random.Shared.Next(0, operationSettings.NodesCount - 1);
+		}
+	}
 }

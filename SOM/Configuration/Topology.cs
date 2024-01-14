@@ -1,7 +1,7 @@
 ﻿namespace SOM.Configuration
 {
-    public enum Topology
-    {
-        Sphere
-    }
+	public enum Topology
+	{
+		Sphere
+	}
 }

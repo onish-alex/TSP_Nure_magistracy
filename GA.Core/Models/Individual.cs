@@ -92,7 +92,7 @@ namespace GA.Core.Models
 		{
 			return ((IEnumerable)genotype).GetEnumerator();
 		}
-	
+
 		public class IndividualComparer : IEqualityComparer<Individual<TGene>>
 		{
 			public bool Equals(Individual<TGene> x, Individual<TGene> y)

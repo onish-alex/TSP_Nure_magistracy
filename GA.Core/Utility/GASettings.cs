@@ -1,7 +1,4 @@
-﻿using GA.Core.Models;
-using System;
-
-namespace GA.Core.Utility
+﻿namespace GA.Core.Utility
 {
 	public class GASettings
 	{
@@ -27,9 +24,9 @@ namespace GA.Core.Utility
 		#region ForExperimentsOnly
 
 		//public CrossoversEnum CrossoverType { get; set; }
-		
+
 		//public MutationsEnum MutationsType { get; set; }
-		
+
 		//public SelectionsEnum SelectionType { get; set; }
 
 		#endregion

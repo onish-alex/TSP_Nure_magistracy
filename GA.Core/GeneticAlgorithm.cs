@@ -6,7 +6,6 @@ using GA.Core.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Transactions;
 
 namespace GA.Core
 {
@@ -18,7 +17,7 @@ namespace GA.Core
 
 		private IList<Individual<TGene>> population;
 		Func<Individual<TGene>, double> fitnessGetter;
-		
+
 		Dictionary<Individual<TGene>, double> fitnesses;
 
 		private (Individual<TGene> Individual, double Fitness) currentBestResult;
@@ -42,7 +41,7 @@ namespace GA.Core
 			IList<Individual<TGene>> population,
 			GASettings settings,
 			Func<Individual<TGene>, double> fitnessGetter)
-		{			
+		{
 			this.selection = selection;
 			this.crossover = crossover;
 			this.mutation = mutation;
@@ -69,8 +68,8 @@ namespace GA.Core
 		{
 			if (settings.GenerationsMaxCount < 1)
 				throw new ArgumentOutOfRangeException(
-					nameof(settings.GenerationsMaxCount), 
-					settings.GenerationsMaxCount, 
+					nameof(settings.GenerationsMaxCount),
+					settings.GenerationsMaxCount,
 					$"{nameof(settings.GenerationsMaxCount)} must be greater than 0");
 
 			for (iteration = 0; iteration < settings.GenerationsMaxCount; iteration++)

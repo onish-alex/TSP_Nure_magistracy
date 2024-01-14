@@ -1,40 +1,40 @@
 ﻿namespace GA.Operations
 {
 
-    public enum CrossoversEnum : int
-    {
-        Cyclic,
-        PartiallyMapped,
-        SinglePointOrdered,
-        TwoPointOrdered,
+	public enum CrossoversEnum : int
+	{
+		Cyclic,
+		PartiallyMapped,
+		SinglePointOrdered,
+		TwoPointOrdered,
 
-        BitMask,
+		BitMask,
 
-        ParallelCyclic,
-        ParallelPartiallyMapped,
-        ParallelSinglePointOrdered,
-        ParallelTwoPointOrdered,
+		ParallelCyclic,
+		ParallelPartiallyMapped,
+		ParallelSinglePointOrdered,
+		ParallelTwoPointOrdered,
 
-        ParallelBitMask,
-    }
+		ParallelBitMask,
+	}
 
-    public enum MutationsEnum : int
-    {
-        Inverse,
-        Shift,
-        Swap,
+	public enum MutationsEnum : int
+	{
+		Inverse,
+		Shift,
+		Swap,
 
-        ParallelInverse,
-        ParallelShift,
-        ParallelSwap,
-    }
-    
-    public enum SelectionsEnum : int
-    {   
-        RouletteWheel,
-        Tournament,
+		ParallelInverse,
+		ParallelShift,
+		ParallelSwap,
+	}
+
+	public enum SelectionsEnum : int
+	{
+		RouletteWheel,
+		Tournament,
 
 		ParallelRouletteWheel,
 		ParallelTournament,
-    }
+	}
 }
