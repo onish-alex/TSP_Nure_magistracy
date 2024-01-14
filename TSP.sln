@@ -37,13 +37,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSP.Desktop", "TSP.Desktop\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SOM", "SOM", "{FD4002BE-6F35-4D7B-9177-B53CBA3068E0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SOM", "SOM\SOM.csproj", "{E8842E3D-E1CA-4518-A3E6-3E4400ECE96F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SOM.Core", "SOM\SOM.Core.csproj", "{E8842E3D-E1CA-4518-A3E6-3E4400ECE96F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Algorithms.SphereTools", "Algorithms.SphereCovering\Algorithms.SphereTools.csproj", "{F10390F1-479F-4320-9771-14D7EDA6ACC7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Algorithms.ConsoleApp", "Algorithms.ConsoleApp\Algorithms.ConsoleApp.csproj", "{165F6162-CDDC-4256-ADB2-A6BF8E585655}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SOM.ConsoleApp", "SOM.ConsoleApp\SOM.ConsoleApp.csproj", "{E59C146F-5427-4846-A4D6-6773A61D26B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SOM.ConsoleApp", "SOM.ConsoleApp\SOM.ConsoleApp.csproj", "{E59C146F-5427-4846-A4D6-6773A61D26B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

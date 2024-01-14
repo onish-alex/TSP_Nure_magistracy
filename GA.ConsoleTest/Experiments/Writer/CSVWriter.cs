@@ -5,11 +5,13 @@ namespace GA.ConsoleApp.Experiments.Writer
 {
     public class CSVWriter<TResearch> : FileWriter<TResearch> where TResearch : struct, IComparable<TResearch>
     {
+        private const string CSV_SEPARATOR_DEFINITION = "sep=";
+
         private bool placedHeader = false;
         private string separator;
         protected override string _extension => "csv";
 
-        public CSVWriter(string path, string fileName, GASettings settings, GAExperimentSettings<TResearch> experimentSettings, string separator = ",")
+        public CSVWriter(string path, string fileName, GASettings settings, GAExperimentSettings<TResearch> experimentSettings, string separator = ";")
             :base(path, fileName, settings, experimentSettings)
         {
             this.separator = separator;
@@ -19,6 +21,8 @@ namespace GA.ConsoleApp.Experiments.Writer
         {
             if (!placedHeader)
             {
+                _writer.WriteLine(CSV_SEPARATOR_DEFINITION + separator);
+
                 var header = GetHeaderString(_experimentSettings, _settings);
                 _writer.WriteLine(header);
                 placedHeader = true;

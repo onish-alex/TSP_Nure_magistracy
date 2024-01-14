@@ -1,10 +1,10 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using Newtonsoft.Json;
 
 namespace TSP.Core
 {
     public class TSPNode
     {
-        public string Name { get; set; }
+        [JsonProperty("N")] public string Name { get; set; }
         public double X { get; set; }
         public double Y { get; set; }
 

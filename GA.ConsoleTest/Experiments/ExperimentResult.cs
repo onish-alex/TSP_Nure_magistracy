@@ -10,8 +10,8 @@ namespace GA.ConsoleApp.Experiments
         [JsonProperty("group")] public bool IsGroupResult { get; set; }
         [JsonProperty("guid")] public Guid GroupGuid { get; set; }
 
-        [JsonProperty("spop")] public IList<Individual<TNode>> StartPopulation { get; set; }
-        [JsonProperty("fpop")] public IList<Individual<TNode>> FinishPopulation { get; set; }
+        [JsonIgnore][JsonProperty("spop")] public IList<Individual<TNode>> StartPopulation { get; set; }
+        [JsonIgnore][JsonProperty("fpop")] public IList<Individual<TNode>> FinishPopulation { get; set; }
 
         [JsonProperty("min")] public double MinResult { get; set; }
         [JsonProperty("max")] public double MaxResult { get; set; }

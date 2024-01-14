@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace GA.ConsoleApp.Experiments.Writer
 {
-    public class ConsoleWriter<TResearch> : IExperimentResultWriter<TResearch>, IDisposable where TResearch : struct, IComparable<TResearch>
+    public class ConsoleWriter<TResearch> : IExperimentResultWriter<TResearch> where TResearch : struct, IComparable<TResearch>
     {
         protected GASettings _settings;
         protected GAExperimentSettings<TResearch> _experimentSettings;
@@ -21,7 +21,7 @@ namespace GA.ConsoleApp.Experiments.Writer
             _experimentSettings = experimentSettings;
         }
 
-        public override void Write<TNode>(ExperimentResult<TNode> result)
+        public void Write<TNode>(ExperimentResult<TNode> result)
         {
             if (!placedHeader)
             {

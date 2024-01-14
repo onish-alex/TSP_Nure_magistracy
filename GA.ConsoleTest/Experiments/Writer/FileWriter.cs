@@ -6,9 +6,11 @@ namespace GA.ConsoleApp.Experiments.Writer
 {
     public abstract class FileWriter<TResearch> : IExperimentResultWriter<TResearch>, IDisposable where TResearch : struct, IComparable<TResearch>
     {
+        protected string _path;
+        protected string _fileName;
         protected StreamWriter _writer;
         protected FileStream _stream;
-        private bool disposedValue;
+        protected bool disposedValue;
         
         protected GASettings _settings;
         protected GAExperimentSettings<TResearch> _experimentSettings;
@@ -17,14 +19,18 @@ namespace GA.ConsoleApp.Experiments.Writer
 
         protected FileWriter(string path, string fileName, GASettings settings, GAExperimentSettings<TResearch> experimentSettings)
         {
-            if (string.IsNullOrEmpty(path))
+            if (path == null)
                 throw new ArgumentNullException(nameof(path));
 
             if (string.IsNullOrEmpty(fileName))
                 throw new ArgumentNullException(nameof(fileName));
 
+            _path = path;
+            _fileName = fileName;
+
             _stream = File.OpenWrite(Path.Combine(path, $"{fileName}.{_extension}"));
             _writer = new StreamWriter(_stream);
+
             _settings = settings;
             _experimentSettings = experimentSettings;
         }
@@ -37,8 +43,8 @@ namespace GA.ConsoleApp.Experiments.Writer
             {
                 if (disposing)
                 {
-                    _writer.Dispose();
-                    _stream.Dispose();
+                    _writer.Close();
+                    _stream.Close();
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
