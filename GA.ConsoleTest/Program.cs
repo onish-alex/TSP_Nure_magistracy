@@ -4,9 +4,11 @@ using System.Globalization;
 using System.Linq;
 using TSP.Examples;
 using Algorithms.Utility.NumberWrapper;
-using GA.ConsoleApp.Experiments;
-using GA.ConsoleApp.Experiments.Writer;
+using GA.Experiments;
+using GA.Experiments.Writer;
 using System.Collections.Generic;
+using GA.Operations;
+using GA.Experiments;
 
 namespace GA.ConsoleTest
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GA.ConsoleApp.Experiments.Writer
+namespace GA.Experiments.Writer
 {
     public interface IExperimentResultWriter<TResearch> where TResearch : struct, IComparable<TResearch> 
     {

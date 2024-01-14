@@ -1,10 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
 	<Nullable>disable</Nullable>
-	<ImplicitUsings>disable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,11 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Algorithms.Utility\Algorithms.Utility.csproj" />
+    <ProjectReference Include="..\GA.Analytics\GA.Analytics.csproj" />
     <ProjectReference Include="..\GA.Core\GA.Core.csproj" />
-    <ProjectReference Include="..\GA.Experiments\GA.Experiments.csproj" />
     <ProjectReference Include="..\GA.Operations\GA.Operations.csproj" />
-    <ProjectReference Include="..\TSP.Core\TSP.Core.csproj" />
-    <ProjectReference Include="..\TSP.Examples\TSP.Examples.csproj" />
   </ItemGroup>
 
 </Project>

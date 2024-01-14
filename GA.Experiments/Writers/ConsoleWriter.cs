@@ -7,7 +7,7 @@ using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GA.ConsoleApp.Experiments.Writer
+namespace GA.Experiments.Writer
 {
     public class ConsoleWriter<TResearch> : IExperimentResultWriter<TResearch> where TResearch : struct, IComparable<TResearch>
     {

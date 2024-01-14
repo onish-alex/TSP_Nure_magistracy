@@ -1,8 +1,9 @@
 ﻿using Algorithms.Utility.NumberWrapper;
 using GA.Core.Utility;
+using GA.Operations;
 using System;
 
-namespace GA.ConsoleApp.Experiments
+namespace GA.Experiments
 {
     public class GAExperimentSettings<T> where T : struct, IComparable<T>
     {

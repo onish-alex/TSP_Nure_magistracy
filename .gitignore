@@ -32,3 +32,5 @@ GA.Core/obj/
 /SOM/bin/Debug/net6.0
 /SOM.ConsoleApp/bin/Debug/net6.0
 /SOM.ConsoleApp/obj
+/GA.Experiments/obj
+/GA.Experiments/bin/Debug/net6.0

@@ -1,12 +1,13 @@
 ﻿using Algorithms.Utility.Extensions;
 using GA.Analytics;
-using GA.ConsoleApp.Experiments.Writer;
+using GA.Experiments.Writer;
 using GA.Core;
 using GA.Core.Models;
 using GA.Core.Operations.Crossovers;
 using GA.Core.Operations.Mutations;
 using GA.Core.Operations.Selections;
 using GA.Core.Utility;
+using GA.Operations;
 using GA.Operations.Crossovers;
 using GA.Operations.Crossovers.Concurrent;
 using GA.Operations.Mutations;
@@ -17,11 +18,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace GA.ConsoleApp.Experiments
+namespace GA.Experiments
 {
     public static class ExperimentsHelper
     {
-        internal static IList<ExperimentResult<TNode>> Run<TNode, TResearch>(
+        public static IList<ExperimentResult<TNode>> Run<TNode, TResearch>(
             IList<TNode> nodes,
             GASettings settings,
             GAExperimentSettings<TResearch> experimentSettings,

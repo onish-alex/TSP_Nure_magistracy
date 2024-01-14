@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace GA.ConsoleApp.Experiments.Writer
+namespace GA.Experiments.Writer
 {
     public abstract class FileWriter<TResearch> : IExperimentResultWriter<TResearch>, IDisposable where TResearch : struct, IComparable<TResearch>
     {

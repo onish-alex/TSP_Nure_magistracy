@@ -1,4 +1,4 @@
-﻿namespace GA.Core.Utility
+﻿namespace GA.Operations
 {
 
     public enum CrossoversEnum : int

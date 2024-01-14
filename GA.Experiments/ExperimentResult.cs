@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace GA.ConsoleApp.Experiments
+namespace GA.Experiments
 {
     public class ExperimentResult<TNode>
     {

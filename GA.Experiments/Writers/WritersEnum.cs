@@ -1,4 +1,4 @@
-﻿namespace GA.ConsoleApp.Experiments.Writer
+﻿namespace GA.Experiments.Writer
 {
     public enum WritersEnum
     {

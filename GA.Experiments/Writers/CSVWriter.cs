@@ -1,7 +1,7 @@
 ﻿using GA.Core.Utility;
 using System;
 
-namespace GA.ConsoleApp.Experiments.Writer
+namespace GA.Experiments.Writer
 {
     public class CSVWriter<TResearch> : FileWriter<TResearch> where TResearch : struct, IComparable<TResearch>
     {
