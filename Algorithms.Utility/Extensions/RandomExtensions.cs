@@ -13,7 +13,7 @@ namespace Algorithms.Utility.Extensions
 		/// <param name="set">collection with unique elements</param>
 		/// <param name="size">size of result collection</param>
 		/// <returns></returns>
-		public static IList<T> GetUniqueRandomSet<T>(this Random rand, IList<T> set, int size)
+		public static IList<T> GetUniqueRandomSet<T>(this Random rand, IEnumerable<T> set, int size)
 		{
 			var localSet = new List<T>(set);
 			var randSet = new List<T>();

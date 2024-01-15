@@ -18,14 +18,6 @@ namespace GA.Experiments
 		//use the same population for each iteration after changing researched parameter
 		public bool UseSameInitialPopulation { get; set; }
 
-		public GAOperationSettings SelectionSettings { get; set; }
-		public GAOperationSettings CrossoverSettings { get; set; }
-		public GAOperationSettings MutationSettings { get; set; }
-
-		public CrossoversEnum CrossoverType { get; set; }
-		public MutationsEnum MutationsType { get; set; }
-		public SelectionsEnum SelectionType { get; set; }
-
 		public int ControlRepeatingCount { get; set; } = 1;
 	}
 }

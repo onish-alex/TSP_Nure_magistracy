@@ -17,12 +17,12 @@ namespace GA.Operations.Crossovers.Concurrent
 
 		public ParallelPartiallyMappedCrossover(GAOperationSettings operationSettings) : base(operationSettings) { }
 
-		public override IList<TIndividual> GetNextGeneration<TIndividual, TGene>(IList<(TIndividual, TIndividual)> parents)
+		public override IList<Individual<TGene>> GetNextGeneration<TGene>(IList<(Individual<TGene>, Individual<TGene>)> parents)
 		{
 			if (operationSettings.InitType == GAOperationInitType.EveryGeneration)
 				InitSettings();
 
-			ConcurrentBag<TIndividual> children = new ConcurrentBag<TIndividual>();
+			var children = new ConcurrentBag<Individual<TGene>>();
 
 			Parallel.ForEach(parents, parallelOptions, (pair) =>
 			{
@@ -73,8 +73,11 @@ namespace GA.Operations.Crossovers.Concurrent
 					secondChildGenome.Add(secondChildGene);
 				}
 
-				children.Add(Individual<TGene>.GetInstance<TIndividual>(firstChildGenome));
-				children.Add(Individual<TGene>.GetInstance<TIndividual>(secondChildGenome));
+				//children.Add(Individual<TGene>.GetInstance<TIndividual>(firstChildGenome));
+				//children.Add(Individual<TGene>.GetInstance<TIndividual>(secondChildGenome));
+
+				children.Add(new Individual<TGene>(firstChildGenome));
+				children.Add(new Individual<TGene>(secondChildGenome));
 			});
 
 			return children.ToList();

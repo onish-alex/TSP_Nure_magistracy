@@ -14,12 +14,12 @@ namespace GA.Operations.Crossovers
 
 		public PartiallyMappedCrossover(GAOperationSettings operationSettings) : base(operationSettings) { }
 
-		public override IList<TIndividual> GetNextGeneration<TIndividual, TGene>(IList<(TIndividual, TIndividual)> parents)
+		public override IList<Individual<TGene>> GetNextGeneration<TGene>(IList<(Individual<TGene>, Individual<TGene>)> parents)
 		{
 			if (operationSettings.InitType == GAOperationInitType.EveryGeneration)
 				InitSettings();
 
-			IList<TIndividual> children = new List<TIndividual>(parents.Count * 2);
+			IList<Individual<TGene>> children = new List<Individual<TGene>>(parents.Count * 2);
 
 			foreach (var pair in parents)
 			{
@@ -67,8 +67,11 @@ namespace GA.Operations.Crossovers
 					secondChildGenome.Add(secondChildGene);
 				}
 
-				children.Add(Individual<TGene>.GetInstance<TIndividual>(firstChildGenome));
-				children.Add(Individual<TGene>.GetInstance<TIndividual>(secondChildGenome));
+				//children.Add(Individual<TGene>.GetInstance<TIndividual>(firstChildGenome));
+				//children.Add(Individual<TGene>.GetInstance<TIndividual>(secondChildGenome));
+
+				children.Add(new Individual<TGene>(firstChildGenome));
+				children.Add(new Individual<TGene>(secondChildGenome));
 			}
 
 			return children;

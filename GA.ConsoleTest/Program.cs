@@ -27,8 +27,16 @@ namespace GA.ConsoleTest
 				ElitePercent = 100D,
 				MutationProbability = 0,
 				OnlyChildrenInNewGeneration = false,
-				GenerationsMaxCount = 300,
+				GenerationsMaxCount = 500,
 				StagnatingGenerationsLimit = 200,
+
+				CrossoverType = CrossoversEnum.ParallelInverOver,
+				MutationsType = MutationsEnum.ParallelShift,
+				SelectionType = SelectionsEnum.RouletteWheel,
+
+				CrossoverSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryGeneration, NodesCount = model.Nodes.Count },
+				SelectionSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryGeneration, NodesCount = model.Nodes.Count },
+				MutationSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryGeneration, NodesCount = model.Nodes.Count },
 			};
 
 			var crossovers = Enum.GetValues<CrossoversEnum>()
@@ -37,24 +45,16 @@ namespace GA.ConsoleTest
 
 			var experimentSettings = new GAExperimentSettings<double>()
 			{
-				PopulationSize = 500,
+				PopulationSize = 200,
 				ResearchedParameterName = nameof(settings.MutationProbability),
-				ResearchedParameterIncrement = 20,
+				ResearchedParameterIncrement = 10,
 				ResearchedParameterRange = (new NumberDouble(0), new NumberDouble(100)),
 				UseSameInitialPopulation = true,
-
-				CrossoverSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryGeneration, NodesCount = model.Nodes.Count },
-				SelectionSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryGeneration, NodesCount = model.Nodes.Count },
-				MutationSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryGeneration, NodesCount = model.Nodes.Count },
-
-				CrossoverType = CrossoversEnum.PartiallyMapped,
-				MutationsType = MutationsEnum.Shift,
-				SelectionType = SelectionsEnum.RouletteWheel,
 
 				ControlRepeatingCount = 3
 			};
 
-			var results = ExperimentsHelper.Run(
+			var results = ExperimentsEngine.Run(
 				model.Nodes,
 				settings,
 				experimentSettings,

@@ -101,7 +101,7 @@ namespace GA.Core
 			}
 
 			var parentPairs = selection.GetParentPairs(fitnesses);
-			var children = crossover.GetNextGeneration<Individual<TGene>, TGene>(parentPairs);
+			var children = crossover.GetNextGeneration(parentPairs);
 			mutation.ProcessMutation<Individual<TGene>, TGene>(children, settings.MutationProbability);
 
 			if (settings.OnlyChildrenInNewGeneration)

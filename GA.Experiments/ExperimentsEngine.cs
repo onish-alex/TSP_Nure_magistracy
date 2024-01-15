@@ -20,7 +20,7 @@ using System.Linq;
 
 namespace GA.Experiments
 {
-	public static class ExperimentsHelper
+	public static class ExperimentsEngine
 	{
 		public static IList<ExperimentResult<TNode>> Run<TNode, TResearch>(
 			IList<TNode> nodes,
@@ -67,9 +67,9 @@ namespace GA.Experiments
 
 					for (int i = 0; i < repeatingCount; i++)
 					{
-						var selection = CreateSelection(experimentSettings.SelectionType, experimentSettings.SelectionSettings);
-						var crossover = CreateCrossover(experimentSettings.CrossoverType, experimentSettings.CrossoverSettings);
-						var mutation = CreateMutation(experimentSettings.MutationsType, experimentSettings.MutationSettings);
+						var selection = CreateSelection(settings.SelectionType, settings.SelectionSettings);
+						var crossover = CreateCrossover(settings.CrossoverType, settings.CrossoverSettings);
+						var mutation = CreateMutation(settings.MutationsType, settings.MutationSettings);
 
 						var algo = new GeneticAlgorithm<TNode>(
 							selection,
@@ -106,7 +106,7 @@ namespace GA.Experiments
 								writer.Write(experimentResult);
 					}
 
-					if (repeatingCount > 0)
+					if (repeatingCount > 1)
 					{
 						var group = resultsList.Where(x => !x.IsGroupResult && x.GroupGuid == groupGuid);
 
@@ -170,16 +170,20 @@ namespace GA.Experiments
 			return crossoverType switch
 			{
 				CrossoversEnum.Cyclic => new CyclicCrossover(crossoverSettings),
-				CrossoversEnum.BitMask => new BitMaskCrossover(crossoverSettings),
+				//CrossoversEnum.BitMask => new BitMaskCrossover(crossoverSettings),
 				CrossoversEnum.PartiallyMapped => new PartiallyMappedCrossover(crossoverSettings),
 				CrossoversEnum.TwoPointOrdered => new TwoPointOrderedCrossover(crossoverSettings),
 				CrossoversEnum.SinglePointOrdered => new SinglePointOrderedCrossover(crossoverSettings),
+				CrossoversEnum.OrderBased => new OrderBasedCrossover(crossoverSettings),
+				CrossoversEnum.InverOver => new InverOverCrossover(crossoverSettings),
 
 				CrossoversEnum.ParallelCyclic => new ParallelCyclicCrossover(crossoverSettings),
-				CrossoversEnum.ParallelBitMask => new ParallelBitMaskCrossover(crossoverSettings),
+				//CrossoversEnum.ParallelBitMask => new ParallelBitMaskCrossover(crossoverSettings),
 				CrossoversEnum.ParallelPartiallyMapped => new ParallelPartiallyMappedCrossover(crossoverSettings),
 				CrossoversEnum.ParallelTwoPointOrdered => new ParallelTwoPointOrderedCrossover(crossoverSettings),
 				CrossoversEnum.ParallelSinglePointOrdered => new ParallelSinglePointOrderedCrossover(crossoverSettings),
+				CrossoversEnum.ParallelOrderBased => new ParallelOrderBasedCrossover(crossoverSettings),
+				CrossoversEnum.ParallelInverOver => new ParallelInverOverCrossover(crossoverSettings),
 
 				_ => throw new ArgumentException()
 			};

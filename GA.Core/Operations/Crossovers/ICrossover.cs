@@ -5,6 +5,6 @@ namespace GA.Core.Operations.Crossovers
 {
 	public interface ICrossover
 	{
-		IList<TIndividual> GetNextGeneration<TIndividual, TGene>(IList<(TIndividual, TIndividual)> parents) where TIndividual : Individual<TGene>;
+		IList<Individual<TGene>> GetNextGeneration<TGene>(IList<(Individual<TGene>, Individual<TGene>)> parents);
 	}
 }

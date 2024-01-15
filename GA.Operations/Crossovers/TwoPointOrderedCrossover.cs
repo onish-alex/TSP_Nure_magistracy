@@ -16,9 +16,9 @@ namespace GA.Operations.Crossovers
 		{
 		}
 
-		public override IList<TIndividual> GetNextGeneration<TIndividual, TGene>(IList<(TIndividual, TIndividual)> parents)
+		public override IList<Individual<TGene>> GetNextGeneration<TGene>(IList<(Individual<TGene>, Individual<TGene>)> parents)
 		{
-			IList<TIndividual> children = new List<TIndividual>(parents.Count * 2);
+			IList<Individual<TGene>> children = new List<Individual<TGene>>(parents.Count * 2);
 
 			if (operationSettings.InitType == GAOperationInitType.EveryGeneration)
 				InitSettings();
@@ -60,8 +60,11 @@ namespace GA.Operations.Crossovers
 
 				}
 
-				children.Add(Individual<TGene>.GetInstance<TIndividual>(firstChildGenome));
-				children.Add(Individual<TGene>.GetInstance<TIndividual>(secondChildGenome));
+				//children.Add(Individual<TGene>.GetInstance<TIndividual>(firstChildGenome));
+				//children.Add(Individual<TGene>.GetInstance<TIndividual>(secondChildGenome));
+
+				children.Add(new Individual<TGene>(firstChildGenome));
+				children.Add(new Individual<TGene>(secondChildGenome));
 			}
 
 			return children;

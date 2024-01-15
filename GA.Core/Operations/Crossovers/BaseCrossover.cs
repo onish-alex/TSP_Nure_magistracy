@@ -8,6 +8,6 @@ namespace GA.Core.Operations.Crossovers
 	{
 		protected BaseCrossover(GAOperationSettings operationSettings) : base(operationSettings) { }
 
-		public abstract IList<TIndividual> GetNextGeneration<TIndividual, TGene>(IList<(TIndividual, TIndividual)> parents) where TIndividual : Individual<TGene>;
+		public abstract IList<Individual<TGene>> GetNextGeneration<TGene>(IList<(Individual<TGene>, Individual<TGene>)> parents);
 	}
 }

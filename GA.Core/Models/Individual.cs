@@ -27,10 +27,10 @@ namespace GA.Core.Models
 		/// <typeparam name="T"></typeparam>
 		/// <param name="genes"></param>
 		/// <returns></returns>
-		public static T GetInstance<T>(IList<TGene> genes) where T : Individual<TGene>
-		{
-			return Activator.CreateInstance(typeof(T), new object[] { genes }) as T;
-		}
+		//public static T GetInstance<T>(IList<TGene> genes) where T : Individual<TGene>
+		//{
+		//	return Activator.CreateInstance(typeof(T), new object[] { genes }) as T;
+		//}
 
 		public void RemoveRange(int index, int count)
 		{

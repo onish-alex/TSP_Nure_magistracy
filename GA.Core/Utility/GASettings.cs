@@ -23,11 +23,15 @@
 
 		#region ForExperimentsOnly
 
-		//public CrossoversEnum CrossoverType { get; set; }
+		public CrossoversEnum CrossoverType { get; set; }
 
-		//public MutationsEnum MutationsType { get; set; }
+		public MutationsEnum MutationsType { get; set; }
 
-		//public SelectionsEnum SelectionType { get; set; }
+		public SelectionsEnum SelectionType { get; set; }
+
+		public GAOperationSettings SelectionSettings { get; set; }
+		public GAOperationSettings CrossoverSettings { get; set; }
+		public GAOperationSettings MutationSettings { get; set; }
 
 		#endregion
 	}

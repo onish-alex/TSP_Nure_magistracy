@@ -15,9 +15,9 @@ namespace GA.Operations.Crossovers.Concurrent
 
 		public ParallelSinglePointOrderedCrossover(GAOperationSettings operationSettings) : base(operationSettings) { }
 
-		public override IList<TIndividual> GetNextGeneration<TIndividual, TGene>(IList<(TIndividual, TIndividual)> parents)
+		public override IList<Individual<TGene>> GetNextGeneration<TGene>(IList<(Individual<TGene>, Individual<TGene>)> parents)
 		{
-			ConcurrentBag<TIndividual> children = new ConcurrentBag<TIndividual>();
+			var children = new ConcurrentBag<Individual<TGene>>();
 
 			if (operationSettings.InitType == GAOperationInitType.EveryGeneration)
 				InitSettings();
@@ -32,23 +32,34 @@ namespace GA.Operations.Crossovers.Concurrent
 				if (operationSettings.InitType == GAOperationInitType.EveryIndividual)
 					InitSettingsInner(out pointIndex);
 
-				for (int i = 0; i < pointIndex; i++)
-				{
-					firstChildGenome.Add(pair.Item1[i]);
-					secondChildGenome.Add(pair.Item2[i]);
-				}
+				//for (int i = 0; i < pointIndex; i++)
+				//{
+				//	firstChildGenome.Add(pair.Item1[i]);
+				//	secondChildGenome.Add(pair.Item2[i]);
+				//}
 
-				for (int i = 0; i < operationSettings.NodesCount; i++)
-				{
-					if (!firstChildGenome.Contains(pair.Item2[i]))
-						firstChildGenome.Add(pair.Item2[i]);
+				//for (int i = 0; i < operationSettings.NodesCount; i++)
+				//{
+				//	if (!firstChildGenome.Contains(pair.Item2[i]))
+				//		firstChildGenome.Add(pair.Item2[i]);
 
-					if (!secondChildGenome.Contains(pair.Item1[i]))
-						secondChildGenome.Add(pair.Item1[i]);
-				}
+				//	if (!secondChildGenome.Contains(pair.Item1[i]))
+				//		secondChildGenome.Add(pair.Item1[i]);
+				//}
 
-				children.Add(Individual<TGene>.GetInstance<TIndividual>(firstChildGenome));
-				children.Add(Individual<TGene>.GetInstance<TIndividual>(secondChildGenome));
+				Func<TGene, int, bool> pointIndexPredicate = (x, i) => i < PointIndex;
+
+				firstChildGenome.AddRange(pair.Item1.TakeWhile(pointIndexPredicate));
+				secondChildGenome.AddRange(pair.Item2.TakeWhile(pointIndexPredicate));
+
+				firstChildGenome.AddRange(pair.Item2.Except(firstChildGenome));
+				secondChildGenome.AddRange(pair.Item1.Except(secondChildGenome));
+
+				//children.Add(Individual<TGene>.GetInstance<TIndividual>(firstChildGenome));
+				//children.Add(Individual<TGene>.GetInstance<TIndividual>(secondChildGenome));
+
+				children.Add(new Individual<TGene>(firstChildGenome));
+				children.Add(new Individual<TGene>(secondChildGenome));
 			});
 
 			return children.ToList();

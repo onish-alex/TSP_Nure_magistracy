@@ -19,9 +19,9 @@ namespace GA.Operations.Crossovers.Concurrent
 		{
 		}
 
-		public override IList<TIndividual> GetNextGeneration<TIndividual, TGene>(IList<(TIndividual, TIndividual)> parents)
+		public override IList<Individual<TGene>> GetNextGeneration<TGene>(IList<(Individual<TGene>, Individual<TGene>)> parents)
 		{
-			ConcurrentBag<TIndividual> children = new ConcurrentBag<TIndividual>();
+			var children = new ConcurrentBag<Individual<TGene>>();
 
 			if (operationSettings.InitType == GAOperationInitType.EveryGeneration)
 				InitSettings();
@@ -66,8 +66,11 @@ namespace GA.Operations.Crossovers.Concurrent
 
 				}
 
-				children.Add(Individual<TGene>.GetInstance<TIndividual>(firstChildGenome));
-				children.Add(Individual<TGene>.GetInstance<TIndividual>(secondChildGenome));
+				//children.Add(Individual<TGene>.GetInstance<TIndividual>(firstChildGenome));
+				//children.Add(Individual<TGene>.GetInstance<TIndividual>(secondChildGenome));
+
+				children.Add(new Individual<TGene>(firstChildGenome));
+				children.Add(new Individual<TGene>(secondChildGenome));
 			});
 
 			return children.ToList();
