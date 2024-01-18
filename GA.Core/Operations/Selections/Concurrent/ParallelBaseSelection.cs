@@ -9,6 +9,6 @@ namespace GA.Core.Operations.Selections.Concurrent
 		{
 		}
 
-		public abstract IList<(TIndividual, TIndividual)> GetParentPairs<TIndividual>(IDictionary<TIndividual, double> populationFitnesses);
+		public abstract IList<(TIndividual, TIndividual)> GetParentPairs<TIndividual>(IDictionary<TIndividual, double> populationFitnesses, FitnessSortEnum sort);
 	}
 }

@@ -24,7 +24,8 @@ namespace GA.Operations.Selections
 		{
 		}
 
-		public override IList<(TIndividual, TIndividual)> GetParentPairs<TIndividual>(IDictionary<TIndividual, double> populationFitnesses)
+		public override IList<(TIndividual, TIndividual)> GetParentPairs<TIndividual>
+			(IDictionary<TIndividual, double> populationFitnesses, FitnessSortEnum sort = FitnessSortEnum.Descending)
 		{
 			//var parentCandidates = new List<(TIndividual, double)>();
 			var population = populationFitnesses.Keys.ToList();
@@ -34,8 +35,8 @@ namespace GA.Operations.Selections
 
 			for (var i = 0; i < pairsCount; i++)
 			{
-				var firstParent = GetTournamentResult(populationFitnesses, population);
-				var secondParent = GetTournamentResult(populationFitnesses, population);
+				var firstParent = GetTournamentResult(populationFitnesses, population, sort);
+				var secondParent = GetTournamentResult(populationFitnesses, population, sort);
 
 				pairs.Add((firstParent, secondParent));
 			}
@@ -64,6 +65,7 @@ namespace GA.Operations.Selections
 		private TIndividual GetTournamentResult<TIndividual>(
 			IDictionary<TIndividual, double> populationFitnesses,
 			IList<TIndividual> population,
+			FitnessSortEnum sort,
 			int dimension = 2)
 		{
 			if (dimension < 2)
@@ -76,7 +78,9 @@ namespace GA.Operations.Selections
 			foreach (var candidateIndex in candidateIndexes)
 				candidates.Add(population[candidateIndex]);
 
-			var winner = candidates.OrderByDescending(x => populationFitnesses[x]).FirstOrDefault();
+			var winner = 
+				(sort == FitnessSortEnum.Ascending ? candidates.OrderByDescending(x => populationFitnesses[x]) : candidates.OrderBy(x => populationFitnesses[x]))
+				.FirstOrDefault();
 
 			return winner;
 		}

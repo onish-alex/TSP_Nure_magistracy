@@ -1,5 +1,7 @@
-﻿using AntColony.Core;
+﻿using Algorithms.Utility.NumberWrapper;
+using AntColony.Core;
 using AntColony.Core.Utilities;
+using AntColony.Experiments;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,8 +21,8 @@ namespace AntColony.ConsoleApp
 
 			//var modelName = "a280.tsp";
 
-			var model = PreparedModelLoader.GetModel(PreparedModelsEnum.eil101);
-			var solution = PreparedModelLoader.GetSolution(model, PreparedModelsEnum.eil101);
+			var model = PreparedModelLoader.GetModel(PreparedModelsEnum.ch150);
+			var solution = PreparedModelLoader.GetSolution(model, PreparedModelsEnum.ch150);
 			//var model = TSPModelGenerator.GetNewModel(
 			//    nodeCount: 100,
 			//    xRange: (0, 100),
@@ -28,50 +30,45 @@ namespace AntColony.ConsoleApp
 
 			Console.WriteLine("Optimal route length: {0}", model.GetDistance(solution, true));
 
-			var settings = new AntColonySettings()
+			var settings = new ACExperimentSettings<double>()
 			{
+				AntColonyType = AntColonyEnum.Classic,
+				
+				ControlRepeatingCount = 3,
+				
+				ResearchedParameterRange = (new NumberDouble(0.1), new NumberDouble(0.9)),
+				ResearchedParameterIncrement = 0.1,
+				
 				UseCommonAntPheromoneAmount = true,
-				CommonAntPheromoneAmount = 10000,
+				CommonAntPheromoneAmount = 100,
 
-				UseCommonEliteAntPheromoneAmount = true,
-				CommonEliteAntPheromoneAmount = 1000,
+				//UseCommonEliteAntPheromoneAmount = true,
+				//CommonEliteAntPheromoneAmount = 1000,
 
-				EvaporationCoefficient = 0.1,
+				//EvaporationCoefficient = 0.1,
 				//TODO make pheromone refreshing after result not changing after few iterations
 				DistanceWeight = 1,
 				PheromoneWeight = 1.5,
 
-				MinPheromoneAmount = 100,
-				MaxPheromoneAmount = 10000,
+				//MinPheromoneAmount = 100,
+				//MaxPheromoneAmount = 10000,
 
-				InitialPheromoneAmount = 10000,
-				UpdatePheromonesForGlobalBestWay = false,
+				InitialPheromoneAmount = 0,
+				//UpdatePheromonesForGlobalBestWay = false,
+
+				AntCount = 500,
+				//EliteAntCount = 10
 			};
 
-			var antSettings = new AntPopulationSettings()
-			{
-				AntCount = 100,
-				EliteAntCount = 10
-			};
+			settings.ResearchedParameterName = nameof(settings.EvaporationCoefficient);
 
-			//var algo = new ClassicAlgorithm<TSPNode>(model.Nodes, model.GetSectionDistance, settings);
-			//var algo = new ParallelClassicAlgorithm<TSPNode>(model.Nodes, model.GetSectionDistance, settings); // (x) => model.GetDistance(x, true));
-			//var algo = new ParallelElitistAlgorithm<TSPNode>(model.Nodes, model.GetSectionDistance, settings, (x) => model.GetDistance(x, true));
-			//var algo = new ElitistAlgorithm<TSPNode>(model.Nodes, model.GetSectionDistance, settings, (x) => model.GetDistance(x, true));
-			var algo = new MaxMinAlgorithm<TSPNode>(model.Nodes, model.GetSectionDistance, settings, (x) => model.GetDistance(x, true));
-
-			var timer = Stopwatch.StartNew();
-
-			IList<IList<TSPNode>> paths = null;
-
-			for (int i = 0; i <= 100; i++)
-				paths = algo.Run(antSettings);
-
-			timer.Stop();
-
-			Console.WriteLine($"{"Time elapsed"} | {"Minimum"} | {"Maximum"} | {"Average"}");
-			Console.WriteLine($"{timer.Elapsed} | {Math.Round(paths.Min(x => model.GetDistance(x)), 2)} | {Math.Round(paths.Max(x => model.GetDistance(x)), 2)} | {Math.Round(paths.Average(x => model.GetDistance(x)), 2)} ");
-			Console.ReadKey();
+			ACExperimentsEngine.Run(
+				model.Nodes,
+				settings,
+				model.GetSectionDistance,
+				x => model.GetDistance(x, true),
+				Experiments.Writer.WritersEnum.Console | Experiments.Writer.WritersEnum.JSON | Experiments.Writer.WritersEnum.CSV);
+			
 		}
 	}
 }

@@ -5,9 +5,11 @@ namespace GA.Core.Operations.Selections
 {
 	public abstract class BaseSelection : BaseGAOperation, ISelection
 	{
+		protected FitnessSortEnum sort;
+
 		protected BaseSelection(GAOperationSettings operationSettings) : base(operationSettings) { }
 
 		public abstract IList<(TIndividual, TIndividual)> GetParentPairs<TIndividual>
-		   (IDictionary<TIndividual, double> populationFitnesses);
+		   (IDictionary<TIndividual, double> populationFitnesses, FitnessSortEnum sort);
 	}
 }

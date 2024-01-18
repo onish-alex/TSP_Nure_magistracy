@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using GA.Core.Utility;
+using System.Collections.Generic;
 
 namespace GA.Core.Operations.Selections
 {
 	public interface ISelection
 	{
 		IList<(TIndividual, TIndividual)> GetParentPairs<TIndividual>
-		   (IDictionary<TIndividual, double> populationFitnesses);
+		   (IDictionary<TIndividual, double> populationFitnesses, FitnessSortEnum sort);
 	}
 }

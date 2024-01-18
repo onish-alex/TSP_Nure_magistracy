@@ -15,7 +15,7 @@ namespace GA.Experiments.Writer
 			_experimentSettings = experimentSettings;
 		}
 
-		public void Write<TNode>(ExperimentResult<TNode> result)
+		public void Write<TNode>(GAExperimentResult<TNode> result)
 		{
 			if (!placedHeader)
 			{
@@ -25,7 +25,7 @@ namespace GA.Experiments.Writer
 			}
 
 			Console.WriteLine(
-				$"| {result.IsGroupResult,10} " +
+				$"| {result.IsGroupResult,6} " +
 				$"| {result.ResearchedParameterValue,20} " +
 				$"| {result.Time,19} " +
 				$"| {Math.Round(result.MinResult, 2),9} " +
@@ -37,7 +37,15 @@ namespace GA.Experiments.Writer
 
 		private string GetHeaderString(GAExperimentSettings<TResearch> experimentSettings, GASettings settings)
 		{
-			var header = $"| {"Group",10} | {experimentSettings.ResearchedParameterName,20} | {"Time elapsed",19} | {"Minimum",9} | {"Maximum",9} | {"Average",9} | {"Iterations",12} | {"Degeneration coef.",17}";
+			var header = $"| {"Group",6} " +
+						 $"| {experimentSettings.ResearchedParameterName,20} " +
+						 $"| {"Time elapsed",19} " +
+						 $"| {"Minimum",9} " +
+						 $"| {"Maximum",9} " +
+						 $"| {"Average",9} " +
+						 $"| {"Iterations",12} " +
+						 $"| {"Degeneration coef.",17}";
+
 			return header;
 		}
 	}

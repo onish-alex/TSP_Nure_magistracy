@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Algorithms.Utility\Algorithms.Utility.csproj" />
-    <ProjectReference Include="..\GA.Analytics\GA.Analytics.csproj" />
     <ProjectReference Include="..\GA.Core\GA.Core.csproj" />
     <ProjectReference Include="..\GA.Operations\GA.Operations.csproj" />
   </ItemGroup>

@@ -19,42 +19,15 @@ namespace GA.Operations.Selections.Concurrent
 		{
 		}
 
-		public override IList<(TIndividual, TIndividual)> GetParentPairs<TIndividual>(IDictionary<TIndividual, double> populationFitnesses)
+		public override IList<(TIndividual, TIndividual)> GetParentPairs<TIndividual>
+			(IDictionary<TIndividual, double> populationFitnesses, FitnessSortEnum sort)
 		{
-			//var parentCandidates = new ConcurrentDictionary<int, (TIndividual, double)>();
-			//var parentCandidates = new List<(TIndividual, double)>(populationFitnesses.Count);
-			//var population = populationFitnesses.Keys.ToList();
-
-			//Parallel.For(0, populationFitnesses.Count, parallelOptions, (i) =>
-			//{
-			//    var candidateIndexes = Random.Shared.GetNumbers(2, 0, populationFitnesses.Count, true);
-
-			//    var firstCandidateFitness = populationFitnesses[population[candidateIndexes[0]]];
-			//    var secondCandidateFitness = populationFitnesses[population[candidateIndexes[1]]];
-
-			//    //parentCandidates.TryAdd(i, 
-			//    //    (firstCandidateFitness > secondCandidateFitness)
-			//    //        ? (population[firstCandidateIndex], firstCandidateFitness)
-			//    //        : (population[secondCandidateIndex], secondCandidateFitness));
-
-			//    //lock (_lock)
-			//    //{
-			//        parentCandidates.Add(
-			//            (firstCandidateFitness > secondCandidateFitness)
-			//                ? (population[candidateIndexes[0]], firstCandidateFitness)
-			//                : (population[candidateIndexes[1]], secondCandidateFitness));
-			//    //}
-			//});
-
-			//var pairsCount = populationFitnesses.Count / 2;
-			//var pairs = FormPairsPanmixia(parentCandidates, pairsCount);
-
 			var population = populationFitnesses.Keys.ToList();
 
 			var pairsCount = population.Count / 2;
-			var pairs = new List<(TIndividual, TIndividual)>(pairsCount);
+			var pairs = new ConcurrentBag<(TIndividual, TIndividual)>();
 
-			Parallel.For(0, population.Count, parallelOptions, (i) =>
+			Parallel.For(0, pairsCount, parallelOptions, (i) =>
 			{
 				var firstParent = GetTournamentResult(populationFitnesses, population);
 				var secondParent = GetTournamentResult(populationFitnesses, population);
@@ -62,7 +35,7 @@ namespace GA.Operations.Selections.Concurrent
 				pairs.Add((firstParent, secondParent));
 			});
 
-			return pairs;
+			return pairs.ToList();
 		}
 
 		private TIndividual GetTournamentResult<TIndividual>(
@@ -77,11 +50,12 @@ namespace GA.Operations.Selections.Concurrent
 
 			var candidates = new ConcurrentBag<TIndividual>();
 
-			//foreach (var candidateIndex in candidateIndexes)
-			Parallel.ForEach(candidateIndexes, (x) =>
+			foreach (var candidateIndex in candidateIndexes)
+			//Parallel.ForEach(candidateIndexes, (x) =>
 			{
-				candidates.Add(population[x]);
-			});
+				candidates.Add(population[candidateIndex]);
+			}
+			//);
 
 			var winner = candidates.OrderByDescending(x => populationFitnesses[x]).FirstOrDefault();
 

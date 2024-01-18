@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace GA.Experiments.Writer
+namespace AntColony.Experiments.Writer
 {
 	public interface IExperimentResultWriter<TResearch> where TResearch : struct, IComparable<TResearch>
 	{
-		void Write<TNode>(GAExperimentResult<TNode> result);
+		void Write<TNode>(ACExperimentResult<TNode> result);
 	}
 }

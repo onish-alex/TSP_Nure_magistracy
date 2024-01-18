@@ -25,7 +25,9 @@ namespace GA.Core
 
 		private int iteration = 0;
 		private int stagnationCounter = 0;
-		private bool stopByStagnationFlag = false;
+		private bool stopFlag = false;
+
+		private FitnessSortEnum sort;
 
 		public IList<Individual<TGene>> Population => population.ToList();
 		public int Iteration => iteration;
@@ -40,7 +42,8 @@ namespace GA.Core
 			IMutation mutation,
 			IList<Individual<TGene>> population,
 			GASettings settings,
-			Func<Individual<TGene>, double> fitnessGetter)
+			Func<Individual<TGene>, double> fitnessGetter,
+			FitnessSortEnum sort = FitnessSortEnum.Descending)
 		{
 			this.selection = selection;
 			this.crossover = crossover;
@@ -52,6 +55,7 @@ namespace GA.Core
 			this.fitnessGetter = fitnessGetter;
 
 			this.settings = settings;
+			this.sort = sort;
 
 			try
 			{
@@ -74,9 +78,10 @@ namespace GA.Core
 
 			for (iteration = 0; iteration < settings.GenerationsMaxCount; iteration++)
 			{
+				//Console.WriteLine(iteration);
 				GetNextGeneration();
 
-				if (stopByStagnationFlag)
+				if (stopFlag)
 					break;
 			}
 
@@ -94,13 +99,13 @@ namespace GA.Core
 						"elite percent must be between 0 and 100");
 
 				var populationEliteCount = (int)Math.Ceiling(population.Count * (settings.ElitePercent.Value / 100));
-				fitnesses = fitnesses
-					.OrderByDescending(x => x.Value)
+				fitnesses =
+					(sort == FitnessSortEnum.Ascending ? fitnesses.OrderByDescending(x => x.Value) : fitnesses.OrderBy(x => x.Value))
 					.Take(populationEliteCount)
 					.ToDictionary(x => x.Key, x => x.Value);
 			}
 
-			var parentPairs = selection.GetParentPairs(fitnesses);
+			var parentPairs = selection.GetParentPairs(fitnesses, sort);
 			var children = crossover.GetNextGeneration(parentPairs);
 			mutation.ProcessMutation<Individual<TGene>, TGene>(children, settings.MutationProbability);
 
@@ -114,29 +119,47 @@ namespace GA.Core
 				foreach (var child in children)
 					fitnesses.Add(child, fitnessGetter(child));
 
-				fitnesses = fitnesses
-					.OrderByDescending(x => x.Value)
+				fitnesses =
+					(sort == FitnessSortEnum.Ascending ? fitnesses.OrderByDescending(x => x.Value) : fitnesses.OrderBy(x => x.Value))
 					.Take(population.Count)
 					.ToDictionary(x => x.Key, x => x.Value);
 
 				population = fitnesses.Select(x => x.Key).ToList();
 			}
 
-			var currentIterationBestResult = fitnesses.OrderByDescending(x => x.Value).FirstOrDefault();
+			var currentIterationBestResult = (sort == FitnessSortEnum.Ascending ? fitnesses.OrderByDescending(x => x.Value) : fitnesses.OrderBy(x => x.Value)).FirstOrDefault();
 
-			if (currentIterationBestResult.Value > currentBestResult.Fitness)
+			var resetStagnation = false;
+
+			if ((sort == FitnessSortEnum.Ascending && currentIterationBestResult.Value > currentBestResult.Fitness || currentBestResult.Fitness == 0D)
+			 || (sort == FitnessSortEnum.Descending && currentIterationBestResult.Value < currentBestResult.Fitness || currentBestResult.Fitness == 0D))
 			{
 				currentBestResult = (currentIterationBestResult.Key, currentIterationBestResult.Value);
-				stagnationCounter = 0;
+				resetStagnation = true;
 			}
-			else
+
+			if (settings.StagnatingGenerationsLimit.HasValue && settings.StagnatingGenerationsLimit.Value > 0)
 			{
-				stagnationCounter++;
+				if (resetStagnation)
+				{
+					stagnationCounter = 0;
+				}
+				else
+				{
+					stagnationCounter++;
+				}
+
+				if (stagnationCounter >= settings.StagnatingGenerationsLimit)
+					stopFlag = true;
 			}
 
-			if (settings.StagnatingGenerationsLimit > 0 && stagnationCounter >= settings.StagnatingGenerationsLimit)
-				stopByStagnationFlag = true;
+			if (settings.DegenerationMaxPercent.HasValue && settings.DegenerationMaxPercent.Value > 0D)
+			{
+				var degenerationCoef = population.GetDegenerationCoefficient() * 100D;
 
+				if (degenerationCoef > settings.DegenerationMaxPercent.Value)
+					stopFlag = true;
+			}
 			return population;
 		}
 	}

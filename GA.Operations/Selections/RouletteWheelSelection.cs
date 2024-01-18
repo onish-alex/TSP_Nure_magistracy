@@ -18,7 +18,7 @@ namespace GA.Operations.Selections
 		/// <param name="populationFitnesses">Individuals and their fitness values</param>
 		/// <returns>List of tuples - parent pairs for crossover</returns>
 		public override IList<(TIndividual, TIndividual)> GetParentPairs<TIndividual>
-			(IDictionary<TIndividual, double> populationFitnesses)
+			(IDictionary<TIndividual, double> populationFitnesses, FitnessSortEnum sort = FitnessSortEnum.Descending)
 		{
 			///Example:
 			///4 individuals with fitnesses: 10, 20, 30, 40
@@ -34,15 +34,16 @@ namespace GA.Operations.Selections
 			///                       |....|........|............|................|
 			/// right border values:  0    10       30           60               100
 
-			var probabilities = new Dictionary<double, TIndividual>();      //probability right border values for individuals
+			//probability right border values for individuals
+			var probabilities = new Dictionary<double, TIndividual>();
 
-			var fitnessSum = populationFitnesses.Values.Sum();
+			var fitnessSum = (sort == FitnessSortEnum.Ascending) ? populationFitnesses.Values.Sum() : populationFitnesses.Values.Select(x => 1 / x).Sum();
 
 			var rightValue = 0D;
 
 			foreach (var fitness in populationFitnesses)
 			{
-				rightValue += fitness.Value;
+				rightValue += (sort == FitnessSortEnum.Descending) ? 1 / fitness.Value : fitness.Value;
 				probabilities.Add(rightValue, fitness.Key);
 			}
 
@@ -69,22 +70,23 @@ namespace GA.Operations.Selections
 
 				//exclude fitness of chosen first parent
 				var correctedProbabilityValues = probabilityValues
-												.Select(x => x - firstParentProbabilityValue)
+												.Select(x => x >= firstParentProbabilityValue ? x - ((sort == FitnessSortEnum.Ascending) ? populationFitnesses[firstParent] : 1 / populationFitnesses[firstParent]) : x)
 												.ToList();
 
-				fitnessSum -= populationFitnesses[firstParent];
+				fitnessSum -= (sort == FitnessSortEnum.Ascending) ? populationFitnesses[firstParent] : 1 / populationFitnesses[firstParent];
 
 				//choose second parent
-				var secondWheelTurning = Random.Shared.NextDouble() * fitnessSum - firstParentProbabilityValue;
+				var secondWheelTurning = Random.Shared.NextDouble() * fitnessSum;
 
 				correctedProbabilityValues.Add(secondWheelTurning);
 				correctedProbabilityValues.Sort();
 
+				//here's we took second parent from 'probabilityValues', not 'correctedProbabilityValues', that's why we don't need +1 index shift
 				var secondParentIndex = SearchHelper.BinarySearch(correctedProbabilityValues, secondWheelTurning);
 				var secondParent = probabilities[probabilityValues[secondParentIndex]];
 
 				pairs.Add((firstParent, secondParent));
-				fitnessSum += populationFitnesses[firstParent];
+				fitnessSum += (sort == FitnessSortEnum.Ascending) ? populationFitnesses[firstParent] : 1 / populationFitnesses[firstParent];
 			}
 
 			return pairs;

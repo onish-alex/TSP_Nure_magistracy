@@ -19,7 +19,9 @@
 
 		public int GenerationsMaxCount { get; set; } = 1;
 
-		public int StagnatingGenerationsLimit { get; set; } = 1;
+		public int? StagnatingGenerationsLimit { get; set; } = null;
+
+		public double? DegenerationMaxPercent { get; set; } = null;
 
 		#region ForExperimentsOnly
 

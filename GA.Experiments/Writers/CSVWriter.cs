@@ -1,5 +1,6 @@
 ﻿using GA.Core.Utility;
 using System;
+using System.IO;
 
 namespace GA.Experiments.Writer
 {
@@ -17,20 +18,24 @@ namespace GA.Experiments.Writer
 			this.separator = separator;
 		}
 
-		public override void Write<TNode>(ExperimentResult<TNode> result)
+		public override void Write<TNode>(GAExperimentResult<TNode> result)
 		{
-			if (!placedHeader)
+			using (var stream = System.IO.File.OpenWrite(_fullFilePath))
+			using (var writer = new StreamWriter(stream))
 			{
-				_writer.WriteLine(CSV_SEPARATOR_DEFINITION + separator);
+				if (!placedHeader)
+				{
+					writer.WriteLine(CSV_SEPARATOR_DEFINITION + separator);
 
-				var header = GetHeaderString(_experimentSettings, _settings);
-				_writer.WriteLine(header);
-				placedHeader = true;
+					var header = GetHeaderString(_experimentSettings, _settings);
+					writer.WriteLine(header);
+					placedHeader = true;
+				}
+
+				var data = $"{result.IsGroupResult}{separator}{result.ResearchedParameterValue}{separator}{result.Time}{separator}{result.MinResult}{separator}{result.MaxResult}{separator}{result.AverageResult}{separator}{result.LastIterationNumber}{separator}{result.DegenerationCoefficient}";
+
+				writer.WriteLine(data);
 			}
-
-			var data = $"{result.IsGroupResult}{separator}{result.ResearchedParameterValue}{separator}{result.Time}{separator}{result.MinResult}{separator}{result.MaxResult}{separator}{result.AverageResult}{separator}{result.LastIterationNumber}{separator}{result.DegenerationCoefficient}";
-
-			_writer.WriteLine(data);
 		}
 
 		private string GetHeaderString(GAExperimentSettings<TResearch> experimentSettings, GASettings settings)

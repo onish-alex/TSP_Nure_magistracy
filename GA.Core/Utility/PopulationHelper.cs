@@ -1,30 +1,31 @@
 ﻿using GA.Core.Models;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace GA.Analytics
+namespace GA.Core
 {
 	public static class PopulationHelper
 	{
 		public static double GetDegenerationCoefficient<TGene>(this IList<Individual<TGene>> population)
 		{
-			var equalIndividuals = new Dictionary<Individual<TGene>, int>();
+			var equalIndividuals = new List<Individual<TGene>>();
 
 			bool isSolutionContains;
 			foreach (var individual in population)
 			{
 				isSolutionContains = false;
 
-				foreach (var eqInd in equalIndividuals.Keys)
+				foreach (var eqInd in equalIndividuals)
 				{
 					if (eqInd.SequenceEqual(individual))
 					{
-						equalIndividuals[eqInd]++;
 						isSolutionContains = true;
 						break;
 					}
 				}
 
 				if (!isSolutionContains)
-					equalIndividuals.Add(individual, 1);
+					equalIndividuals.Add(individual);
 			}
 
 			var coef = 1 - (double)(equalIndividuals.Count - 1) / (population.Count - 1);

@@ -34,3 +34,10 @@ GA.Core/obj/
 /SOM.ConsoleApp/obj
 /GA.Experiments/obj
 /GA.Experiments/bin/Debug/net6.0
+/Algorithms.ConsoleApp/bin/Release/net6.0
+/Algorithms.SphereCovering/bin/Release/net6.0
+/AntColony.Experiments/bin
+/AntColony.Experiments/obj
+/GA.Experiments/bin/Release/net6.0
+/SOM/bin/Release/net6.0
+/SOM.ConsoleApp/bin/Release/net6.0

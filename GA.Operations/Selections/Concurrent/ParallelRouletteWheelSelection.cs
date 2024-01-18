@@ -2,6 +2,7 @@
 using GA.Core.Operations.Selections.Concurrent;
 using GA.Core.Utility;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace GA.Operations.Selections.Concurrent
 		/// <param name="populationFitnesses">Individuals and their fitness values</param>
 		/// <returns>List of tuples - parent pairs for crossover</returns>
 		public override IList<(TIndividual, TIndividual)> GetParentPairs<TIndividual>
-			(IDictionary<TIndividual, double> populationFitnesses)
+			(IDictionary<TIndividual, double> populationFitnesses, FitnessSortEnum sort)
 		{
 			///Example:
 			///4 individuals with fitnesses: 10, 20, 30, 40
@@ -35,33 +36,29 @@ namespace GA.Operations.Selections.Concurrent
 			///                       |....|........|............|................|
 			/// right border values:  0    10       30           60               100
 
-			var probabilities = new Dictionary<double, TIndividual>();      //probability right border values for individuals
+			//probability right border values for individuals
+			var probabilities = new Dictionary<double, TIndividual>();
 
-			//var fitnessSum = populationFitnesses.Values.AsParallel().Sum();
-			//var fitnessSum = populationFitnesses.Values.Sum();
 			var rightValue = 0D;
 
 			foreach (var fitness in populationFitnesses)
 			{
-				rightValue += Math.Round(fitness.Value, 4);
-				probabilities.TryAdd(rightValue, fitness.Key);
+				rightValue += fitness.Value;
+				probabilities.Add(rightValue, fitness.Key);
 			}
 
 			var pairsCount = populationFitnesses.Count / 2;
-			var pairs = new List<(TIndividual, TIndividual)>(pairsCount);
+			var pairs = new ConcurrentBag<(TIndividual, TIndividual)>();
 
 			//for (var i = 0; i < pairsCount; i++)
-			Parallel.For(0, pairsCount, parallelOptions, (i) =>
+			Parallel.For(0, pairsCount, (x) =>
 			{
-				List<double> probabilityValues = null;
+				var fitnessSum = populationFitnesses.Values.Sum();
 
-				lock (this)
-				{
-					probabilityValues = probabilities.Keys.ToList();
-				}
+				var probabilityValues = probabilities.Keys.ToList();
 
 				//choose first parent
-				var firstWheelTurning = Math.Round(Random.Shared.NextDouble() * rightValue, 5);
+				var firstWheelTurning = Random.Shared.NextDouble() * fitnessSum;
 
 				probabilityValues.Add(firstWheelTurning);
 				probabilityValues.Sort();
@@ -76,25 +73,27 @@ namespace GA.Operations.Selections.Concurrent
 
 				//exclude fitness of chosen first parent
 				var correctedProbabilityValues = probabilityValues
-												.Select(x => x - firstParentProbabilityValue)
+												.Select(x => x >= firstParentProbabilityValue ? x - populationFitnesses[firstParent] : x)
 												.ToList();
 
-				rightValue = Math.Round(rightValue - populationFitnesses[firstParent]);
+				fitnessSum -= populationFitnesses[firstParent];
 
 				//choose second parent
-				var secondWheelTurning = Math.Round(Random.Shared.NextDouble() * rightValue - firstParentProbabilityValue, 4);
+				var secondWheelTurning = Random.Shared.NextDouble() * fitnessSum;
 
 				correctedProbabilityValues.Add(secondWheelTurning);
 				correctedProbabilityValues.Sort();
 
+				//here's we took second parent from 'probabilityValues', not 'correctedProbabilityValues', that's why we don't need +1 index shift
 				var secondParentIndex = SearchHelper.BinarySearch(correctedProbabilityValues, secondWheelTurning);
 				var secondParent = probabilities[probabilityValues[secondParentIndex]];
 
 				pairs.Add((firstParent, secondParent));
-				rightValue = Math.Round(rightValue + populationFitnesses[firstParent]);
-			});
+				//fitnessSum += populationFitnesses[firstParent];
+			}
+			);
 
-			return pairs;
+			return pairs.ToList();
 		}
 
 		protected override void InitSettings() { }

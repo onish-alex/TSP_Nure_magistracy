@@ -4,6 +4,7 @@ using GA.Experiments;
 using GA.Experiments.Writer;
 using GA.Operations;
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using TSP.Examples;
@@ -25,16 +26,17 @@ namespace GA.ConsoleTest
 			var settings = new GASettings()
 			{
 				ElitePercent = 100D,
-				MutationProbability = 0,
+				MutationProbability = 10,
 				OnlyChildrenInNewGeneration = false,
-				GenerationsMaxCount = 500,
-				StagnatingGenerationsLimit = 200,
+				GenerationsMaxCount = 5000,
+				//StagnatingGenerationsLimit = 200,
+				DegenerationMaxPercent = 90,
 
-				CrossoverType = CrossoversEnum.ParallelInverOver,
+				//CrossoverType = CrossoversEnum.ParallelInverOver,
 				MutationsType = MutationsEnum.ParallelShift,
 				SelectionType = SelectionsEnum.RouletteWheel,
 
-				CrossoverSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryGeneration, NodesCount = model.Nodes.Count },
+				CrossoverSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count },
 				SelectionSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryGeneration, NodesCount = model.Nodes.Count },
 				MutationSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryGeneration, NodesCount = model.Nodes.Count },
 			};
@@ -43,24 +45,29 @@ namespace GA.ConsoleTest
 				.OrderBy(x => (int)x)
 				.Select(x => (int)x);
 
-			var experimentSettings = new GAExperimentSettings<double>()
+			var experimentSettings = new GAExperimentSettings<int>()
 			{
-				PopulationSize = 200,
-				ResearchedParameterName = nameof(settings.MutationProbability),
-				ResearchedParameterIncrement = 10,
-				ResearchedParameterRange = (new NumberDouble(0), new NumberDouble(100)),
+				PopulationSize = 3000,
+				ResearchedParameterName = nameof(settings.CrossoverType),
+				ResearchedParameterIncrement = 1,
+				ResearchedParameterRange = (new NumberInt((int)CrossoversEnum.OrderBased), new NumberInt((int)CrossoversEnum.InverOver)),
 				UseSameInitialPopulation = true,
 
 				ControlRepeatingCount = 3
 			};
 
-			var results = ExperimentsEngine.Run(
+			var results = GAExperimentsEngine.Run(
 				model.Nodes,
 				settings,
 				experimentSettings,
-				(x) => 1 / model.GetDistance(x),
+				(x) => model.GetDistance(x),
 				(x) => model.GetDistance(x),
 				WritersEnum.CSV | WritersEnum.JSON | WritersEnum.Console);
+
+			var psi = new ProcessStartInfo("shutdown", "/s /t 0");
+			psi.CreateNoWindow = true;
+			psi.UseShellExecute = false;
+			Process.Start(psi);
 		}
 	}
 }

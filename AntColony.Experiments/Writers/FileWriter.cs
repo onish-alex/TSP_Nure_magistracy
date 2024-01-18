@@ -1,24 +1,21 @@
-﻿using GA.Core.Utility;
-using System;
+﻿using System;
 using System.IO;
 
-namespace GA.Experiments.Writer
+namespace AntColony.Experiments.Writer
 {
 	public abstract class FileWriter<TResearch> : IExperimentResultWriter<TResearch>, IDisposable where TResearch : struct, IComparable<TResearch>
 	{
 		protected string _path;
 		protected string _fileName;
-		protected string _fullFilePath;
-		//protected StreamWriter _writer;
-		//protected FileStream _stream;
+		protected StreamWriter _writer;
+		protected FileStream _stream;
 		protected bool disposedValue;
 
-		protected GASettings _settings;
-		protected GAExperimentSettings<TResearch> _experimentSettings;
+		protected ACExperimentSettings<TResearch> _experimentSettings;
 
 		protected abstract string _extension { get; }
 
-		protected FileWriter(string path, string fileName, GASettings settings, GAExperimentSettings<TResearch> experimentSettings)
+		protected FileWriter(string path, string fileName, ACExperimentSettings<TResearch> experimentSettings)
 		{
 			if (path == null)
 				throw new ArgumentNullException(nameof(path));
@@ -28,16 +25,14 @@ namespace GA.Experiments.Writer
 
 			_path = path;
 			_fileName = fileName;
-			_fullFilePath = Path.Combine(path, $"{fileName}.{_extension}");
 
-			//_stream = File.OpenWrite(_fullFilePath);
-			//_writer = new StreamWriter(_stream);
+			_stream = File.OpenWrite(Path.Combine(path, $"{fileName}.{_extension}"));
+			_writer = new StreamWriter(_stream);
 
-			_settings = settings;
 			_experimentSettings = experimentSettings;
 		}
 
-		public abstract void Write<TNode>(GAExperimentResult<TNode> result);
+		public abstract void Write<TNode>(ACExperimentResult<TNode> result);
 
 		protected virtual void Dispose(bool disposing)
 		{
@@ -45,8 +40,8 @@ namespace GA.Experiments.Writer
 			{
 				if (disposing)
 				{
-					//_writer.Close();
-					//_stream.Close();
+					_writer.Close();
+					_stream.Close();
 				}
 
 				// TODO: free unmanaged resources (unmanaged objects) and override finalizer

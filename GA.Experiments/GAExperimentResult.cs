@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace GA.Experiments
 {
-	public class ExperimentResult<TNode>
+	public class GAExperimentResult<TNode>
 	{
 		[JsonProperty("group")] public bool IsGroupResult { get; set; }
 		[JsonProperty("guid")] public Guid GroupGuid { get; set; }

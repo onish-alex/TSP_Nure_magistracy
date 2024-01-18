@@ -1,5 +1,4 @@
 ﻿using Algorithms.Utility.Extensions;
-using GA.Analytics;
 using GA.Core;
 using GA.Core.Models;
 using GA.Core.Operations.Crossovers;
@@ -20,9 +19,9 @@ using System.Linq;
 
 namespace GA.Experiments
 {
-	public static class ExperimentsEngine
+	public static class GAExperimentsEngine
 	{
-		public static IList<ExperimentResult<TNode>> Run<TNode, TResearch>(
+		public static IList<GAExperimentResult<TNode>> Run<TNode, TResearch>(
 			IList<TNode> nodes,
 			GASettings settings,
 			GAExperimentSettings<TResearch> experimentSettings,
@@ -34,7 +33,7 @@ namespace GA.Experiments
 		{
 			IList<IExperimentResultWriter<TResearch>> writers = CreateWriters(writerTypes, path, settings, experimentSettings);
 
-			var resultsList = new List<ExperimentResult<TNode>>();
+			var resultsList = new List<GAExperimentResult<TNode>>();
 
 			//get researched parameter reflection info
 			var researchedProperty = settings.GetType().GetProperty(experimentSettings.ResearchedParameterName);
@@ -83,7 +82,7 @@ namespace GA.Experiments
 						var bestResult = algo.Run();
 						timer.Stop();
 
-						var experimentResult = new ExperimentResult<TNode>()
+						var experimentResult = new GAExperimentResult<TNode>()
 						{
 							StartPopulation = population,
 							FinishPopulation = algo.Population,
@@ -110,7 +109,7 @@ namespace GA.Experiments
 					{
 						var group = resultsList.Where(x => !x.IsGroupResult && x.GroupGuid == groupGuid);
 
-						var groupExperimentResult = new ExperimentResult<TNode>()
+						var groupExperimentResult = new GAExperimentResult<TNode>()
 						{
 							StartPopulation = population,
 							FinishPopulation = group.First().FinishPopulation,

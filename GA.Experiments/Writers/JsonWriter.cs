@@ -16,39 +16,45 @@ namespace GA.Experiments.Writer
 
 		protected override string _extension => "json";
 
-		public override void Write<TNode>(ExperimentResult<TNode> result)
+		public override void Write<TNode>(GAExperimentResult<TNode> result)
 		{
-			if (!_wroteSettings)
+			using (var stream = System.IO.File.OpenWrite(_fullFilePath))
+			using (var writer = new StreamWriter(stream))
 			{
-				using (var settingsStream = File.OpenWrite(Path.Combine(_path, $"{_fileName}{nameof(_settings)}.{_extension}")))
-				using (var settingsWriter = new StreamWriter(settingsStream))
+				if (!_wroteSettings)
 				{
-					settingsWriter.WriteLine(JsonConvert.SerializeObject(_settings));
+					using (var settingsStream = File.OpenWrite(Path.Combine(_path, $"{_fileName}{nameof(_settings)}.{_extension}")))
+					using (var settingsWriter = new StreamWriter(settingsStream))
+					{
+						settingsWriter.WriteLine(JsonConvert.SerializeObject(_settings));
+					}
+
+					using (var experimentSettingsStream = File.OpenWrite(Path.Combine(_path, $"{_fileName}{nameof(_experimentSettings)}.{_extension}")))
+					using (var experimentSettingsWriter = new StreamWriter(experimentSettingsStream))
+					{
+						experimentSettingsWriter.WriteLine(JsonConvert.SerializeObject(_experimentSettings));
+					}
+
+					_wroteSettings = true;
+
+					writer.Write("[");
+				}
+				else
+				{
+					writer.Write(",");
 				}
 
-				using (var experimentSettingsStream = File.OpenWrite(Path.Combine(_path, $"{_fileName}{nameof(_experimentSettings)}.{_extension}")))
-				using (var experimentSettingsWriter = new StreamWriter(experimentSettingsStream))
-				{
-					experimentSettingsWriter.WriteLine(JsonConvert.SerializeObject(_experimentSettings));
-				}
-
-				_wroteSettings = true;
-
-				_writer.Write("[");
+				writer.Write(JsonConvert.SerializeObject(result));
 			}
-			else
-			{
-				_writer.Write(",");
-			}
-
-			_writer.Write(JsonConvert.SerializeObject(result));
 		}
 
 		protected override void Dispose(bool disposing)
 		{
 			if (!disposedValue)
 				if (disposing)
-					_writer.Write("]");
+					using (var stream = System.IO.File.OpenWrite(_fullFilePath))
+					using (var writer = new StreamWriter(stream))
+						writer.Write("]");
 
 			base.Dispose(disposing);
 		}

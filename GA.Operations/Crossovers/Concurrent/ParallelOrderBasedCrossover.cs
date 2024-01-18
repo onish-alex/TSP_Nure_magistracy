@@ -1,6 +1,5 @@
 ﻿using Algorithms.Utility.Extensions;
 using GA.Core.Models;
-using GA.Core.Operations.Crossovers;
 using GA.Core.Operations.Crossovers.Concurrent;
 using GA.Core.Utility;
 using System;
@@ -15,8 +14,9 @@ namespace GA.Operations.Crossovers
 	{
 		private const double MIN_SELECTED_POSITIONS_PERCENT = 25D;
 		private const double MAX_SELECTED_POSITIONS_PERCENT = 50D;
+		private static object _lock = new object();
 
-		public IList<int> SelectedPositionsIndexes { get; set; }
+		public ConcurrentBag<int> SelectedPositionsIndexes { get; set; }
 
 		public ParallelOrderBasedCrossover(GAOperationSettings operationSettings) : base(operationSettings)
 		{
@@ -34,34 +34,36 @@ namespace GA.Operations.Crossovers
 				var firstChildGenome = new List<TGene>(Enumerable.Repeat(default(TGene), operationSettings.NodesCount));
 				var secondChildGenome = new List<TGene>(Enumerable.Repeat(default(TGene), operationSettings.NodesCount));
 
-				if (operationSettings.InitType == GAOperationInitType.EveryIndividual)
-					InitSettings();
+				List<int> selectedPositionsIndexes = null;
 
-				foreach (var index in SelectedPositionsIndexes)
+				if (operationSettings.InitType == GAOperationInitType.EveryIndividual)
+				{
+					lock (_lock)
+					{
+						InitSettings();
+						selectedPositionsIndexes = new List<int>(SelectedPositionsIndexes);
+					}
+				}
+				else
+				{
+					selectedPositionsIndexes = new List<int>(SelectedPositionsIndexes);
+				}
+
+				foreach (var index in selectedPositionsIndexes)
 				{
 					firstChildGenome[index] = pair.Item2[index];
 					secondChildGenome[index] = pair.Item1[index];
 				}
 
-				var restIndexes = Enumerable.Range(0, operationSettings.NodesCount).Except(SelectedPositionsIndexes);
-				var firstParentQueue = new Queue<TGene>(pair.Item1.Except(SelectedPositionsIndexes.Select(x => firstChildGenome[x])));
-				var secondParentQueue = new Queue<TGene>(pair.Item2.Except(SelectedPositionsIndexes.Select(x => secondChildGenome[x])));
+				var restIndexes = Enumerable.Range(0, operationSettings.NodesCount).Except(selectedPositionsIndexes);
+				var firstParentQueue = new Queue<TGene>(pair.Item1.Except(selectedPositionsIndexes.Select(x => firstChildGenome[x])));
+				var secondParentQueue = new Queue<TGene>(pair.Item2.Except(selectedPositionsIndexes.Select(x => secondChildGenome[x])));
 
 				foreach (var index in restIndexes)
 				{
 					firstChildGenome[index] = firstParentQueue.Dequeue();
 					secondChildGenome[index] = secondParentQueue.Dequeue();
 				}
-
-				//foreach (var index in cycle)
-				//{
-				//	var swapBuffer = firstChildGenome[index];
-				//	firstChildGenome[index] = secondChildGenome[index];
-				//	secondChildGenome[index] = swapBuffer;
-				//}
-
-				//children.Add(Individual<TGene>.GetInstance<TIndividual>(firstChildGenome));
-				//children.Add(Individual<TGene>.GetInstance<TIndividual>(secondChildGenome));
 
 				children.Add(new Individual<TGene>(firstChildGenome));
 				children.Add(new Individual<TGene>(secondChildGenome));
@@ -78,7 +80,7 @@ namespace GA.Operations.Crossovers
 				+ MIN_SELECTED_POSITIONS_PERCENT;
 
 			var selectedPositionsCount = (int)Math.Round(operationSettings.NodesCount * selectedPositionsPercent / 100);
-			SelectedPositionsIndexes = Random.Shared.GetUniqueRandomSet(Enumerable.Range(0, operationSettings.NodesCount).ToList(), selectedPositionsCount);
+			SelectedPositionsIndexes = new ConcurrentBag<int>(Random.Shared.GetUniqueRandomSet(Enumerable.Range(0, operationSettings.NodesCount).ToList(), selectedPositionsCount));
 		}
 	}
 }
