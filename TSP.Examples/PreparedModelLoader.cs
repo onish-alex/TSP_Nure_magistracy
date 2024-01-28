@@ -8,7 +8,7 @@ namespace TSP.Examples
 {
 	public static class PreparedModelLoader
 	{
-		public static int? FractionLength = 1;
+		public static int? FractionLength = null;
 
 		private const string MODEL_EXTENSION = ".tsp";
 		private const string OPTIMAL_TOUR_EXTENSION = ".opt.tour";

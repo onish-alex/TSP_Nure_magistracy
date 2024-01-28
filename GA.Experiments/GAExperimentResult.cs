@@ -20,6 +20,7 @@ namespace GA.Experiments
 		[JsonProperty("iter")] public double LastIterationNumber { get; set; }
 
 		[JsonProperty("time")] public TimeSpan Time { get; set; }
+		[JsonProperty("itertime")] public TimeSpan TimeForIteration { get; set; }
 
 		[JsonProperty("param")] public string ResearchedParameterName { get; set; }
 		[JsonProperty("value")] public object ResearchedParameterValue { get; set; }

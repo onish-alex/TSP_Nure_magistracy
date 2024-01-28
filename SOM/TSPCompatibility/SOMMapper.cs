@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TSP.Core;
 
@@ -19,7 +20,11 @@ namespace SOM.TSPCompatibility
 
 		public static TSPNode Map(TSPModel model, IVector<double> vector)
 		{
-			return model.Nodes.FirstOrDefault(node => node.X == vector["X"] && node.Y == vector["Y"]);
+			var threshold = 0.01D;
+
+			return model.Nodes.FirstOrDefault(node => 
+			   Math.Abs(node.X - vector["X"]) <= threshold 
+			&& Math.Abs(node.Y - vector["Y"]) <= threshold);
 		}
 	}
 }

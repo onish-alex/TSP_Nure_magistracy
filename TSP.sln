@@ -45,7 +45,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SOM.ConsoleApp", "SOM.Conso
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GA.Experiments", "GA.Experiments\GA.Experiments.csproj", "{0AC3E3BD-7D62-43C8-9A85-282911E030A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntColony.Experiments", "AntColony.Experiments\AntColony.Experiments.csproj", "{0EB6840A-312C-44DE-B131-7264BD2B82BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntColony.Experiments", "AntColony.Experiments\AntColony.Experiments.csproj", "{0EB6840A-312C-44DE-B131-7264BD2B82BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SOM.ChartsApp", "SOM.ChartsApp\SOM.ChartsApp.csproj", "{956E2CF1-61A3-4B63-90A7-1F2F7985C04B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -117,6 +119,10 @@ Global
 		{0EB6840A-312C-44DE-B131-7264BD2B82BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EB6840A-312C-44DE-B131-7264BD2B82BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0EB6840A-312C-44DE-B131-7264BD2B82BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{956E2CF1-61A3-4B63-90A7-1F2F7985C04B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{956E2CF1-61A3-4B63-90A7-1F2F7985C04B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{956E2CF1-61A3-4B63-90A7-1F2F7985C04B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{956E2CF1-61A3-4B63-90A7-1F2F7985C04B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -138,6 +144,7 @@ Global
 		{E59C146F-5427-4846-A4D6-6773A61D26B2} = {FD4002BE-6F35-4D7B-9177-B53CBA3068E0}
 		{0AC3E3BD-7D62-43C8-9A85-282911E030A2} = {3907C8F3-A91C-4309-955D-5FF5BF45BE38}
 		{0EB6840A-312C-44DE-B131-7264BD2B82BF} = {B033BE35-F1AA-4B85-ADF0-7F3345904EEC}
+		{956E2CF1-61A3-4B63-90A7-1F2F7985C04B} = {FD4002BE-6F35-4D7B-9177-B53CBA3068E0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1CCAAE3D-A406-4338-98F4-1037D354A963}

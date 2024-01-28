@@ -41,3 +41,6 @@ GA.Core/obj/
 /GA.Experiments/bin/Release/net6.0
 /SOM/bin/Release/net6.0
 /SOM.ConsoleApp/bin/Release/net6.0
+/TSP.Desktop/bin/Release/net6.0-windows
+/SOM.ChartsApp/bin/Debug/net6.0-windows
+/SOM.ChartsApp/obj

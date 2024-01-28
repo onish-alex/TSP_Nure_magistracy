@@ -94,6 +94,7 @@ namespace GA.Experiments
 							ResearchedParameterName = experimentSettings.ResearchedParameterName,
 							ResearchedParameterValue = researchedProperty.GetValue(settings),
 							Time = timer.Elapsed,
+							TimeForIteration = timer.Elapsed / algo.Iteration,
 							IsGroupResult = false,
 							GroupGuid = groupGuid
 						};
@@ -117,10 +118,11 @@ namespace GA.Experiments
 							MaxResult = group.Max(x => x.MaxResult),
 							AverageResult = group.Average(x => x.AverageResult),
 							DegenerationCoefficient = group.Average(x => x.DegenerationCoefficient),
-							LastIterationNumber = group.Average(x => x.LastIterationNumber),
+							LastIterationNumber = Math.Round(group.Average(x => x.LastIterationNumber)),
 							ResearchedParameterName = experimentSettings.ResearchedParameterName,
 							ResearchedParameterValue = researchedProperty.GetValue(settings),
 							Time = new TimeSpan((long)group.Average(x => x.Time.Ticks)),
+							TimeForIteration = new TimeSpan((long)group.Average(x => x.Time.Ticks)) / group.Average(x => x.LastIterationNumber),
 							IsGroupResult = true,
 							GroupGuid = groupGuid
 						};
@@ -136,6 +138,10 @@ namespace GA.Experiments
 				}
 				catch (Exception ex)
 				{
+					if (writers != null && writers.Any())
+						foreach (var writer in writers)
+							writer.WriteLog(ex);
+
 					break;
 				}
 			}

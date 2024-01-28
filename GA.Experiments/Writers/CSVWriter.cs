@@ -20,8 +20,7 @@ namespace GA.Experiments.Writer
 
 		public override void Write<TNode>(GAExperimentResult<TNode> result)
 		{
-			using (var stream = System.IO.File.OpenWrite(_fullFilePath))
-			using (var writer = new StreamWriter(stream))
+			using (var writer = System.IO.File.AppendText(_fullFilePath))
 			{
 				if (!placedHeader)
 				{
@@ -32,7 +31,7 @@ namespace GA.Experiments.Writer
 					placedHeader = true;
 				}
 
-				var data = $"{result.IsGroupResult}{separator}{result.ResearchedParameterValue}{separator}{result.Time}{separator}{result.MinResult}{separator}{result.MaxResult}{separator}{result.AverageResult}{separator}{result.LastIterationNumber}{separator}{result.DegenerationCoefficient}";
+				var data = $"{result.IsGroupResult}{separator}{result.ResearchedParameterValue}{separator}{result.MinResult}{separator}{result.MaxResult}{separator}{result.AverageResult}{separator}{result.LastIterationNumber}{separator}{result.Time}{separator}{result.TimeForIteration}{separator}{result.DegenerationCoefficient}";
 
 				writer.WriteLine(data);
 			}
@@ -40,8 +39,14 @@ namespace GA.Experiments.Writer
 
 		private string GetHeaderString(GAExperimentSettings<TResearch> experimentSettings, GASettings settings)
 		{
-			var header = $"{"Group"}{separator}{experimentSettings.ResearchedParameterName}{separator}{"Time elapsed"}{separator}{"Minimum"}{separator}{"Maximum"}{separator}{"Average"}{separator}{"Iterations"}{separator}{"Degeneration coef."}";
+			var header = $"{"Group"}{separator}{experimentSettings.ResearchedParameterName}{separator}{"Minimum"}{separator}{"Maximum"}{separator}{"Average"}{separator}{"Iterations"}{separator}{"Time elapsed"}{separator}{"Avg iteration time"}{separator}{"Degeneration coef."}";
 			return header;
+		}
+
+		public override void WriteLog(Exception ex)
+		{
+			using (var writer = System.IO.File.AppendText(_fullFilePath))
+				writer.WriteLine(ex);
 		}
 	}
 }

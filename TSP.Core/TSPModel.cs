@@ -10,6 +10,8 @@ namespace TSP.Core
 
 		private Dictionary<TSPNode, Dictionary<TSPNode, double>> nodesDistancesMap;
 
+		public Dictionary<TSPNode, Dictionary<TSPNode, double>> DistancesMap => nodesDistancesMap.ToDictionary(x => x.Key, x => x.Value);
+
 		public IList<TSPNode> Nodes => nodes.ToList();
 
 		public TSPModel(IList<TSPNode> nodes)

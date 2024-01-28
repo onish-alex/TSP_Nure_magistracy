@@ -18,8 +18,7 @@ namespace GA.Experiments.Writer
 
 		public override void Write<TNode>(GAExperimentResult<TNode> result)
 		{
-			using (var stream = System.IO.File.OpenWrite(_fullFilePath))
-			using (var writer = new StreamWriter(stream))
+			using (var writer = System.IO.File.AppendText(_fullFilePath))
 			{
 				if (!_wroteSettings)
 				{
@@ -48,12 +47,17 @@ namespace GA.Experiments.Writer
 			}
 		}
 
+		public override void WriteLog(Exception ex)
+		{
+			using (var writer = System.IO.File.AppendText(_fullFilePath))
+				writer.WriteLine(ex);
+		}
+
 		protected override void Dispose(bool disposing)
 		{
 			if (!disposedValue)
 				if (disposing)
-					using (var stream = System.IO.File.OpenWrite(_fullFilePath))
-					using (var writer = new StreamWriter(stream))
+					using (var writer = System.IO.File.AppendText(_fullFilePath))
 						writer.Write("]");
 
 			base.Dispose(disposing);

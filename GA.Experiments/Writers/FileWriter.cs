@@ -39,6 +39,8 @@ namespace GA.Experiments.Writer
 
 		public abstract void Write<TNode>(GAExperimentResult<TNode> result);
 
+		public abstract void WriteLog(Exception ex);
+
 		protected virtual void Dispose(bool disposing)
 		{
 			if (!disposedValue)
