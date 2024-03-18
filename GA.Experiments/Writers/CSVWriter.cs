@@ -31,7 +31,7 @@ namespace GA.Experiments.Writer
 					placedHeader = true;
 				}
 
-				var data = $"{result.IsGroupResult}{separator}{result.ResearchedParameterValue}{separator}{result.MinResult}{separator}{result.MaxResult}{separator}{result.AverageResult}{separator}{result.LastIterationNumber}{separator}{result.Time}{separator}{result.TimeForIteration}{separator}{result.DegenerationCoefficient}";
+				var data = $"{result.IsGroupResult}{separator}{result.ResearchedParameterValue}{separator}{result.MinResult}{separator}{result.MaxResult}{separator}{result.AverageResult}{separator}{result.LastIterationNumber}{separator}{result.Time}{separator}{result.TimeForIteration}{separator}{result.DegenerationCoefficient}{separator}{result.DegenerationCoefficient2}";
 
 				writer.WriteLine(data);
 			}
@@ -39,7 +39,7 @@ namespace GA.Experiments.Writer
 
 		private string GetHeaderString(GAExperimentSettings<TResearch> experimentSettings, GASettings settings)
 		{
-			var header = $"{"Group"}{separator}{experimentSettings.ResearchedParameterName}{separator}{"Minimum"}{separator}{"Maximum"}{separator}{"Average"}{separator}{"Iterations"}{separator}{"Time elapsed"}{separator}{"Avg iteration time"}{separator}{"Degeneration coef."}";
+			var header = $"{"Group"}{separator}{experimentSettings.ResearchedParameterName}{separator}{"Minimum"}{separator}{"Maximum"}{separator}{"Average"}{separator}{"Iterations"}{separator}{"Time elapsed"}{separator}{"Avg iteration time"}{separator}{"Degeneration coef."}{separator}{"Degeneration coef2."}";
 			return header;
 		}
 

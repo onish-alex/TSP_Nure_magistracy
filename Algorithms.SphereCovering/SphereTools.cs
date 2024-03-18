@@ -5,7 +5,7 @@ namespace Algorithms.SphereCovering
 {
 	//inspired by:
 	//https://habr.com/ru/articles/460643/
-	//!!!!!https://habr.com/ru/articles/506526/
+	//[Actual formulas took from here] https://habr.com/ru/articles/506526/
 
 	public static class SphereTools
 	{

@@ -51,5 +51,6 @@ namespace AntColony.Experiments
 
 		public int ControlRepeatingCount { get; set; } = 1;
 
+		public int IterationsCount { get; set; } = 1;
 	}
 }

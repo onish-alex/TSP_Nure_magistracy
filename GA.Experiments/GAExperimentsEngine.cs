@@ -90,6 +90,7 @@ namespace GA.Experiments
 							MaxResult = algo.Population.Max(x => resultGetter(x)),
 							AverageResult = algo.Population.Average(x => resultGetter(x)),
 							DegenerationCoefficient = algo.Population.GetDegenerationCoefficient() * 100,
+							DegenerationCoefficient2 = algo.Population.GetDegenerationCoefficient2() * 100,
 							LastIterationNumber = algo.Iteration,
 							ResearchedParameterName = experimentSettings.ResearchedParameterName,
 							ResearchedParameterValue = researchedProperty.GetValue(settings),
@@ -118,6 +119,7 @@ namespace GA.Experiments
 							MaxResult = group.Max(x => x.MaxResult),
 							AverageResult = group.Average(x => x.AverageResult),
 							DegenerationCoefficient = group.Average(x => x.DegenerationCoefficient),
+							DegenerationCoefficient2 = group.Average(x => x.DegenerationCoefficient2),
 							LastIterationNumber = Math.Round(group.Average(x => x.LastIterationNumber)),
 							ResearchedParameterName = experimentSettings.ResearchedParameterName,
 							ResearchedParameterValue = researchedProperty.GetValue(settings),
@@ -154,7 +156,7 @@ namespace GA.Experiments
 			return resultsList;
 		}
 
-		private static IMutation CreateMutation(MutationsEnum mutationsType, GAOperationSettings mutationSettings)
+		public static IMutation CreateMutation(MutationsEnum mutationsType, GAOperationSettings mutationSettings)
 		{
 			return mutationsType switch
 			{
@@ -170,7 +172,7 @@ namespace GA.Experiments
 			};
 		}
 
-		private static ICrossover CreateCrossover(CrossoversEnum crossoverType, GAOperationSettings crossoverSettings)
+		public static ICrossover CreateCrossover(CrossoversEnum crossoverType, GAOperationSettings crossoverSettings)
 		{
 			return crossoverType switch
 			{
@@ -194,7 +196,7 @@ namespace GA.Experiments
 			};
 		}
 
-		private static ISelection CreateSelection(SelectionsEnum selectionType, GAOperationSettings selectionSettings)
+		public static ISelection CreateSelection(SelectionsEnum selectionType, GAOperationSettings selectionSettings)
 		{
 			return selectionType switch
 			{
@@ -208,7 +210,7 @@ namespace GA.Experiments
 			};
 		}
 
-		private static IList<Individual<TNode>> GeneratePopulation<TNode>(IList<TNode> nodes, int size)
+		public static IList<Individual<TNode>> GeneratePopulation<TNode>(IList<TNode> nodes, int size)
 		{
 			IList<Individual<TNode>> population = new List<Individual<TNode>>(size);
 

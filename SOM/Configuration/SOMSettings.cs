@@ -7,7 +7,8 @@
 
 		public bool UseElasticity { get; set; } = false;
 
-		public double CooperationDistance { get; set; } = 1;
+		public double CooperationCoefficient { get; set; } = 0;
+		public double CooperationFading { get; set; } = 1;
 		public double CooperationThreshold { get; set; }
 
 		//decreasing learning coef multiplier
@@ -19,5 +20,9 @@
 		public bool UseDistancePenalties { get; set; } = false;
 
 		public double NetworkRadiusPercent { get; set; } = 1D;
+
+        //Increases the amount of neurons in <c>NetworkSizeMultiplier</c>
+		//times to avoid long offshoots due to not even points distribution
+        public double NetworkSizeMultiplier { get; set; }
 	}
 }

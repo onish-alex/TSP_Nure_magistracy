@@ -17,6 +17,7 @@ namespace GA.Experiments
 		[JsonProperty("max")] public double MaxResult { get; set; }
 		[JsonProperty("avg")] public double AverageResult { get; set; }
 		[JsonProperty("dcoef")] public double DegenerationCoefficient { get; set; }
+		[JsonProperty("dcoef2")] public double DegenerationCoefficient2 { get; set; }
 		[JsonProperty("iter")] public double LastIterationNumber { get; set; }
 
 		[JsonProperty("time")] public TimeSpan Time { get; set; }

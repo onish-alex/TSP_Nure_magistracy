@@ -81,8 +81,13 @@ namespace AntColony.Experiments
 						};
 						
 						var timer = Stopwatch.StartNew();
-						var algoResults = algo.Run(antPopulationSettings);
-						timer.Stop();
+
+						IList<IList<TNode>> algoResults = null;
+
+						for (int j = 0; j < experimentSettings.IterationsCount; j++)
+                            algoResults = algo.Run(antPopulationSettings);
+
+                        timer.Stop();
 
 						var experimentResult = new ACExperimentResult<TNode>()
 						{

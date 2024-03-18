@@ -21,12 +21,11 @@ namespace SOM
 		protected Dictionary<TVector, bool> networkReadiness;
 		protected Dictionary<TVector, bool> dataReadiness;
 
-		//protected IList<TVector> finalNetworkVectors;
-		public double n;
-
 		public IList<TVector> Network => networkVectors.ToList();
 
-		public bool FinishCondition => !this.networkReadiness.Any(x => x.Value == false);
+		public bool FinishCondition => !this.dataReadiness.Any(x => x.Value == false);
+
+		public int ProcessedVectors => this.dataReadiness.Count(x => x.Value); 
 
 		private BaseSOM(SOMSettings settings, IList<TVector> dataVectors, Func<IEnumerable<double>, TVector> vectorGenerator)
 		{
@@ -61,7 +60,7 @@ namespace SOM
 			this.networkSize = networkSize;
 		}
 
-		protected abstract double GetDistance(TVector first, TVector second);
+		public abstract double GetDistance(TVector first, TVector second);
 
 		protected abstract double GetElasticityCoefficient(TVector chosenVector, TVector otherVector);
 

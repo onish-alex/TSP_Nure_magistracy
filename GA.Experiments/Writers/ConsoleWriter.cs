@@ -33,7 +33,8 @@ namespace GA.Experiments.Writer
 				$"| {result.LastIterationNumber,12} " +
 				$"| {result.Time,17} " +
 				$"| {result.TimeForIteration,17} " +
-				$"| {Math.Round(result.DegenerationCoefficient, 2).ToString() + "%",17}");
+				$"| {Math.Round(result.DegenerationCoefficient, 2).ToString() + "%",17}" +
+				$"| {Math.Round(result.DegenerationCoefficient2, 2).ToString() + "%",17}");
 		}
 
 		public void WriteLog(Exception ex) => Console.WriteLine(ex);

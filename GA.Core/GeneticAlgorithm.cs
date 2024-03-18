@@ -156,6 +156,7 @@ namespace GA.Core
 			if (settings.DegenerationMaxPercent.HasValue && settings.DegenerationMaxPercent.Value > 0D)
 			{
 				var degenerationCoef = population.GetDegenerationCoefficient() * 100D;
+				//var degenerationCoef2 = population.GetDegenerationCoefficient2() * 100D;
 
 				if (degenerationCoef > settings.DegenerationMaxPercent.Value)
 					stopFlag = true;
