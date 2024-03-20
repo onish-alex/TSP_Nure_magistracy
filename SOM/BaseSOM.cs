@@ -1,8 +1,7 @@
-﻿using SOM.Configuration;
-using System;
+﻿using Algorithms.Utility.StructuresLinking;
+using SOM.Configuration;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Headers;
 
 namespace SOM
 {
@@ -14,8 +13,7 @@ namespace SOM
 
 		protected int networkSize;
 		protected IList<TVector> networkVectors;
-		protected double?[,] networkTopologyMatrix;
-		protected Func<IEnumerable<double>, TVector> generateVector;
+		protected Dictionary<TVector, Dictionary<TVector, double>> networkTopologyDistances;
 		public SOMSettings settings;
 		protected Dictionary<TVector, double> networkDistancePenalties;
 		protected Dictionary<TVector, bool> networkReadiness;
@@ -27,7 +25,7 @@ namespace SOM
 
 		public int ProcessedVectors => this.dataReadiness.Count(x => x.Value); 
 
-		private BaseSOM(SOMSettings settings, IList<TVector> dataVectors, Func<IEnumerable<double>, TVector> vectorGenerator)
+		private BaseSOM(SOMSettings settings, IList<TVector> dataVectors)
 		{
 			this.dataVectors = dataVectors;
 			this.dataReadiness = new Dictionary<TVector, bool>(dataVectors.Count);
@@ -35,18 +33,17 @@ namespace SOM
 			foreach (var dataVector in this.dataVectors)
 				dataReadiness.Add(dataVector, false);
 
-			this.generateVector = vectorGenerator;
 			this.settings = settings;
 		}
 
-		protected BaseSOM(SOMSettings settings, IList<TVector> dataVectors, Func<IEnumerable<double>, TVector> vectorGenerator, Topology topology)
-			: this(settings, dataVectors, vectorGenerator)
+		protected BaseSOM(SOMSettings settings, IList<TVector> dataVectors, Topology topology)
+			: this(settings, dataVectors)
 		{
 			InitNetwork(topology);
 		}
 
-		protected BaseSOM(SOMSettings settings, IList<TVector> dataVectors, Func<IEnumerable<double>, TVector> vectorGenerator, bool[,] topology)
-			: this(settings, dataVectors, vectorGenerator)
+		protected BaseSOM(SOMSettings settings, IList<TVector> dataVectors, bool[,] topology)
+			: this(settings, dataVectors)
 		{
 			InitNetwork(topology);
 		}

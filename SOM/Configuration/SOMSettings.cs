@@ -1,4 +1,6 @@
-﻿namespace SOM.Configuration
+﻿using Newtonsoft.Json;
+
+namespace SOM.Configuration
 {
 	public class SOMSettings
 	{
@@ -24,5 +26,8 @@
         //Increases the amount of neurons in <c>NetworkSizeMultiplier</c>
 		//times to avoid long offshoots due to not even points distribution
         public double NetworkSizeMultiplier { get; set; }
+
+		[JsonIgnore]
+		public SOMSettings Clone => this.MemberwiseClone() as SOMSettings;
 	}
 }

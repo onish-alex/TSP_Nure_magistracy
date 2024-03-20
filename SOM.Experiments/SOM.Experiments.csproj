@@ -2,12 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-	<Nullable>disable</Nullable>
-	<ImplicitUsings>disable</ImplicitUsings>
-    <Authors>onish-alex</Authors>
-    <Company />
-    <Product />
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Algorithms.Utility\Algorithms.Utility.csproj" />
+    <ProjectReference Include="..\SOM\SOM.Core.csproj" />
   </ItemGroup>
 
 </Project>

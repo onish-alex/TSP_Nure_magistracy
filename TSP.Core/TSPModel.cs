@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace TSP.Core
 {
@@ -51,6 +52,28 @@ namespace TSP.Core
 				distance += nodesDistancesMap[route.Last()][route.First()];
 
 			return distance;
+		}
+
+
+		/// <summary>
+		/// Parses given list of nodes to nodes that belongs to current model
+		/// </summary>
+		public IList<TSPNode> ParseNodes(IList<TSPNode> nodes)
+		{
+			var threshold = 0.0000000001D;
+			var modelPoints = new List<TSPNode>();
+
+			foreach (var node in nodes)
+			{
+				var parsedNode = this.Nodes.FirstOrDefault(modelNode =>
+					Math.Abs(node.X - modelNode.X) <= threshold
+				 && Math.Abs(node.Y - modelNode.Y) <= threshold);
+
+				if (parsedNode != null)
+					modelPoints.Add(parsedNode);
+			}
+
+			return modelPoints;
 		}
 	}
 }
