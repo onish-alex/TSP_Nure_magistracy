@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SOM.Experiments\SOM.Experiments.csproj" />
     <ProjectReference Include="..\SOM\SOM.Core.csproj" />
     <ProjectReference Include="..\TSP.Core\TSP.Core.csproj" />
     <ProjectReference Include="..\TSP.Examples\TSP.Examples.csproj" />

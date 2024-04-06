@@ -8,6 +8,8 @@
 		pr1002,
 		pr2392,
 		ch150,
-		ulysses16
+		ulysses16,
+		tsp225,
+		pcb442
 	}
 }
