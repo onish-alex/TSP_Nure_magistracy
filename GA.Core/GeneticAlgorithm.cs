@@ -25,7 +25,9 @@ namespace GA.Core
 
 		private int iteration = 0;
 		private int stagnationCounter = 0;
-		private bool stopFlag = false;
+		private bool stopCondition = false;
+
+		public bool StopCondition { get { return stopCondition; } }
 
 		private FitnessSortEnum sort;
 
@@ -68,8 +70,10 @@ namespace GA.Core
 			}
 		}
 
-		public (Individual<TGene> Individual, double Fitness) Run()
+		public virtual (Individual<TGene> Individual, double Fitness) Run()
 		{
+			stopCondition = false;
+
 			if (settings.GenerationsMaxCount < 1)
 				throw new ArgumentOutOfRangeException(
 					nameof(settings.GenerationsMaxCount),
@@ -78,17 +82,16 @@ namespace GA.Core
 
 			for (iteration = 0; iteration < settings.GenerationsMaxCount; iteration++)
 			{
-				//Console.WriteLine(iteration);
 				GetNextGeneration();
 
-				if (stopFlag)
+				if (stopCondition)
 					break;
 			}
 
 			return currentBestResult;
 		}
 
-		public IList<Individual<TGene>> GetNextGeneration()
+		public virtual IList<Individual<TGene>> GetNextGeneration()
 		{
 			if (settings.ElitePercent.HasValue)
 			{
@@ -141,26 +144,22 @@ namespace GA.Core
 			if (settings.StagnatingGenerationsLimit.HasValue && settings.StagnatingGenerationsLimit.Value > 0)
 			{
 				if (resetStagnation)
-				{
 					stagnationCounter = 0;
-				}
 				else
-				{
 					stagnationCounter++;
-				}
 
 				if (stagnationCounter >= settings.StagnatingGenerationsLimit)
-					stopFlag = true;
+					stopCondition = true;
 			}
 
 			if (settings.DegenerationMaxPercent.HasValue && settings.DegenerationMaxPercent.Value > 0D)
 			{
 				var degenerationCoef = population.GetDegenerationCoefficient() * 100D;
-				//var degenerationCoef2 = population.GetDegenerationCoefficient2() * 100D;
 
 				if (degenerationCoef > settings.DegenerationMaxPercent.Value)
-					stopFlag = true;
+					stopCondition = true;
 			}
+
 			return population;
 		}
 	}

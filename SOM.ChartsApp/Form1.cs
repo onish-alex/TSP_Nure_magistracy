@@ -1,56 +1,46 @@
-using SOM.TSPCompatibility;
-using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
+using TSP.Core;
 using TSP.Examples;
 
 namespace SOM.ChartsApp
 {
 	public partial class Form1 : Form
 	{
-		private BaseSOM<IVector<double>> som;
+		private BaseSOM<TSPNode> som;
 
 		public Form1()
 		{
 			InitializeComponent();
 		}
 
-		//private void bNext_Click(object sender, System.EventArgs e)
-		//{
-		//	som.ProcessEpochIteration().GetEnumerator().MoveNext();
-
-		//	chart1.Series["Network"].Points.Clear();
-
-		//	foreach (var node in som.Network)
-		//	{
-		//		chart1.Series["Network"].Points.AddXY(node["X"], node["Y"]);
-		//	}
-
-		//	lbLength.Text = som.GetFullLength().ToString();
-		//	lbLearn.Text = som.settings.LearningCoefficient.ToString();
-		//	lbN.Text = som.n.ToString();
-		//}
 
 		private void bNext_Click(object sender, System.EventArgs e)
 		{
-			som.ProcessEpoch();
+			som.ProcessIteration();
 
 			chart1.Series["Network"].Points.Clear();
 
-			foreach (var node in som.Network)
-			{
-				chart1.Series["Network"].Points.AddXY(node["X"], node["Y"]);
-			}
+			var result = (som.FinishCondition ? som.BuildMap() : som.Network).ToArray();
 
-			lbLength.Text = som.GetFullLength().ToString();
+			foreach (var node in result)
+				chart1.Series["Network"].Points.AddXY(node["X"], node["Y"]);
+
+			double sum = 0D;
+			for (int i = 1; i < result.Count(); i++)
+				sum += som.GetDistance(result[i], result[i - 1]);
+
+			sum += som.GetDistance(result.First(), result.Last());
+
+			lbLength.Text = sum.ToString();
 			lbLearn.Text = som.settings.LearningCoefficient.ToString();
-			lbN.Text = som.n.ToString();
+			lbN.Text = som.settings.CooperationCoefficient.ToString();
 		}
 
 		//private void bNext_Click(object sender, System.EventArgs e)
 		//{
-		//	var result = som.BuildMap();
+		//	var result = som.BuildMap().ToArray();
 
 		//	chart1.Series["Network"].Points.Clear();
 
@@ -59,9 +49,15 @@ namespace SOM.ChartsApp
 		//		chart1.Series["Network"].Points.AddXY(node["X"], node["Y"]);
 		//	}
 
-		//	lbLength.Text = som.GetFullLength().ToString();
+		//	double sum = 0D;
+		//	for (int i = 1; i < result.Count(); i++)
+		//		sum += som.GetDistance(result[i], result[i - 1]);
+
+		//	sum += som.GetDistance(result.First(), result.Last());
+
+		//	lbLength.Text = sum.ToString();
 		//	lbLearn.Text = som.settings.LearningCoefficient.ToString();
-		//	lbN.Text = som.n.ToString();
+		//	lbN.Text = som.settings.CooperationCoefficient.ToString();
 		//}
 
 		private void bInit_Click(object sender, System.EventArgs e)
@@ -69,24 +65,24 @@ namespace SOM.ChartsApp
 			CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
 			CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
 
-			var model = PreparedModelLoader.GetModel(PreparedModelsEnum.eil51);
+			var model = PreparedModelLoader.GetModel(PreparedModelsEnum.ch150);
 
-			som = new TwoDimensionalSOM<IVector<double>>(
+			som = new TwoDimensionalSOM<TSPNode>(
 				new Configuration.SOMSettings()
 				{
-					LearningCoefficient = 0.1D,
-					UseDistancePenalties = true,
-					PenaltiesIncreasingCoefficient = 0.75D,
-					//RoundPrecision = model.DistancesMap.Values.SelectMany(x => x.Values).Min(),
-					RoundPrecision = 5D,
-					LearningFadingCoefficient = 0.0003D,
-					UseElasticity = true,
-					CooperationDistance = 0.15D,
-					CooperationThreshold = 0.01D,
-					NetworkRadiusPercent = 5D,
-				},
-				model.Nodes.Select(x => SOMMapper.Map(x)).ToList(),
-				(x) => new Vector(x.ToList()),
+                    LearningCoefficient = 0.35D,                                            //+-
+                    UseDistancePenalties = true,                                            //-
+                    PenaltiesIncreasingCoefficient = 18D,                                  //+
+                    RoundPrecision = 1D,                                                    //-
+                    LearningFadingCoefficient = 0.0001D,                                    //+-
+                    UseElasticity = true,                                                   //-
+                    CooperationCoefficient = model.Nodes.Count * model.Nodes.Count,         //+-
+                    CooperationFading = 0.1D,                                               //+
+                    CooperationThreshold = 1D,                                              //-
+                    NetworkRadiusPercent = 30D,                                             //-
+                    NetworkSizeMultiplier = 3
+                },
+				model.Nodes,
 				Configuration.Topology.Sphere);
 
 			chart1.ChartAreas[0].RecalculateAxesScale();

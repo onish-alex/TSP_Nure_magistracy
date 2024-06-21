@@ -7,13 +7,24 @@
              xmlns:vmalgo="clr-namespace:TSP.Desktop.ViewModels.Algorithms"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance Type=vmalgo:AlgorithmViewModel}">
+             d:DataContext="{d:DesignInstance Type=vmalgo:AlgorithmsViewModel}">
     <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal">
             <Button x:Name="bCreateAlgorithm" Command="{Binding ShowCreateAlgorithmWindowCommand}" ToolTip="{DynamicResource bCreateAlgorithm}" Style="{StaticResource MenuButton }">+</Button>
             <Button x:Name="bLoadAlgorithm"   Command="{Binding ShowLoadAlgorithmWindowCommand}"   ToolTip="{DynamicResource bLoadAlgorithm}"   Style="{StaticResource MenuButton }">&lt;</Button>
             <Button x:Name="bSaveAlgorithm"   Command="{Binding ShowSaveAlgorithmWindowCommand}"   ToolTip="{DynamicResource bSaveAlgorithm}"   Style="{StaticResource MenuButton }" IsEnabled="{Binding AlgorithmSelected}">&gt;</Button>
             <TextBox x:Name="tbSelectedAlgoName" Width="100px" Margin="10 5 0 5" IsReadOnly="True" Text="{Binding SelectedAlgorithmName}" FontWeight="{Binding SelectedAlgoNameFontWeight}"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <ListBox
+                ItemsSource="{Binding Algorithms}"
+                SelectedItem="{Binding SelectedAlgorithm}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <local:AlgorithmListItem />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </StackPanel>
     </StackPanel>
 </UserControl>

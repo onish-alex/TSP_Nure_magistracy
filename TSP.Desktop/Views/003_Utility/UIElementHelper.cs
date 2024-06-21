@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 
 namespace TSP.Desktop.Views.Utility
 {
@@ -22,8 +22,8 @@ namespace TSP.Desktop.Views.Utility
 			}
 
 			ToolTips[element].Content = toolTipMessage;
-            new ToolTipAbleWrapper(element).ToolTip = ToolTips[element];
-        }
+			new ToolTipAbleWrapper(element).ToolTip = ToolTips[element];
+		}
 
 		public static void RefreshTooltip(this UIElement element)
 		{
@@ -31,11 +31,11 @@ namespace TSP.Desktop.Views.Utility
 
 			if (ToolTips.ContainsKey(wrapper.Element))
 			{
-                wrapper.ToolTip = null;
+				wrapper.ToolTip = null;
 				ToolTips[wrapper.Element].IsOpen = true;
 				ToolTips[wrapper.Element].PlacementTarget = wrapper.Element;
 				ToolTips[wrapper.Element].Placement = PlacementMode.Bottom;
-                wrapper.ToolTip = ToolTips[wrapper.Element];
+				wrapper.ToolTip = ToolTips[wrapper.Element];
 			}
 		}
 	}

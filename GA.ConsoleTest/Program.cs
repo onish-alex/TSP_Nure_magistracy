@@ -2,9 +2,7 @@
 using GA.Core.Utility;
 using GA.Experiments;
 using GA.Experiments.Writer;
-using GA.Operations;
 using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using TSP.Examples;
@@ -19,38 +17,92 @@ namespace GA.ConsoleTest
 		{
 			CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
 			CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
-
 			var model = PreparedModelLoader.GetModel(PreparedModelsEnum.pr1002);
+
 			var solution = PreparedModelLoader.GetSolution(model, PreparedModelsEnum.pr1002);
 
 			var crossovers = Enum.GetValues<CrossoversEnum>()
 				.OrderBy(x => (int)x)
 				.Select(x => (int)x);
-			/////////////////////////////////////////////////////////Swap OneTime
-			var settings = new GASettings()
+            /////////////////////////////////////////////////////////Swap OneTime
+            //var settings = new GASettings()
+            //{
+            //	//ElitePercent = null,
+            //	//MutationProbability = 0,
+            //	OnlyChildrenInNewGeneration = false,
+            //	GenerationsMaxCount = 500,
+            //	//StagnatingGenerationsLimit = 0,
+            //	//DegenerationMaxPercent = 80,
+
+            //	CrossoverType = CrossoversEnum.OrderBased,
+            //	MutationsType = MutationsEnum.Swap,
+            //	SelectionType = SelectionsEnum.RouletteWheel,
+
+            //	CrossoverSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count },
+            //	SelectionSettings = new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count },
+            //	MutationSettings = new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count },
+            //};
+
+            //var experimentSettings = new GAExperimentSettings<double>()
+            //{
+            //	PopulationSize = 250,
+            //	ResearchedParameterName = nameof(settings.MutationProbability),
+            //	ResearchedParameterIncrement = 10,
+            //	ResearchedParameterRange = (new NumberDouble(0), new NumberDouble(0)),
+            //	UseSameInitialPopulation = true,
+
+            //	ControlRepeatingCount = 10
+            //};
+
+            //loading tsp map from file
+
+
+
+            //GA operations
+            //var selection = GAExperimentsEngine.CreateSelection(settings.SelectionType, settings.SelectionSettings);
+            //var crossover = GAExperimentsEngine.CreateCrossover(settings.CrossoverType, settings.CrossoverSettings);
+            //var mutation = GAExperimentsEngine.CreateMutation(settings.MutationsType, settings.MutationSettings);
+
+            //var populationSize = 200;
+            //var population = GAExperimentsEngine.GeneratePopulation(model.Nodes, populationSize);
+
+            //var algo = new GeneticAlgorithm<TSPNode>(
+            //				selection,
+            //				crossover,
+            //				mutation,
+            //				population.ToList(),
+            //				settings,
+            //				(x) => model.GetDistance(x));
+
+            //algo.Run(); //full run till end
+            //algo.GetNextGeneration(); //one iteration, more appropriate for updating the plot
+
+            //GA settings
+            var settings = new GASettings()
+            {
+                MutationProbability = 0,
+                GenerationsMaxCount = 300000,
+                //StagnatingGenerationsLimit = 0,
+                //DegenerationMaxPercent = 80,
+
+                CrossoverType = CrossoversEnum.InverOver,
+                MutationsType = MutationsEnum.Swap,
+                SelectionType = SelectionsEnum.RouletteWheel,
+
+                CrossoverSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count },
+                SelectionSettings = new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count },
+                MutationSettings = new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count },
+            };
+
+            var experimentSettings = new GAExperimentSettings<double>()
 			{
-				//ElitePercent = null,
-				//MutationProbability = 0,
-				OnlyChildrenInNewGeneration = false,
-				GenerationsMaxCount = 10000,
-				StagnatingGenerationsLimit = 250,
-				//DegenerationMaxPercent = 80,
-
-				CrossoverType = CrossoversEnum.InverOver,
-				MutationsType = MutationsEnum.Shift,
-				SelectionType = SelectionsEnum.RouletteWheel,
-
-				CrossoverSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count },
-				SelectionSettings = new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count },
-				MutationSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryGeneration, NodesCount = model.Nodes.Count },
-			};
-
-			var experimentSettings = new GAExperimentSettings<double>()
-			{
-				PopulationSize = 50,
+				PopulationSize = 100,
 				ResearchedParameterName = nameof(settings.MutationProbability),
-				ResearchedParameterIncrement = 10,
-				ResearchedParameterRange = (new NumberDouble(0), new NumberDouble(100)),
+				ResearchedParameterStep = 5,
+				ResearchedParameterRange = (new NumberDouble(0), new NumberDouble(0)),
+				//ResearchedParameterName = nameof(settings.CrossoverType),
+				//ResearchedParameterIncrement = 1,
+				//ResearchedParameterRange = (new NumberInt((int)CrossoversEnum.OrderBased), new NumberInt((int)CrossoversEnum.InverOver)),
 				UseSameInitialPopulation = true,
 
 				ControlRepeatingCount = 3
@@ -63,318 +115,6 @@ namespace GA.ConsoleTest
 				(x) => model.GetDistance(x),
 				(x) => model.GetDistance(x),
 				WritersEnum.CSV | WritersEnum.JSON | WritersEnum.Console);
-
-			///////////////////////////////////////////Swap EveryGeneration
-
-			//settings = new GASettings()
-			//{
-			//	//ElitePercent = null,
-			//	//MutationProbability = 0,
-			//	OnlyChildrenInNewGeneration = false,
-			//	GenerationsMaxCount = 10000,
-			//	StagnatingGenerationsLimit = 250,
-			//	//DegenerationMaxPercent = 80,
-
-			//	CrossoverType = CrossoversEnum.InverOver,
-			//	MutationsType = MutationsEnum.Shift,
-			//	SelectionType = SelectionsEnum.RouletteWheel,
-
-			//	CrossoverSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count },
-			//	SelectionSettings = new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count },
-			//	MutationSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryGeneration, NodesCount = model.Nodes.Count },
-			//};
-
-			//experimentSettings = new GAExperimentSettings<double>()
-			//{
-			//	PopulationSize = 50,
-			//	ResearchedParameterName = nameof(settings.MutationProbability),
-			//	ResearchedParameterIncrement = 10,
-			//	ResearchedParameterRange = (new NumberDouble(0), new NumberDouble(100)),
-			//	UseSameInitialPopulation = true,
-
-			//	ControlRepeatingCount = 3
-			//};
-
-			//results = GAExperimentsEngine.Run(
-			//	model.Nodes,
-			//	settings,
-			//	experimentSettings,
-			//	(x) => model.GetDistance(x),
-			//	(x) => model.GetDistance(x),
-			//	WritersEnum.CSV | WritersEnum.JSON | WritersEnum.Console);
-			/////////////////////////////////////////////Swap EveryIndividual
-
-			//settings = new GASettings()
-			//{
-			//	//ElitePercent = null,
-			//	//MutationProbability = 0,
-			//	OnlyChildrenInNewGeneration = false,
-			//	GenerationsMaxCount = 10000,
-			//	StagnatingGenerationsLimit = 250,
-			//	//DegenerationMaxPercent = 80,
-
-			//	CrossoverType = CrossoversEnum.InverOver,
-			//	MutationsType = MutationsEnum.Shift,
-			//	SelectionType = SelectionsEnum.RouletteWheel,
-
-			//	CrossoverSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count },
-			//	SelectionSettings = new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count },
-			//	MutationSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count },
-			//};
-
-			//experimentSettings = new GAExperimentSettings<double>()
-			//{
-			//	PopulationSize = 50,
-			//	ResearchedParameterName = nameof(settings.MutationProbability),
-			//	ResearchedParameterIncrement = 10,
-			//	ResearchedParameterRange = (new NumberDouble(0), new NumberDouble(100)),
-			//	UseSameInitialPopulation = true,
-
-			//	ControlRepeatingCount = 3
-			//};
-
-			//results = GAExperimentsEngine.Run(
-			//	model.Nodes,
-			//	settings,
-			//	experimentSettings,
-			//	(x) => model.GetDistance(x),
-			//	(x) => model.GetDistance(x),
-			//	WritersEnum.CSV | WritersEnum.JSON | WritersEnum.Console);
-			///////////////////////////////////////////Shift OneTime
-
-			//settings = new GASettings()
-			//{
-			//	//ElitePercent = null,
-			//	//MutationProbability = 0,
-			//	OnlyChildrenInNewGeneration = false,
-			//	GenerationsMaxCount = 5000,
-			//	StagnatingGenerationsLimit = 250,
-			//	//DegenerationMaxPercent = 80,
-
-			//	CrossoverType = CrossoversEnum.InverOver,
-			//	MutationsType = MutationsEnum.Shift,
-			//	SelectionType = SelectionsEnum.RouletteWheel,
-
-			//	CrossoverSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count },
-			//	SelectionSettings = new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count },
-			//	MutationSettings = new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count },
-			//};
-
-			//experimentSettings = new GAExperimentSettings<double>()
-			//{
-			//	PopulationSize = 250,
-			//	ResearchedParameterName = nameof(settings.MutationProbability),
-			//	ResearchedParameterIncrement = 5,
-			//	ResearchedParameterRange = (new NumberDouble(0), new NumberDouble(100)),
-			//	UseSameInitialPopulation = true,
-
-			//	ControlRepeatingCount = 3
-			//};
-
-			//results = GAExperimentsEngine.Run(
-			//	model.Nodes,
-			//	settings,
-			//	experimentSettings,
-			//	(x) => model.GetDistance(x),
-			//	(x) => model.GetDistance(x),
-			//	WritersEnum.CSV | WritersEnum.JSON | WritersEnum.Console);
-
-			/////////////////////////////////////////////Shift EveryGeneration
-
-			//settings = new GASettings()
-			//{
-			//	//ElitePercent = null,
-			//	//MutationProbability = 0,
-			//	OnlyChildrenInNewGeneration = false,
-			//	GenerationsMaxCount = 5000,
-			//	StagnatingGenerationsLimit = 250,
-			//	//DegenerationMaxPercent = 80,
-
-			//	CrossoverType = CrossoversEnum.InverOver,
-			//	MutationsType = MutationsEnum.Shift,
-			//	SelectionType = SelectionsEnum.RouletteWheel,
-
-			//	CrossoverSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count },
-			//	SelectionSettings = new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count },
-			//	MutationSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryGeneration, NodesCount = model.Nodes.Count },
-			//};
-
-			//experimentSettings = new GAExperimentSettings<double>()
-			//{
-			//	PopulationSize = 250,
-			//	ResearchedParameterName = nameof(settings.MutationProbability),
-			//	ResearchedParameterIncrement = 5,
-			//	ResearchedParameterRange = (new NumberDouble(0), new NumberDouble(100)),
-			//	UseSameInitialPopulation = true,
-
-			//	ControlRepeatingCount = 3
-			//};
-
-			//results = GAExperimentsEngine.Run(
-			//	model.Nodes,
-			//	settings,
-			//	experimentSettings,
-			//	(x) => model.GetDistance(x),
-			//	(x) => model.GetDistance(x),
-			//	WritersEnum.CSV | WritersEnum.JSON | WritersEnum.Console);
-			/////////////////////////////////////////////Shift EveryIndividual
-
-			//settings = new GASettings()
-			//{
-			//	//ElitePercent = null,
-			//	//MutationProbability = 0,
-			//	OnlyChildrenInNewGeneration = false,
-			//	GenerationsMaxCount = 5000,
-			//	StagnatingGenerationsLimit = 250,
-			//	//DegenerationMaxPercent = 80,
-
-			//	CrossoverType = CrossoversEnum.InverOver,
-			//	MutationsType = MutationsEnum.Shift,
-			//	SelectionType = SelectionsEnum.RouletteWheel,
-
-			//	CrossoverSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count },
-			//	SelectionSettings = new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count },
-			//	MutationSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count },
-			//};
-
-			//experimentSettings = new GAExperimentSettings<double>()
-			//{
-			//	PopulationSize = 250,
-			//	ResearchedParameterName = nameof(settings.MutationProbability),
-			//	ResearchedParameterIncrement = 5,
-			//	ResearchedParameterRange = (new NumberDouble(0), new NumberDouble(100)),
-			//	UseSameInitialPopulation = true,
-
-			//	ControlRepeatingCount = 3
-			//};
-
-			//results = GAExperimentsEngine.Run(
-			//	model.Nodes,
-			//	settings,
-			//	experimentSettings,
-			//	(x) => model.GetDistance(x),
-			//	(x) => model.GetDistance(x),
-			//	WritersEnum.CSV | WritersEnum.JSON | WritersEnum.Console);
-			/////////////////////////////////////////////Inverse OneTime
-
-			//settings = new GASettings()
-			//{
-			//	//ElitePercent = null,
-			//	//MutationProbability = 0,
-			//	OnlyChildrenInNewGeneration = false,
-			//	GenerationsMaxCount = 5000,
-			//	StagnatingGenerationsLimit = 250,
-			//	//DegenerationMaxPercent = 80,
-
-			//	CrossoverType = CrossoversEnum.InverOver,
-			//	MutationsType = MutationsEnum.Inverse,
-			//	SelectionType = SelectionsEnum.RouletteWheel,
-
-			//	CrossoverSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count },
-			//	SelectionSettings = new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count },
-			//	MutationSettings = new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count },
-			//};
-
-			//experimentSettings = new GAExperimentSettings<double>()
-			//{
-			//	PopulationSize = 250,
-			//	ResearchedParameterName = nameof(settings.MutationProbability),
-			//	ResearchedParameterIncrement = 5,
-			//	ResearchedParameterRange = (new NumberDouble(0), new NumberDouble(100)),
-			//	UseSameInitialPopulation = true,
-
-			//	ControlRepeatingCount = 3
-			//};
-
-			//results = GAExperimentsEngine.Run(
-			//	model.Nodes,
-			//	settings,
-			//	experimentSettings,
-			//	(x) => model.GetDistance(x),
-			//	(x) => model.GetDistance(x),
-			//	WritersEnum.CSV | WritersEnum.JSON | WritersEnum.Console);
-
-			/////////////////////////////////////////////Inverse EveryGeneration
-
-			//settings = new GASettings()
-			//{
-			//	//ElitePercent = null,
-			//	//MutationProbability = 0,
-			//	OnlyChildrenInNewGeneration = false,
-			//	GenerationsMaxCount = 5000,
-			//	StagnatingGenerationsLimit = 250,
-			//	//DegenerationMaxPercent = 80,
-
-			//	CrossoverType = CrossoversEnum.InverOver,
-			//	MutationsType = MutationsEnum.Inverse,
-			//	SelectionType = SelectionsEnum.RouletteWheel,
-
-			//	CrossoverSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count },
-			//	SelectionSettings = new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count },
-			//	MutationSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryGeneration, NodesCount = model.Nodes.Count },
-			//};
-
-			//experimentSettings = new GAExperimentSettings<double>()
-			//{
-			//	PopulationSize = 250,
-			//	ResearchedParameterName = nameof(settings.MutationProbability),
-			//	ResearchedParameterIncrement = 5,
-			//	ResearchedParameterRange = (new NumberDouble(0), new NumberDouble(100)),
-			//	UseSameInitialPopulation = true,
-
-			//	ControlRepeatingCount = 3
-			//};
-
-			//results = GAExperimentsEngine.Run(
-			//	model.Nodes,
-			//	settings,
-			//	experimentSettings,
-			//	(x) => model.GetDistance(x),
-			//	(x) => model.GetDistance(x),
-			//	WritersEnum.CSV | WritersEnum.JSON | WritersEnum.Console);
-			/////////////////////////////////////////////Inverse EveryIndividual
-
-			//settings = new GASettings()
-			//{
-			//	//ElitePercent = null,
-			//	//MutationProbability = 0,
-			//	OnlyChildrenInNewGeneration = false,
-			//	GenerationsMaxCount = 5000,
-			//	StagnatingGenerationsLimit = 250,
-			//	//DegenerationMaxPercent = 80,
-
-			//	CrossoverType = CrossoversEnum.InverOver,
-			//	MutationsType = MutationsEnum.Inverse,
-			//	SelectionType = SelectionsEnum.RouletteWheel,
-
-			//	CrossoverSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count },
-			//	SelectionSettings = new GAOperationSettings() { InitType = GAOperationInitType.OneTime, NodesCount = model.Nodes.Count },
-			//	MutationSettings = new GAOperationSettings() { InitType = GAOperationInitType.EveryIndividual, NodesCount = model.Nodes.Count },
-			//};
-
-			//experimentSettings = new GAExperimentSettings<double>()
-			//{
-			//	PopulationSize = 250,
-			//	ResearchedParameterName = nameof(settings.MutationProbability),
-			//	ResearchedParameterIncrement = 5,
-			//	ResearchedParameterRange = (new NumberDouble(0), new NumberDouble(100)),
-			//	UseSameInitialPopulation = true,
-
-			//	ControlRepeatingCount = 3
-			//};
-
-			//results = GAExperimentsEngine.Run(
-			//	model.Nodes,
-			//	settings,
-			//	experimentSettings,
-			//	(x) => model.GetDistance(x),
-			//	(x) => model.GetDistance(x),
-			//	WritersEnum.CSV | WritersEnum.JSON | WritersEnum.Console);
-
-			//var psi = new ProcessStartInfo("shutdown", "/s /t 0");
-			//psi.CreateNoWindow = true;
-			//psi.UseShellExecute = false;
-			//Process.Start(psi);
 		}
 	}
 }

@@ -8,6 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ExpCrossovers.cs" />
+    <Compile Remove="ExpMutationsInverOver.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ExpCrossovers.cs" />
+    <Content Include="ExpMutationsInverOver.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 

@@ -1,6 +1,4 @@
 ﻿using Algorithms.Utility.NumberWrapper;
-using GA.Core.Utility;
-using GA.Operations;
 using System;
 
 namespace GA.Experiments
@@ -11,7 +9,7 @@ namespace GA.Experiments
 
 		public (INumber<T> Min, INumber<T> Max) ResearchedParameterRange { get; set; }
 
-		public T ResearchedParameterIncrement { get; set; }
+		public T ResearchedParameterStep { get; set; }
 
 		public int PopulationSize { get; set; }
 

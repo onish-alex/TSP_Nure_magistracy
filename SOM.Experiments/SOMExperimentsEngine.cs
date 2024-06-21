@@ -1,13 +1,10 @@
-﻿using Algorithms.Utility.Extensions;
-using Algorithms.Utility.StructuresLinking;
+﻿using Algorithms.Utility.StructuresLinking;
 using SOM.Configuration;
 using SOM.Experiments.Writer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using TSP.Core;
 
 namespace SOM.Experiments
 {
@@ -15,7 +12,7 @@ namespace SOM.Experiments
 	{
 		public static IList<SOMExperimentResult> Run<TResearch>(
 			IList<TVector> nodes,
-            SOMSettings settings,
+			SOMSettings settings,
 			SOMExperimentSettings<TResearch> experimentSettings,
 			Func<IList<TVector>, double> resultGetter,
 			Func<IList<TVector>, IList<TVector>> parser,
@@ -51,22 +48,22 @@ namespace SOM.Experiments
 					{
 						var settingsClone = settings.Clone;
 
-                        var algo = new TwoDimensionalSOM<TVector>(
+						var algo = new TwoDimensionalSOM<TVector>(
 							settingsClone,
 							nodes,
 							Configuration.Topology.Sphere);
 
-                        var timer = Stopwatch.StartNew();
+						var timer = Stopwatch.StartNew();
 
-                        while (!algo.FinishCondition)
-                        {
-                            algo.ProcessEpoch();
-                            Console.WriteLine($"{algo.ProcessedVectors} - {timer.Elapsed} | coef: {settingsClone.LearningCoefficient} | length: {algo.GetFullLength()} | n: {settingsClone.CooperationCoefficient}");
-                        }
+						while (!algo.FinishCondition)
+						{
+							algo.ProcessIteration();
+							Console.WriteLine($"{algo.ProcessedVectors} - {timer.Elapsed} | coef: {settingsClone.LearningCoefficient} | length: {algo.GetFullLength()} | n: {settingsClone.CooperationCoefficient}");
+						}
 
-                        timer.Stop();
+						timer.Stop();
 
-                        var result = parser(algo.Network.ToList());
+						var result = parser(algo.Network.ToList());
 
 						var experimentResult = new SOMExperimentResult()
 						{

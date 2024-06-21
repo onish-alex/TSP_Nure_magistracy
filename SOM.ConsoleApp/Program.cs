@@ -1,8 +1,7 @@
-﻿using SOM.TSPCompatibility;
-using System;
-using System.Collections.Generic;
+﻿using Algorithms.Utility.NumberWrapper;
+using SOM.Experiments;
+using SOM.Experiments.Writer;
 using System.Globalization;
-using System.Linq;
 using TSP.Core;
 using TSP.Examples;
 
@@ -15,30 +14,61 @@ namespace SOM.ConsoleApp
 			CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
 			CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
 
-			var model = PreparedModelLoader.GetModel(PreparedModelsEnum.ch150);
+			var model = PreparedModelLoader.GetModel(PreparedModelsEnum.tsp225);
 
-			var som = new TwoDimensionalSOM<IVector<double>>(
-				new Configuration.SOMSettings()
-				{
-					LearningCoefficient = 0.1D,
-					UseDistancePenalties = true,
-					PenaltiesIncreasingCoefficient = 0.75D,
-					//RoundPrecision = model.DistancesMap.Values.SelectMany(x => x.Values).Min(),
-					RoundPrecision = 5D,
-					LearningFadingCoefficient = 0.0003D,
-					UseElasticity = true,
-					CooperationDistance = 0.1D,
-					CooperationThreshold = 0.01D,
-					NetworkRadiusPercent = 5D,
-				},
-				model.Nodes.Select(x => SOMMapper.Map(x)).ToList(),
-				(x) => new Vector(x.ToList()),
-				Configuration.Topology.Sphere);
+			var settings = new Configuration.SOMSettings()
+			{
+				LearningCoefficient = 0.35D,                                            //+-
+				UseDistancePenalties = true,                                            //-
+				PenaltiesIncreasingCoefficient = 18D,                                  //+
+				RoundPrecision = 1D,                                                    //-
+				LearningFadingCoefficient = 0.0001D,                                    //+-
+				UseElasticity = true,                                                   //-
+				CooperationCoefficient = model.Nodes.Count * model.Nodes.Count,         //+-
+				CooperationFading = 0.1D,                                               //+
+				CooperationThreshold = 1D,                                              //-
+				NetworkRadiusPercent = 30D,                                             //-
+				NetworkSizeMultiplier = 3                                               //+
+			};
+
+			var expSettings = new SOMExperimentSettings<double>()
+			{
+				ControlRepeatingCount = 1,
+				ResearchedParameterName = nameof(settings.LearningCoefficient),
+				ResearchedParameterRange = (new NumberDouble(1D), new NumberDouble(1D)),
+				ResearchedParameterIncrement = 0.05D,
+			};
+
+			SOMExperimentsEngine<TSPNode>.Run(
+				model.Nodes,
+				settings,
+				expSettings,
+				x => model.GetDistance(x),
+				x => model.ParseNodes(x),
+				WritersEnum.CSV | WritersEnum.JSON | WritersEnum.Console);
+
+			//         var som = new TwoDimensionalSOM<TSPNode>(
+			//	new Configuration.SOMSettings()
+			//	{
+			//		LearningCoefficient = 0.35D,											//+-
+			//		UseDistancePenalties = true,											//-
+			//		PenaltiesIncreasingCoefficient = 0.5D,									//+
+			//		RoundPrecision = 1D,													//-
+			//		LearningFadingCoefficient = 0.0001D,									//+-
+			//		UseElasticity = true,													//-
+			//		CooperationCoefficient = model.Nodes.Count * model.Nodes.Count,			//+-
+			//		CooperationFading = 0.1D,												//+
+			//		CooperationThreshold = 1D,												//-
+			//		NetworkRadiusPercent = 30D,												//-
+			//		NetworkSizeMultiplier = 3												//+
+			//	},
+			//	model.Nodes,
+			//	Configuration.Topology.Sphere);
 
 
-			var network = som.BuildMap();
-			var nodes = network.Select(x => SOMMapper.Map(model, x));
-			Console.WriteLine(model.GetDistance(nodes.ToList()));
+			//var network = som.BuildMap();
+			//var nodes = model.ParseNodes(network.ToList());
+			//Console.WriteLine(model.GetDistance(nodes.ToList()));
 
 			//Console.WriteLine("Route1:" + string.Join(',', nodes.Select(x => x.Name)));
 			//Console.WriteLine(string.Join("\r\n", nodes.Select(x => $"{x.X:F2};{x.Y:F2}")));

@@ -1,6 +1,4 @@
-﻿using Algorithms.Utility.Extensions;
-using GA.Core.Models;
-using GA.Core.Operations.Crossovers;
+﻿using GA.Core.Models;
 using GA.Core.Operations.Crossovers.Concurrent;
 using GA.Core.Utility;
 using System;
@@ -54,7 +52,7 @@ namespace GA.Operations.Crossovers
 				var secondInverseExcerpt = secondChildGenome.GetRange(secondChildMinInverseIndex, secondChildExcerptLength).Reverse<TGene>();
 				secondChildGenome.RemoveRange(secondChildMinInverseIndex, secondChildExcerptLength);
 				secondChildGenome.InsertRange(secondChildMinInverseIndex, secondInverseExcerpt);
-				
+
 				//children.Add(Individual<TGene>.GetInstance<TIndividual>(firstChildGenome));
 				//children.Add(Individual<TGene>.GetInstance<TIndividual>(secondChildGenome));
 

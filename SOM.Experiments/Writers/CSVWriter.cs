@@ -1,6 +1,5 @@
 ﻿using SOM.Configuration;
 using System;
-using System.IO;
 
 namespace SOM.Experiments.Writer
 {

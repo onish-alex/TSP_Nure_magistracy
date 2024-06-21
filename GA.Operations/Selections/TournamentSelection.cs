@@ -78,7 +78,7 @@ namespace GA.Operations.Selections
 			foreach (var candidateIndex in candidateIndexes)
 				candidates.Add(population[candidateIndex]);
 
-			var winner = 
+			var winner =
 				(sort == FitnessSortEnum.Ascending ? candidates.OrderByDescending(x => populationFitnesses[x]) : candidates.OrderBy(x => populationFitnesses[x]))
 				.FirstOrDefault();
 

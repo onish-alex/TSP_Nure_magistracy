@@ -4,6 +4,6 @@
 	{
 		Classic = 0,
 		Elitist = 1,
-		MinMax  = 2
+		MinMax = 2
 	}
 }

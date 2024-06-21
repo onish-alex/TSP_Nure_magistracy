@@ -1,5 +1,4 @@
-﻿using Algorithms.Utility.Extensions;
-using GA.Core.Models;
+﻿using GA.Core.Models;
 using GA.Core.Operations.Crossovers;
 using GA.Core.Utility;
 using System;

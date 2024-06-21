@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace GA.Core.Operations.Mutations
 {
-	public abstract class ParallelBaseMutation : ParallelBaseGAOperation, IMutation
+	public abstract class BaseMutation : ParallelBaseGAOperation, IMutation
 	{
-		protected ParallelBaseMutation(GAOperationSettings operationSettings) : base(operationSettings) { }
+		protected BaseMutation(GAOperationSettings operationSettings) : base(operationSettings) { }
 
 		public abstract void ProcessMutation<TIndividual, TGene>(IList<TIndividual> population, double probability) where TIndividual : Individual<TGene>;
 	}

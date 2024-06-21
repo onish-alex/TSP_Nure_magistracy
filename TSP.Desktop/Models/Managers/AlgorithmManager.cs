@@ -3,10 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TSP.Core;
 using TSP.Desktop.Models.Entities;
 using TSP.Desktop.ViewModels.Entities;
 using TSP.Desktop.ViewModels.Mappers;
@@ -17,11 +13,15 @@ namespace TSP.Desktop.Models.Managers
 	{
 		private static AlgorithmManager Instance { get; set; }
 
+		public Dictionary<string, Algorithm> Algorithms { get; private set; }
+		public Algorithm SelectedAlgorithm { get; private set; }
+
 		private AlgorithmManager()
 		{
+			Algorithms = new Dictionary<string, Algorithm>();
 		}
 
-		public Algorithm Algorithm { get; private set; }
+		//public Algorithm Algorithm { get; private set; }
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -34,40 +34,58 @@ namespace TSP.Desktop.Models.Managers
 
 		public void CreateAlgorithm(AlgorithmDTO algoDto)
 		{
-			Instance.Algorithm = Mappers.Algorithm.Map<AlgorithmDTO, Algorithm>(algoDto);
+			var algorithm = Mappers.Algorithm.Map<AlgorithmDTO, Algorithm>(algoDto);
 
-			switch (Instance.Algorithm.Type)
+			if (!Algorithms.ContainsKey(algorithm.Name))
 			{
-				case AlgorithmType.AntColony:
-					
-					break;
+				switch (algorithm.Type)
+				{
+					case AlgorithmType.AntColony:
 
-				case AlgorithmType.Genetic:
+						break;
 
-					break;
+					case AlgorithmType.Genetic:
+
+						break;
+				}
+
+				Algorithms.Add(algorithm.Name, algorithm);
+
+				if (Algorithms.Count == 1)
+				{
+					SelectedAlgorithm = algorithm;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AlgorithmState.NewUnsaved)));
+				}
+
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AlgorithmState.AlgorithmAdded)));
 			}
-
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AlgorithmState.AlgorithmCreated)));
 		}
 
-		public bool SaveAlgorithm(string fileName)
+		public bool SaveAlgorithm(string fileName, string algoName)
 		{
-			StreamWriter stream = null;
-
-			try
+			if (!string.IsNullOrEmpty(algoName) && Algorithms.ContainsKey(algoName))
 			{
-				stream = File.CreateText(fileName);
-				stream.WriteLine(JsonConvert.SerializeObject(Algorithm));
-				stream?.Dispose();
-			}
-			catch
-			{
-				stream?.Dispose();
-				return false;
+				var algorithm = Algorithms[algoName];
+
+				StreamWriter stream = null;
+
+				try
+				{
+					stream = File.CreateText(fileName);
+					stream.WriteLine(JsonConvert.SerializeObject(algorithm));
+					stream?.Dispose();
+				}
+				catch
+				{
+					stream?.Dispose();
+					return false;
+				}
+
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AlgorithmState.AlgorithmSaved)));
+				return true;
 			}
 
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AlgorithmState.AlgorithmSaved)));
-			return true;
+			return false;
 		}
 
 		public bool LoadAlgorithm(string fileName)
@@ -77,7 +95,15 @@ namespace TSP.Desktop.Models.Managers
 				using var stream = File.OpenText(fileName);
 				try
 				{
-					Algorithm = JsonConvert.DeserializeObject<Algorithm>(stream.ReadLine());
+					var loadedAlgorithm = JsonConvert.DeserializeObject<Algorithm>(stream.ReadLine());
+
+					if (Algorithms.ContainsKey(loadedAlgorithm.Name))
+						loadedAlgorithm.Name += "_" + Guid.NewGuid();
+
+					Algorithms.Add(loadedAlgorithm.Name, loadedAlgorithm);
+
+					if (Algorithms.Count == 1)
+						SelectedAlgorithm = loadedAlgorithm;
 				}
 				catch
 				{
@@ -85,10 +111,20 @@ namespace TSP.Desktop.Models.Managers
 					return false;
 				}
 
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AlgorithmState.AlgorithmLoaded)));
+				//PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AlgorithmState.AlgorithmLoaded)));
 				return true;
 			}
+
 			return false;
+		}
+
+		public void SelectAlgorithm(string algoName)
+		{
+			if (!string.IsNullOrEmpty(algoName) && Algorithms.ContainsKey(algoName))
+			{
+				SelectedAlgorithm = Algorithms[algoName];
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AlgorithmState.AlgorithmSelected)));
+			}
 		}
 	}
 }

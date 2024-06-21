@@ -23,9 +23,9 @@ namespace SOM.Configuration
 
 		public double NetworkRadiusPercent { get; set; } = 1D;
 
-        //Increases the amount of neurons in <c>NetworkSizeMultiplier</c>
+		//Increases the amount of neurons in <c>NetworkSizeMultiplier</c>
 		//times to avoid long offshoots due to not even points distribution
-        public double NetworkSizeMultiplier { get; set; }
+		public double NetworkSizeMultiplier { get; set; }
 
 		[JsonIgnore]
 		public SOMSettings Clone => this.MemberwiseClone() as SOMSettings;

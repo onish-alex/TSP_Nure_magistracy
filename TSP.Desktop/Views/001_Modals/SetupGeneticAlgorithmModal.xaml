@@ -48,29 +48,39 @@
             Grid.Row="3" Grid.Column="0"
             HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14"
             Content="{DynamicResource lMutationType}"/>
-        <ComboBox x:Name="cbAlgorithmType" ItemsSource="{Binding MutationTypes}" SelectedItem="{Binding AlgorithmSettings.MutationType}" 
+        <ComboBox x:Name="cbMutationType" ItemsSource="{Binding MutationTypes}" SelectedItem="{Binding AlgorithmSettings.MutationType}" 
             Grid.Row="3" Grid.Column="1" Width="135" Margin="0 10">
         </ComboBox>
         <Label
             Grid.Row="4" Grid.Column="0"
             HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14"
             Content="{DynamicResource lPopulationSize}"/>
-        <TextBlock x:Name="tbPopulationSize"
+        <TextBox x:Name="tbPopulationSize" Text="{Binding AlgorithmSettings.PopulationSize}" KeyDown="tbPopulationSize_KeyDown"
             Grid.Row="4" Grid.Column="1" Width="135" Margin="0 10">
-        </TextBlock>
+        </TextBox>
         <Label
             Grid.Row="5" Grid.Column="0"
             HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14"
             Content="{DynamicResource lMutationProbability}"/>
-        <TextBlock x:Name="tbMutationProbability"
+        <TextBox x:Name="tbMutationProbability" Text="{Binding AlgorithmSettings.GASettings.MutationProbability}" KeyDown="tbMutationProbability_KeyDown"
             Grid.Row="5" Grid.Column="1" Width="135" Margin="0 10">
-        </TextBlock>
-        <Label
-            Grid.Row="6" Grid.Column="0"
-            HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14"
+        </TextBox>
+        <CheckBox x:Name="chbUseElite" IsChecked="{Binding IsUseElite}" FlowDirection="RightToLeft" HorizontalAlignment="Left" VerticalContentAlignment="Center"
+            Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Margin="10 10">
+            <Label HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="14"
             Content="{DynamicResource lUseElite}"/>
-        <CheckBox x:Name="chbUseElite"
-            Grid.Row="6" Grid.Column="1" Width="135" Margin="0 10">
+        </CheckBox>
+        <Label
+            Grid.Row="7" Grid.Column="0"
+            HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14"
+            Content="{DynamicResource lElitePercent}"/>
+        <TextBox x:Name="tbElitePercent" Text="{Binding AlgorithmSettings.GASettings.ElitePercent}" IsEnabled="{Binding IsUseElite}" KeyDown="tbElitePercent_KeyDown"
+            Grid.Row="7" Grid.Column="1" Width="135" Margin="0 10">
+        </TextBox>
+        <CheckBox x:Name="chbOnlyChildren" FlowDirection="RightToLeft" HorizontalAlignment="Left" VerticalContentAlignment="Center"
+            Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Margin="10 10" IsChecked="{Binding AlgorithmSettings.GASettings.OnlyChildrenInNewGeneration}">
+            <Label HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="14"
+            Content="{DynamicResource lOnlyChildrenInNewGeneration}"/>
         </CheckBox>
         <Button x:Name="bSetupGeneticAlgorithm" Click="bSetupGeneticAlgorithm_Click"
             Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2"

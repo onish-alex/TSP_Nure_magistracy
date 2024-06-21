@@ -1,6 +1,5 @@
 ﻿using GA.Core.Utility;
 using System;
-using System.IO;
 
 namespace GA.Experiments.Writer
 {

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace TSP.Desktop.Commands
@@ -14,11 +10,11 @@ namespace TSP.Desktop.Commands
 		private Action<object> execute;
 
 		public CommonCommand(Action<object> execute)
-        {
-            this.execute = execute;
-        }
+		{
+			this.execute = execute;
+		}
 
-        public bool CanExecute(object parameter)
+		public bool CanExecute(object parameter)
 		{
 			return true;
 		}

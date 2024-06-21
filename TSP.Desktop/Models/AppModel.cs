@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TSP.Desktop.Models
+﻿namespace TSP.Desktop.Models
 {
-    internal class AppModel
-    {
-    }
+	internal class AppModel
+	{
+	}
 }

@@ -1,13 +1,10 @@
-﻿using Algorithms.Utility.Extensions;
+﻿using AntColony.Core;
+using AntColony.Core.Utilities;
 using AntColony.Experiments.Writer;
-using AntColony.Experiments;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Newtonsoft.Json.Schema;
-using AntColony.Core.Utilities;
-using AntColony.Core;
 
 namespace AntColony.Experiments
 {
@@ -64,6 +61,11 @@ namespace AntColony.Experiments
 							UseCommonEliteAntPheromoneAmount = experimentSettings.UseCommonEliteAntPheromoneAmount
 						};
 
+						if (experimentSettings.ResearchedParameterName == nameof(AntColonySettings.MaxPheromoneAmount))
+						{
+							ACSettings.GetType().GetProperty("InitialPheromoneAmount").SetValue(ACSettings, researchedParam.Value);
+                        }
+
 						var antPopulationSettings = new AntPopulationSettings()
 						{
 							AntCount = experimentSettings.AntCount,
@@ -79,15 +81,15 @@ namespace AntColony.Experiments
 							AntColonyEnum.MinMax => new MaxMinAlgorithm<TNode>(nodes, distanceGetter, ACSettings, resultGetter),
 							_ => throw new NotImplementedException()
 						};
-						
+
 						var timer = Stopwatch.StartNew();
 
 						IList<IList<TNode>> algoResults = null;
 
 						for (int j = 0; j < experimentSettings.IterationsCount; j++)
-                            algoResults = algo.Run(antPopulationSettings);
+							algoResults = algo.Run(antPopulationSettings);
 
-                        timer.Stop();
+						timer.Stop();
 
 						var experimentResult = new ACExperimentResult<TNode>()
 						{

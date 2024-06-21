@@ -34,9 +34,15 @@
     <cs:String x:Key="lPopulationSize">Population size</cs:String>
     <cs:String x:Key="lMutationProbability">Mutation probability</cs:String>
     <cs:String x:Key="lUseElite">Use elite individuals</cs:String>
+    <cs:String x:Key="lElitePercent">Elite individuals percent</cs:String>
+    <cs:String x:Key="lOnlyChildrenInNewGeneration">New generation contains only children</cs:String>
 
     <!--Validation messages-->
     <cs:String x:Key="FieldCannotBeEmpty">Field can't be empty!</cs:String>
     <cs:String x:Key="FieldMustBeInteger">Field value must be an integer between {0} and {1}!</cs:String>
+    <cs:String x:Key="FieldMustBePercent">Field value must be an floating point number representing percent (0-100)</cs:String>
     <cs:String x:Key="InvalidAlgorithmType">Invalid algorithm type!</cs:String>
+    <cs:String x:Key="InvalidMutationType">Invalid mutation type!</cs:String>
+    <cs:String x:Key="InvalidSelectionType">Invalid selection type!</cs:String>
+    <cs:String x:Key="InvalidCrossoverType">Invalid crossover type!</cs:String>
 </ResourceDictionary>

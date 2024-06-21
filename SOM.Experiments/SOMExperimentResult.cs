@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 
 namespace SOM.Experiments
 {
@@ -10,7 +9,7 @@ namespace SOM.Experiments
 		[JsonProperty("guid")] public Guid GroupGuid { get; set; }
 		[JsonProperty("length")] public double Length { get; set; }
 		[JsonProperty("time")] public TimeSpan Time { get; set; }
-		
+
 		[JsonProperty("param")] public string ResearchedParameterName { get; set; }
 		[JsonProperty("value")] public object ResearchedParameterValue { get; set; }
 	}

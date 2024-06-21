@@ -8,6 +8,9 @@
     <Compile Update="Views\001_Modals\SetupGeneticAlgorithmModal.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Algorithms\AlgorithmListItem.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\Algorithms\AlgorithmWrapper.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -29,6 +32,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\001_Modals\SetupGeneticAlgorithmModal.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Algorithms\AlgorithmListItem.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\Algorithms\AlgorithmWrapper.xaml">

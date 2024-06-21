@@ -6,7 +6,6 @@ using GA.Core.Operations.Mutations;
 using GA.Core.Operations.Selections;
 using GA.Core.Utility;
 using GA.Experiments.Writer;
-using GA.Operations;
 using GA.Operations.Crossovers;
 using GA.Operations.Crossovers.Concurrent;
 using GA.Operations.Mutations;
@@ -136,7 +135,7 @@ namespace GA.Experiments
 								writer.Write(groupExperimentResult);
 					}
 
-					researchedParam.AddStore(experimentSettings.ResearchedParameterIncrement);
+					researchedParam.AddStore(experimentSettings.ResearchedParameterStep);
 				}
 				catch (Exception ex)
 				{
@@ -243,7 +242,7 @@ namespace GA.Experiments
 				experimentSettings.ResearchedParameterName,
 				experimentSettings.ResearchedParameterRange.Min.Value.ToString(),
 				experimentSettings.ResearchedParameterRange.Max.Value.ToString(),
-				experimentSettings.ResearchedParameterIncrement.ToString(),
+				experimentSettings.ResearchedParameterStep.ToString(),
 			};
 
 			return string.Join('-', nameComponents);

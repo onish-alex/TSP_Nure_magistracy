@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace GA.Operations.Mutations
 {
-	public class InverseMutation : ParallelBaseMutation
+	public class InverseMutation : BaseMutation
 	{
 		public int IntervalStartIndex { get; set; } = -1;
 

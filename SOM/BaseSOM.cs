@@ -23,7 +23,7 @@ namespace SOM
 
 		public bool FinishCondition => !this.dataReadiness.Any(x => x.Value == false);
 
-		public int ProcessedVectors => this.dataReadiness.Count(x => x.Value); 
+		public int ProcessedVectors => this.dataReadiness.Count(x => x.Value);
 
 		private BaseSOM(SOMSettings settings, IList<TVector> dataVectors)
 		{
@@ -59,9 +59,9 @@ namespace SOM
 
 		public abstract double GetDistance(TVector first, TVector second);
 
-		protected abstract double GetElasticityCoefficient(TVector chosenVector, TVector otherVector);
+		protected abstract double GetNeighbourFunction(TVector chosenVector, TVector otherVector);
 
-		public abstract void ProcessEpoch();
+		public abstract void ProcessIteration();
 		public abstract IEnumerable<int> ProcessEpochIteration();
 
 		public abstract IEnumerable<TVector> BuildMap();

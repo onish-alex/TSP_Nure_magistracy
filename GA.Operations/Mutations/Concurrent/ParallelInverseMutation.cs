@@ -1,5 +1,5 @@
 ﻿using Algorithms.Utility.Extensions;
-using GA.Core.Operations.Mutations;
+using GA.Core.Operations.Mutations.Concurrent;
 using GA.Core.Utility;
 using System;
 using System.Collections.Generic;

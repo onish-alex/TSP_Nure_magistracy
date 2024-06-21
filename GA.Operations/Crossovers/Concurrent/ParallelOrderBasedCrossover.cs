@@ -74,9 +74,9 @@ namespace GA.Operations.Crossovers
 
 		protected override void InitSettings()
 		{
-			var selectedPositionsPercent = 
-				Random.Shared.NextDouble() 
-				* (MAX_SELECTED_POSITIONS_PERCENT - MIN_SELECTED_POSITIONS_PERCENT) 
+			var selectedPositionsPercent =
+				Random.Shared.NextDouble()
+				* (MAX_SELECTED_POSITIONS_PERCENT - MIN_SELECTED_POSITIONS_PERCENT)
 				+ MIN_SELECTED_POSITIONS_PERCENT;
 
 			var selectedPositionsCount = (int)Math.Round(operationSettings.NodesCount * selectedPositionsPercent / 100);

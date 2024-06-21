@@ -2,7 +2,6 @@
 using TSP.Desktop.Commands;
 using TSP.Desktop.Models.Managers;
 using TSP.Desktop.ViewModels.Entities;
-using TSP.Desktop.Views.Modals;
 
 namespace TSP.Desktop.ViewModels.TSPMap
 {

@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Text.Json.Serialization;
-using TSP.Desktop.ViewModels.TSPMap;
-using TSP.Core;
+﻿using TSP.Core;
 
 namespace TSP.Desktop.Models.Entities
 {

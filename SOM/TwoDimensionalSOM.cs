@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SOM
 {
@@ -46,7 +45,7 @@ namespace SOM
 
 			var centerX = xValues.Average();
 			var centerY = yValues.Average();
-			
+
 			var radius = (xWidth < yWidth)
 				? xWidth / 100D * settings.NetworkRadiusPercent
 				: yWidth / 100D * settings.NetworkRadiusPercent;
@@ -59,29 +58,29 @@ namespace SOM
 
 			for (int i = 0; i < networkSize; i++)
 			{
-                //creating new cell
-                this.networkVectors.Add(Activator.CreateInstance<TPoint2D>());
+				//creating new cell
+				this.networkVectors.Add(Activator.CreateInstance<TPoint2D>());
 				this.networkVectors.Last()["x"] = circlePoints[i].X;
 				this.networkVectors.Last()["y"] = circlePoints[i].Y;
 
-                this.networkReadiness.Add(this.networkVectors[i], false);
+				this.networkReadiness.Add(this.networkVectors[i], false);
 
-                this.networkTopologyDistances.Add(this.networkVectors[i], new Dictionary<TPoint2D, double>());
+				this.networkTopologyDistances.Add(this.networkVectors[i], new Dictionary<TPoint2D, double>());
 
-                for (int j = 0; j < i; j++)
-                {
-                    if (i < networkSize / 2 + j)
-                    {
+				for (int j = 0; j < i; j++)
+				{
+					if (i < networkSize / 2 + j)
+					{
 						this.networkTopologyDistances[this.networkVectors[i]].Add(this.networkVectors[j], i - j);
 						this.networkTopologyDistances[this.networkVectors[j]].Add(this.networkVectors[i], i - j);
-                    }
-                    else
-                    {
-                        this.networkTopologyDistances[this.networkVectors[i]].Add(this.networkVectors[j], networkSize - (i - j));
-                        this.networkTopologyDistances[this.networkVectors[j]].Add(this.networkVectors[i], networkSize - (i - j));
-                    }
-                }
-            }
+					}
+					else
+					{
+						this.networkTopologyDistances[this.networkVectors[i]].Add(this.networkVectors[j], networkSize - (i - j));
+						this.networkTopologyDistances[this.networkVectors[j]].Add(this.networkVectors[i], networkSize - (i - j));
+					}
+				}
+			}
 
 			if (settings.UseDistancePenalties)
 			{
@@ -100,24 +99,20 @@ namespace SOM
 		}
 
 		Func<TPoint2D, TPoint2D, double> getDistanceFunc;
-        IList<TPoint2D> workingNetworkVectors;
+		IList<TPoint2D> workingNetworkVectors;
 
-        public override void ProcessEpoch()
+		public override void ProcessIteration()
 		{
 			if (settings.UseDistancePenalties)
 				getDistanceFunc = (networkPoint, dataPoint) => GetDistance(networkPoint, dataPoint) * this.networkDistancePenalties[networkPoint];
 			else
 				getDistanceFunc = (networkPoint, dataPoint) => GetDistance(networkPoint, dataPoint);
 
-            //.AsParallel()
-            foreach (var dataVector in dataVectors.Where(x => this.dataReadiness[x] == false)) //except matched ones																										   //while (unprocessedDataVectors.Any(x => x.Value == false))
+			foreach (var dataVector in dataVectors.Where(x => this.dataReadiness[x] == false)) //except matched ones
 			{
 				var orderedNetworkVectors = workingNetworkVectors
-                                            //.Except(this.networkReadiness.Where(x => x.Value).Select(x => x.Key))
-                                            //.AsParallel()
-                                            .Select(x => (x, getDistanceFunc(x, dataVector)))
+											.Select(x => (x, getDistanceFunc(x, dataVector)))
 											.OrderBy(x => x.Item2);
-											//.ToList();
 
 				var (closestNetworkVector, distance) = orderedNetworkVectors.FirstOrDefault();
 
@@ -141,15 +136,12 @@ namespace SOM
 
 					if (settings.UseElasticity && settings.CooperationCoefficient > settings.CooperationThreshold)
 					{
-						//.AsParallel()
-						var networkVectorsToAdjust = workingNetworkVectors.ToList();// (x =>/* this.networkReadiness[x] == false &&*/ !x.Equals(closestNetworkVector)).ToArray();
+						var networkVectorsToAdjust = workingNetworkVectors.ToList();
 						networkVectorsToAdjust.Remove(closestNetworkVector);
 
-                        //.AsParallel()
-                        var elasticityCoefs = networkVectorsToAdjust.Select(x => GetElasticityCoefficient(x, closestNetworkVector)).ToArray();
+						var elasticityCoefs = networkVectorsToAdjust.Select(x => GetNeighbourFunction(x, closestNetworkVector)).ToArray();
 
 						for (int i = 0; i < networkVectorsToAdjust.Count; i++)
-						//Parallel.For(0, networkVectorsToAdjust.Length, (i) =>
 						{
 							if (elasticityCoefs[i] > 0D)
 								for (var j = 0; j < closestNetworkVector.Count; j++)
@@ -158,19 +150,7 @@ namespace SOM
 										(dataVector[j] - networkVectorsToAdjust[i][j]) *
 										elasticityCoefs[i];
 						}
-						//);
-
-						//foreach (var networkVector in networkVectors.Where(x => this.networkReadiness[x] == false && !x.Equals(closestNetworkVector)))
-						//{
-						//	var elasticityCoef = GetElasticityCoefficient(networkVector, closestNetworkVector);
-
-						//	if (elasticityCoef > 0)
-						//		for (var i = 0; i < closestNetworkVector.Count; i++)
-						//			networkVector[i] = networkVector[i] +
-						//				settings.LearningCoefficient *
-						//				(dataVector[i] - networkVector[i]) *
-						//				elasticityCoef;
-						//}
+						
 						settings.CooperationCoefficient *= 1D - settings.CooperationFading / 100D;
 					}
 
@@ -229,7 +209,7 @@ namespace SOM
 						if (networkVector.Equals(closestNetworkVector))
 							continue;
 
-						var elasticityCoef = GetElasticityCoefficient(networkVector, closestNetworkVector);
+						var elasticityCoef = GetNeighbourFunction(networkVector, closestNetworkVector);
 
 						if (elasticityCoef > 0)
 							for (var i = 0; i < closestNetworkVector.Count; i++)
@@ -253,29 +233,11 @@ namespace SOM
 			yield return 0;
 		}
 
-		protected override double GetElasticityCoefficient(TPoint2D chosenVector, TPoint2D otherVector)
+		protected override double GetNeighbourFunction(TPoint2D chosenVector, TPoint2D otherVector)
 		{
 			var distance = GetDistance(chosenVector, otherVector);
-			//var pointsDistance = this.networkTopologyMatrix[this.networkVectors.IndexOf(chosenVector), this.networkVectors.IndexOf(otherVector)].Value;
 			var pointsDistance = this.networkTopologyDistances[chosenVector][otherVector];
-			//var coef = Math.Exp(-1 * Math.Pow(distance, 2) / (n * n) * pointsDistance.Value);
-			//var coef = Math.Exp(-1 * Math.Pow(distance * pointsDistance, 2) / settings.CooperationCoefficient);
-			//BEST 
-			
-			
-			
-			
 			var coef = Math.Exp(-1 * Math.Pow(pointsDistance, 2) * distance / settings.CooperationCoefficient);
-			
-			
-			
-			
-			
-			
-			//var coef = Math.Exp(-1 * Math.Pow(distance, 2) / settings.CooperationCoefficient);
-			//TOZHE NORM //var coef = Math.Exp(-1 * Math.Pow(distance, 2) * pointsDistance / settings.CooperationCoefficient);
-			//var coef = 1 / distance;
-
 			return coef;
 		}
 
@@ -286,7 +248,7 @@ namespace SOM
 			while (!FinishCondition)
 			{
 				Console.WriteLine($"{ProcessedVectors} - {stopwatch.Elapsed} | coef: {settings.LearningCoefficient} | length: {GetFullLength()} | n: {settings.CooperationCoefficient}");
-				ProcessEpoch();
+				ProcessIteration();
 			}
 
 			stopwatch.Stop();
